@@ -1,0 +1,15 @@
+# CI4 & 환경 설정
+.env
+/writable/*
+!/writable/index.html
+!/writable/.htaccess
+/vendor/
+
+# OS & IDE
+.DS_Store
+.vscode/
+.idea/
+
+# XAMPP/임시 파일
+node_modules/
+npm-debug.log
