@@ -9,7 +9,7 @@ class Draw_Model extends Model
     protected $table      = 'draws';
     protected $primaryKey = 'dw_id';
     protected $returnType = 'object';
-    protected $allowedFields = ['dw_id', 'drawn_at', 'n1', 'n2', 'n3', 'n4', 'n5', 'p1', 'sum'];
+    protected $allowedFields = ['drawn_at', 'n1', 'n2', 'n3', 'n4', 'n5', 'p1', 'sum'];
     protected $useAutoIncrement = false;
     // 최신 결과 1건 조회
     public function getLatest()
@@ -36,10 +36,10 @@ class Draw_Model extends Model
     public function getOrGenerate($currentTime)
     {
         $interval = 60; 
-        $roundId = floor($currentTime / $interval);
 
-        $draw = $this->find($roundId);
-        if (!$draw) {
+        $draw = $this->orderBy('dw_id', 'DESC')->first();
+        // 마지막 추첨 후 1분이 지났거나 데이터가 아예 없는 경우 새로 생성
+        if (!$draw || ($currentTime - strtotime($draw->drawn_at)) >= $interval){
             // 1. 1~28까지의 볼 준비
             $balls = range(1, 28);
             
@@ -56,8 +56,7 @@ class Draw_Model extends Model
             $powerBall = random_int(0, 9);
 
             $data = [
-                'dw_id'    => (int)$roundId,
-                'drawn_at' => date('Y-m-d H:i:s', $roundId * $interval),
+                'drawn_at' => date('Y-m-d H:i:s'),
                 'n1'       => (int)$selected[0],
                 'n2'       => (int)$selected[1],
                 'n3'       => (int)$selected[2],
@@ -67,6 +66,7 @@ class Draw_Model extends Model
                 'sum'      => (int)array_sum($selected)
             ];
             $this->insert($data);
+            $data['dw_id'] = $this->insertID(); 
             return (object)$data;
         }
         return $draw;
