@@ -5,7 +5,6 @@ use CodeIgniter\Model;
 
 class Draw_Model extends Model
 {
-    // ... 기존 설정 생략 ...
     protected $table      = 'draws';
     protected $primaryKey = 'dw_id';
     protected $returnType = 'object';

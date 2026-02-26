@@ -16,6 +16,9 @@ class Home extends BaseController
         
         // 2. 현재 회차 결과 가져오기 (없으면 모델에서 자동 생성 및 DB 저장)
         $currentDraw = $drawModel->getOrGenerate($currentTime);
+        // 직전 회차 가져오기
+        $two = $drawModel->orderBy('dw_id', 'DESC')->findAll(2);
+        $prevDraw = isset($two[1]) ? $two[1] : null;
 
         // 3. 뷰에 전달할 최소한의 데이터 구성
         $viewData = [
@@ -29,7 +32,12 @@ class Home extends BaseController
                     $currentDraw->n5
                 ],
                 'powerball'   => $currentDraw->p1,
-                'server_time' => $currentTime
+                'server_time' => $currentTime,
+                'sum'         => isset($currentDraw->sum) ? (int)$currentDraw->sum : (int)array_sum([$currentDraw->n1,$currentDraw->n2,$currentDraw->n3,$currentDraw->n4,$currentDraw->n5]),
+                'prev_id'     => $prevDraw ? $prevDraw->dw_id : null,
+                'prev_numbers'=> $prevDraw ? [$prevDraw->n1,$prevDraw->n2,$prevDraw->n3,$prevDraw->n4,$prevDraw->n5] : [],
+                'prev_power'  => $prevDraw ? $prevDraw->p1 : null,
+                'prev_sum'    => $prevDraw ? (int)$prevDraw->sum : null,
             ],
             // 에러 방지를 위한 headInfo 기본값 (View에서 참조 시 에러 방지)
             'headInfo' => [

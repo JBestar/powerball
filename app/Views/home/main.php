@@ -5,8 +5,7 @@
     <title>Powerball Live Mini-View</title>
     <script>const BASE_URL = "<?= BASEURL ?>";</script>
     
-    <!-- 외부 스타일 및 전용 스타일 연결 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net">
+    <!-- 전용 스타일 연결 -->
     <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
     
     <style>
@@ -52,7 +51,12 @@
         lastRound: <?= $draw_data['last_id'] ?>,
         initialNumbers: <?= json_encode($draw_data['numbers']) ?>,
         powerball: <?= $draw_data['powerball'] ?>,
-        serverTime: <?= $draw_data['server_time'] ?>
+        serverTime: <?= $draw_data['server_time'] ?>,
+        sum: <?= isset($draw_data['sum']) ? (int)$draw_data['sum'] : 'null' ?>,
+        prevRound: <?= $draw_data['prev_id'] ? $draw_data['prev_id'] : 'null' ?>,
+        prevNumbers: <?= json_encode($draw_data['prev_numbers']) ?>,
+        prevPower: <?= $draw_data['prev_power'] !== null ? $draw_data['prev_power'] : 'null' ?>,
+        prevSum: <?= isset($draw_data['prev_sum']) && $draw_data['prev_sum'] !== null ? (int)$draw_data['prev_sum'] : 'null' ?>
     };
 
     window.onload = function() {
