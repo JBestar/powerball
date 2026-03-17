@@ -24,7 +24,7 @@
 			<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
 			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery-ui.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-ui.js';document.body.appendChild(s);"></script>
 			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.qtip.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.qtip.min.js';document.body.appendChild(s);"></script>
-			<script type="text/javascript" src="<?php echo $cdn; ?>/js/default.js?201905194" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/default.js';document.body.appendChild(s);"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/default.js?v=<?php echo time(); ?>"></script>
 			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.number.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.number.min.js';document.body.appendChild(s);"></script>
 			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.tmpl.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.tmpl.min.js';document.body.appendChild(s);"></script>
 			<script type="text/javascript">
@@ -44,36 +44,41 @@
 	var today = '<?= date('Y-m-d') ?>';
 	var dateDiff = <?= isset($date) ? (strtotime($date) - strtotime('today')) / 86400 : 0 ?>;
 
-	// mainFrame 높이: 표시 행 수에 따라 동적 계산 (실제 행 높이 측정, 더보기 시 확장 / 30행 미만이면 그만큼 작게)
-	var dayLogBaseHeight = 0;
-	var dayLogRowHeightPx = 0;  // DOM에서 측정한 행당 높이 (border·padding 포함)
-	var DAYLOG_ROW_HEIGHT_FALLBACK = 48;  // td 40 + border 등 여유
+	// mainFrame 높이: 실제 문서 높이로 조절 (육매/패턴 영역·더보기 포함해 잘리지 않도록)
 	var DAYLOG_MIN_HEIGHT = 500;
 	function heightResize() {
-		var $rows = $('#powerballLogBox tbody.content tr');
-		var rowCount = $rows.length;
-		// 행이 있으면 첫 번째 tr의 실제 높이 측정 (border 포함)
-		if (rowCount > 0 && dayLogRowHeightPx === 0) {
-			dayLogRowHeightPx = Math.ceil($rows.first().outerHeight(true)) || DAYLOG_ROW_HEIGHT_FALLBACK;
+		function setFrameHeight(h) {
+			try {
+				if (window.parent && window.parent.frameAutoResize) {
+					window.parent.frameAutoResize('mainFrame', h);
+				} else if (window.parent && window.parent.document) {
+					var frame = window.parent.document.getElementById('mainFrame');
+					if (frame) frame.style.height = h + 'px';
+				}
+			} catch (e) {}
 		}
-		var rowHeight = dayLogRowHeightPx > 0 ? dayLogRowHeightPx : DAYLOG_ROW_HEIGHT_FALLBACK;
-		if (dayLogBaseHeight === 0 && rowCount > 0) {
-			dayLogBaseHeight = Math.max(DAYLOG_MIN_HEIGHT, $('body').height() - (rowCount * rowHeight));
-		}
-		if (dayLogBaseHeight === 0) {
-			dayLogBaseHeight = DAYLOG_MIN_HEIGHT;
-		}
-		var totalHeight = dayLogBaseHeight + (rowCount * rowHeight);
-		totalHeight = Math.max(DAYLOG_MIN_HEIGHT, Math.round(totalHeight));
-		try {
-			// 부모에 frameAutoResize가 있으면 사용, 없으면 부모 DOM에서 mainFrame 높이 직접 설정 (main.php는 default.js 미로드)
-			if (window.parent && window.parent.frameAutoResize) {
-				window.parent.frameAutoResize('mainFrame', totalHeight);
-			} else if (window.parent && window.parent.document) {
-				var frame = window.parent.document.getElementById('mainFrame');
-				if (frame) frame.style.height = totalHeight + 'px';
+		function measureAndSet() {
+			var totalHeight = DAYLOG_MIN_HEIGHT;
+			var moreBox = document.querySelector('.moreBox');
+			if (moreBox) {
+				var rect = moreBox.getBoundingClientRect();
+				var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+				totalHeight = rect.bottom + scrollTop;
+				try {
+					var mb = parseFloat(window.getComputedStyle(moreBox).marginBottom) || 0;
+					totalHeight += mb;
+				} catch (e) {}
+			} else {
+				totalHeight = document.body.scrollHeight || document.documentElement.scrollHeight || document.body.offsetHeight || DAYLOG_MIN_HEIGHT;
 			}
-		} catch (e) {}
+			totalHeight = Math.max(DAYLOG_MIN_HEIGHT, Math.ceil(totalHeight));
+			setFrameHeight(totalHeight);
+		}
+		if (window.requestAnimationFrame) {
+			requestAnimationFrame(function() { requestAnimationFrame(measureAndSet); });
+		} else {
+			setTimeout(measureAndSet, 80);
+		}
 	}
 
 	$(document).ready(function(){
@@ -221,13 +226,13 @@
 			// auto refresh
 			if(beforeType && beforeDivision)
 			{
-				ajaxPattern(beforeType,'2026-03-10',beforeDivision,true);
+				ajaxPattern(beforeType,curDate,beforeDivision,true);
 			}
 
 			// auto refresh
 			if(sixBeforeCnt && sixBeforeType && sixBeforeDivision)
 			{
-				ajaxSixPattern(sixBeforeCnt,sixBeforeType,'2026-03-10',sixBeforeDivision,true);
+				ajaxSixPattern(sixBeforeCnt,sixBeforeType,curDate,sixBeforeDivision,true);
 			}
 
 			dataRefresh_process = true;
@@ -364,10 +369,8 @@
 	{
 		var h = (type == 'open') ? '400px' : '117px';
 		var el = document.getElementById('miniViewFrame');
-		console.log('[dayLog] miniViewControl 호출됨 type:', type, '| height:', h, '| miniViewFrame 요소:', el ? '있음' : '없음');
 		if(el) el.style.height = h;
 		$('#powerballMiniViewDiv #miniViewFrame').css('height', h);
-		console.log('[dayLog] miniViewFrame style.height 설정 완료:', el ? el.style.height : '(미적용)');
 	}
 	window.miniViewControl = miniViewControl;
 
@@ -426,15 +429,15 @@
 		var sixDivision = 'powerball';
 
 		$('#sixBox .patternCnt .btn a').click(function(){
-
+			var rel = $(this).attr('rel');
 			$('#sixBox .patternCnt .btn a').removeClass('on1');
 			$(this).addClass('on1');
 
 			$('#sixBox .patternType .btn a').removeClass('on2');
 			$('#sixBox .patternType .btn').find('[sixType='+sixDivision+'_'+sixPatternType+']').addClass('on2');
 
-			sixPatternCnt = $(this).attr('rel');
-			ajaxSixPattern(sixPatternCnt,sixPatternType,'2026-03-10',sixDivision);
+			sixPatternCnt = rel;
+			ajaxSixPattern(sixPatternCnt,sixPatternType,curDate,sixDivision);
 
 		});
 
@@ -448,7 +451,7 @@
 
 			sixPatternType = $(this).attr('rel');
 			sixDivision = $(this).attr('division');
-			ajaxSixPattern(sixPatternCnt,sixPatternType,'2026-03-10',sixDivision);
+			ajaxSixPattern(sixPatternCnt,sixPatternType,curDate,sixDivision);
 
 		});
 
@@ -651,11 +654,11 @@
 			<th colspan="3">숫자합 기준</th>
 		</tr>
 		<tr>
-			<th height="30" class="btn"><a href="#" onclick="ajaxPattern('oddEven','2026-03-10','powerball');return false;" class="tab1" type="powerball_oddEven">홀짝 패턴</a></th>
-			<th class="btn"><a href="#" onclick="ajaxPattern('underOver','2026-03-10','powerball');return false;" class="tab2" type="powerball_underOver">언더오버 패턴</a></th>
-			<th class="btn"><a href="#" onclick="ajaxPattern('oddEven','2026-03-10','number');return false;" class="tab1" type="number_oddEven">홀짝 패턴</a></th>
-			<th class="btn"><a href="#" onclick="ajaxPattern('underOver','2026-03-10','number');return false;" class="tab2" type="number_underOver">언더오버 패턴</a></th>
-			<th class="btn"><a href="#" onclick="ajaxPattern('period','2026-03-10','number');return false;" class="tab3" type="number_period">대중소 패턴</a></th>
+			<th height="30" class="btn"><a href="#" onclick="ajaxPattern('oddEven',curDate,'powerball');return false;" class="tab1" type="powerball_oddEven">홀짝 패턴</a></th>
+			<th class="btn"><a href="#" onclick="ajaxPattern('underOver',curDate,'powerball');return false;" class="tab2" type="powerball_underOver">언더오버 패턴</a></th>
+			<th class="btn"><a href="#" onclick="ajaxPattern('oddEven',curDate,'number');return false;" class="tab1" type="number_oddEven">홀짝 패턴</a></th>
+			<th class="btn"><a href="#" onclick="ajaxPattern('underOver',curDate,'number');return false;" class="tab2" type="number_underOver">언더오버 패턴</a></th>
+			<th class="btn"><a href="#" onclick="ajaxPattern('period',curDate,'number');return false;" class="tab3" type="number_period">대중소 패턴</a></th>
 		</tr>
 		<tr>
 			<td colspan="5" style="border-top:1px solid #d5d5d5;"><div class="content"></div></td>
@@ -703,7 +706,7 @@
 		<div class="bar"></div>
 	</div>
 
-	<table width="100%" border="1" id="powerballLogBox" class="powerballBox" style="margin-top:10px;">
+	<table width="100%" border="1" id="powerballLogBox" class="powerballBox" style="margin-top:10px;margin-bottom:10px;">
 		<colgroup>
 			<col width="16%"/>
 			<col width="6%"/>

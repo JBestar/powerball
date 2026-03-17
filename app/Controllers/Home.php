@@ -18,12 +18,18 @@ class Home extends BaseController
             return $this->frameDayLog();
         }
 
-        // dayLog 회차별 분석 데이터: POST view=action, action=ajaxPowerballLog
+        // dayLog 회차별 분석 데이터: POST view=action, action=ajaxPowerballLog / ajaxPattern
         if ($this->request->getMethod() === 'post') {
             $view   = $this->request->getPost('view');
             $action = $this->request->getPost('action');
             if ($view === 'action' && $action === 'ajaxPowerballLog') {
                 return $this->ajaxPowerballLog();
+            }
+            if ($view === 'action' && $action === 'ajaxPattern') {
+                return $this->ajaxPattern();
+            }
+            if ($view === 'action' && $action === 'ajaxSixPattern') {
+                return $this->ajaxSixPattern();
             }
         }
 
@@ -397,6 +403,199 @@ class Home extends BaseController
         }
 
         return $this->response->setJSON(['state' => 'error', 'msg' => 'Invalid actionType']);
+    }
+
+    /**
+     * 패턴별 분석 데이터: ajaxPattern (actionType=oddEven 등, division=powerball/number, date=Y-m-d)
+     * 파워볼 기준 홀짝 패턴: 해당 날짜 회차별 파워볼 홀/짝을 선배님 페이지와 동일한 테이블 구조로 반환
+     */
+    public function ajaxPattern()
+    {
+        $actionType = $this->request->getPost('actionType');
+        $division   = $this->request->getPost('division');
+        $date       = $this->request->getPost('date');
+        if (!$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            $date = date('Y-m-d');
+        }
+
+        // 홀짝 패턴(oddEven)만 비로그인 허용, 나머지(언더오버·대중소)는 로그인 필수 (선배님 동작)
+        if ($actionType !== 'oddEven' && !is_login(true)) {
+            return $this->response->setJSON(['content' => 'notlogin']);
+        }
+
+        if ($actionType === 'oddEven' && $division === 'powerball') {
+            $html = $this->buildPowerballOddEvenPatternHtml($date);
+            return $this->response->setJSON(['content' => $html]);
+        }
+        if ($actionType === 'oddEven' && $division === 'number') {
+            $html = $this->buildNumberSumOddEvenPatternHtml($date);
+            return $this->response->setJSON(['content' => $html]);
+        }
+
+        // TODO: underOver, number 합계 대중소 등
+        return $this->response->setJSON(['content' => '']);
+    }
+
+    /**
+     * 파워볼 기준 홀짝 패턴 HTML (선배님 페이지 구조: patternTable > tr > td > table.innerTable)
+     * - 홀/짝이 바뀔 때마다 새 컬럼(블록). 각 블록: th(홀|짝), 회차 div들(최대 11행), sum, order
+     */
+    protected function buildPowerballOddEvenPatternHtml(string $date): string
+    {
+        $drawModel = new \App\Models\PowerballDraw_Model();
+        $dateFrom  = $date . ' 00:00:00';
+        $dateTo    = $date . ' 23:59:59';
+        $rows      = $drawModel
+            ->where('drawn_at >=', $dateFrom)
+            ->where('drawn_at <=', $dateTo)
+            ->orderBy('round', 'ASC')
+            ->findAll();
+
+        // 연속된 같은 홀/짝끼리 그룹: [ ['odd'|'even', [round1, round2, ...]], ... ]
+        $groups = [];
+        foreach ($rows as $draw) {
+            $round = (int) ($draw->round ?? 0);
+            $pb    = (int) ($draw->powerball ?? 0);
+            $isOdd = ($pb % 2 === 1);
+            $type  = $isOdd ? 'odd' : 'even';
+            if (!empty($groups) && $groups[count($groups) - 1][0] === $type) {
+                $groups[count($groups) - 1][1][] = $round;
+            } else {
+                $groups[] = [$type, [$round]];
+            }
+        }
+        return $this->buildOddEvenPatternTable($groups);
+    }
+
+    /**
+     * 숫자합 기준 홀짝 패턴 HTML (ball_sum 기준, 구조는 파워볼 홀짝과 동일)
+     */
+    protected function buildNumberSumOddEvenPatternHtml(string $date): string
+    {
+        $drawModel = new \App\Models\PowerballDraw_Model();
+        $dateFrom  = $date . ' 00:00:00';
+        $dateTo    = $date . ' 23:59:59';
+        $rows      = $drawModel
+            ->where('drawn_at >=', $dateFrom)
+            ->where('drawn_at <=', $dateTo)
+            ->orderBy('round', 'ASC')
+            ->findAll();
+
+        $groups = [];
+        foreach ($rows as $draw) {
+            $round = (int) ($draw->round ?? 0);
+            $sum   = (int) ($draw->ball_sum ?? 0);
+            $isOdd = ($sum % 2 === 1);
+            $type  = $isOdd ? 'odd' : 'even';
+            if (!empty($groups) && $groups[count($groups) - 1][0] === $type) {
+                $groups[count($groups) - 1][1][] = $round;
+            } else {
+                $groups[] = [$type, [$round]];
+            }
+        }
+
+        return $this->buildOddEvenPatternTable($groups);
+    }
+
+    /**
+     * 홀짝 패턴 공통 테이블 HTML 생성 (그룹 배열 → patternTable 마크업)
+     */
+    protected function buildOddEvenPatternTable(array $groups): string
+    {
+        $maxDataRows = 11;
+        $cells       = [];
+        $order       = 0;
+        foreach ($groups as $group) {
+            $order++;
+            list($type, $rounds) = $group;
+            $titleClass = $type === 'odd' ? 'title_odd' : 'title_even';
+            $titleText  = $type === 'odd' ? '홀' : '짝';
+            $inner = '<tr><th class="' . $titleClass . '">' . $titleText . '</th></tr>';
+            foreach ($rounds as $r) {
+                $inner .= '<tr><td><div class="' . $type . '">' . ((int) $r % 1000) . '</div></td></tr>';
+            }
+            $pad = $maxDataRows - count($rounds);
+            for ($i = 0; $i < $pad; $i++) {
+                $inner .= '<tr><td>&nbsp;</td></tr>';
+            }
+            $inner .= '<tr><td class="sum">' . count($rounds) . '</td></tr>';
+            $inner .= '<tr><td class="order">' . $order . '</td></tr>';
+            $cells[] = '<td><table class="innerTable"><tbody>' . $inner . '</tbody></table></td>';
+        }
+        return '<table class="patternTable"><tbody><tr>' . implode('', $cells) . '</tr></tbody></table>';
+    }
+
+    /**
+     * 육매 분석 데이터: ajaxSixPattern (patternCnt=1~6, actionType=oddEven 등, division=powerball/number)
+     * 파워볼 홀짝만 비로그인 허용 (선배님 동작)
+     */
+    public function ajaxSixPattern()
+    {
+        $actionType = $this->request->getPost('actionType');
+        $division   = $this->request->getPost('division');
+        $patternCnt = (int) $this->request->getPost('patternCnt');
+        $date       = $this->request->getPost('date');
+        if (!$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            $date = date('Y-m-d');
+        }
+        if ($patternCnt < 1 || $patternCnt > 6) {
+            $patternCnt = 6;
+        }
+
+        if ($actionType !== 'oddEven' || $division !== 'powerball') {
+            if (!is_login(true)) {
+                return $this->response->setJSON(['content' => 'notlogin']);
+            }
+        }
+
+        if ($actionType === 'oddEven' && ($division === 'powerball' || $division === 'number')) {
+            $html = $this->buildSixPatternHtml($date, $patternCnt, $division);
+            return $this->response->setJSON(['content' => $html]);
+        }
+
+        return $this->response->setJSON(['content' => '']);
+    }
+
+    /**
+     * 육매 패턴 HTML (선배님 구조: N매씩 한 컬럼, 각 셀에 회차 마지막 3자리 + odd/even, 마지막 행 order)
+     */
+    protected function buildSixPatternHtml(string $date, int $patternCnt, string $division): string
+    {
+        $drawModel = new \App\Models\PowerballDraw_Model();
+        $dateFrom  = $date . ' 00:00:00';
+        $dateTo    = $date . ' 23:59:59';
+        $rows      = $drawModel
+            ->where('drawn_at >=', $dateFrom)
+            ->where('drawn_at <=', $dateTo)
+            ->orderBy('round', 'ASC')
+            ->findAll();
+
+        $cells   = [];
+        $chunks  = array_chunk($rows, $patternCnt);
+        $order   = 0;
+        foreach ($chunks as $chunk) {
+            $order++;
+            $inner = '';
+            foreach ($chunk as $draw) {
+                $round = (int) ($draw->round ?? 0);
+                if ($division === 'powerball') {
+                    $isOdd = ((int) ($draw->powerball ?? 0) % 2 === 1);
+                } else {
+                    $isOdd = ((int) ($draw->ball_sum ?? 0) % 2 === 1);
+                }
+                $type   = $isOdd ? 'odd' : 'even';
+                $title  = $isOdd ? '홀' : '짝';
+                $inner .= '<tr><td><div class="' . $type . '" title="' . esc($title) . '">' . ((int) $round % 1000) . '</div></td></tr>';
+            }
+            $pad = $patternCnt - count($chunk);
+            for ($i = 0; $i < $pad; $i++) {
+                $inner .= '<tr><td>&nbsp;</td></tr>';
+            }
+            $inner .= '<tr><td class="order">' . $order . '</td></tr>';
+            $cells[] = '<td><table class="innerTable"><tbody>' . $inner . '</tbody></table></td>';
+        }
+
+        return '<table class="patternTable"><tbody><tr>' . implode('', $cells) . '</tr></tbody></table>';
     }
 
     /**

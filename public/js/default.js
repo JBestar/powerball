@@ -92,6 +92,7 @@ function ajaxPattern(type,date,division,update)
 		});
 
 		beforeType = '';
+		if (typeof heightResize === 'function') setTimeout(function() { heightResize(); }, 120);
 	}
 	else
 	{
@@ -147,7 +148,11 @@ var sixBeforeCnt = 0;
 var sixBeforeDivision = '';
 function ajaxSixPattern(cnt,type,date,division,update)
 {
-	if(update != true && sixBeforeType == type && sixBeforeCnt == cnt && sixBeforeDivision == division && $('#sixBox').find('.content').html())
+	var $content = $('#sixBox').find('.content');
+	var contentHtml = $content.length ? $content.html() : '';
+	var sameChoice = String(sixBeforeType) === String(type) && String(sixBeforeCnt) === String(cnt) && String(sixBeforeDivision) === String(division);
+	var goClear = update !== true && sameChoice && contentHtml && contentHtml.length > 0;
+	if(goClear)
 	{
 		$('#sixBox').find('.content').empty();
 		$('#sixBox a').each(function(){
@@ -157,6 +162,7 @@ function ajaxSixPattern(cnt,type,date,division,update)
 		sixBeforeType = '';
 		sixBeforeCnt = 0;
 		sixBeforeDivision = '';
+		if (typeof heightResize === 'function') setTimeout(function() { heightResize(); }, 120);
 	}
 	else
 	{

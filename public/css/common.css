@@ -517,7 +517,7 @@ hr{display:none;}
 #powerballPickBox .totalResult .blackRound {line-height:40px;font-weight:bold;font-size:13px;}
 
 /* more btn */
-.moreBox {margin-top:5px;border:1px solid #D5D5D5;background-color:#F1F1F1;height:30px;line-height:30px;text-align:center;}
+.moreBox {margin-top:0;margin-bottom:10px;border:1px solid #D5D5D5;background-color:#F1F1F1;height:30px;line-height:30px;text-align:center;}
 .moreBox a {display:block;text-decoration:none;color:#5F6164;}
 .moreBox a:hover {background-color:#F1F1F1;color:#0E609C;}
 
