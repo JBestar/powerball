@@ -159,8 +159,8 @@
                     <li><a href="#" onclick="openChatRoom(); return false;">방채팅</a></li>
 
                     <!-- 6. 고객 관련 메뉴들 -->
-                    <li><a href="/bbs/board.php?bo_table=qna" target="mainFrame">1:1문의사항</a></li>
-                    <li><a href="/bbs/board.php?bo_table=faq" target="mainFrame">자주묻는질문</a></li>
+                    <li><a href="<?= esc(site_furl('frame/communityBoard?bo_table=qna')) ?>" target="mainFrame">1:1문의사항</a></li>
+                    <li><a href="<?= esc(site_furl('frame/communityBoard?bo_table=faq')) ?>" target="mainFrame">자주묻는질문</a></li>
                     <li><a href="/bbs/board.php?bo_table=request" target="mainFrame">기능개선요청</a></li>
                     <li><a href="/bbs/board.php?bo_table=custom" target="mainFrame">고객센터</a></li>
                     <li><a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">출석체크</a></li>
