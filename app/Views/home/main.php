@@ -406,7 +406,7 @@
                     if (getCookie("MINIVIEWLAYER") == "Y" && typeof window.miniViewControl === "function") {
                         window.miniViewControl("open");
                     }
-                    if (getCookie("POINTBETLAYER") != "Y" && typeof frameEl.contentWindow.toggleBetting === "function") {
+                    if (getCookie("POINTBETLAYER") == "Y" && typeof frameEl.contentWindow.toggleBetting === "function") {
                         frameEl.contentWindow.toggleBetting();
                     }
                 } catch (e) {}

@@ -461,9 +461,13 @@
 		{
 			miniViewControl('open');
 		}
-		if(getCookie('POINTBETLAYER') != 'Y')
+		// 픽 영역: 기본은 닫힘. 쿠키가 Y(이전에 연 상태)일 때만 복원
+		if(getCookie('POINTBETLAYER') == 'Y')
 		{
-			document.getElementById('miniViewFrame').contentWindow.toggleBetting();
+			var _mvf = document.getElementById('miniViewFrame');
+			if (_mvf && _mvf.contentWindow && typeof _mvf.contentWindow.toggleBetting === 'function') {
+				_mvf.contentWindow.toggleBetting();
+			}
 		}
 		// ajaxPattern('oddEven','2026-03-10','powerball');
 	});

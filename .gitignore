@@ -22,3 +22,4 @@ writable/uploads/*
 # XAMPP/임시 파일
 node_modules/
 npm-debug.log
+*.sql
