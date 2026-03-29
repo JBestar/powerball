@@ -49,7 +49,7 @@ class Notice_Model extends Model
             `notice_client_delete` TINYINT UNSIGNED NOT NULL DEFAULT 0,
             PRIMARY KEY (`notice_fid`),
             KEY `idx_type_del_time` (`notice_type`, `notice_state_delete`, `notice_fid`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 
         $this->db->query($sql);
     }
@@ -95,8 +95,18 @@ class Notice_Model extends Model
         return $this->db->prefixTable('member');
     }
 
-    /** member 테이블과 board_notice 문자열 컬럼 collation 불일치 시 JOIN 오류 방지 */
-    private const JOIN_STRING_COLLATE = 'utf8mb4_unicode_ci';
+    /** member 테이블과 board_notice 문자열 컬럼 collation 불일치 시 JOIN 오류 방지 (DB 기본 utf8mb4_general_ci 와 일치) */
+    private const JOIN_STRING_COLLATE = 'utf8mb4_general_ci';
+
+    /** Query Builder join() 용 ON 절 — escape=false 로 그대로 전달 */
+    private function memberNoticeJoinCondition(): string
+    {
+        $mn = $this->memberPrefixed();
+        $tn = $this->tablePrefixed();
+        $c  = self::JOIN_STRING_COLLATE;
+
+        return "`{$mn}`.`mb_uid` COLLATE {$c} = `{$tn}`.`notice_mb_uid` COLLATE {$c}";
+    }
 
     public function getBoards()
     {
@@ -121,6 +131,33 @@ class Notice_Model extends Model
             (int) STATE_DISABLE,
         ]));
         return $result->getResultObject();
+    }
+
+    /** 공지 타입만 — 목록 중 가장 최근 1건 (유머 게시판 bo_notice 등) */
+    public function getLatestNoticeOnly(): ?object
+    {
+        $this->ensureTable();
+
+        $tn = $this->tablePrefixed();
+        $mn = $this->memberPrefixed();
+
+        $collate = self::JOIN_STRING_COLLATE;
+        $sql = "SELECT `{$tn}`.*, `{$mn}`.`mb_grade`, `{$mn}`.`mb_nickname`
+            FROM `{$tn}`
+            LEFT JOIN `{$mn}` ON `{$mn}`.`mb_uid` COLLATE {$collate} = `{$tn}`.`notice_mb_uid` COLLATE {$collate}
+            WHERE `{$tn}`.`notice_type` = ?
+            AND `{$tn}`.`notice_state_active` = ?
+            AND `{$tn}`.`notice_state_delete` = ?
+            ORDER BY `{$tn}`.`notice_fid` DESC
+            LIMIT 1";
+
+        $row = $this->db->query($sql, [
+            self::TYPE_NOTICE,
+            (int) STATE_ACTIVE,
+            (int) STATE_DISABLE,
+        ])->getFirstRow('object');
+
+        return $row ?: null;
     }
 
     public function getBoardById($fid)
@@ -306,14 +343,12 @@ class Notice_Model extends Model
 
     public function searchCusCount($reqData)
     {
-        $joinTable = 'member';
-
         $where = "notice_type = '" . NOTICE_CUSTOMER . "' ";
         $where .= "AND notice_client_delete = '" . STATE_DISABLE . "' ";
         if (array_key_exists('send_uid', $reqData)) {
             $where .= 'AND notice_mb_uid = ' . $this->db->escape($reqData['send_uid']) . ' ';
         }
-        $data = $this->join($joinTable, $joinTable . '.mb_uid = ' . $this->table . '.notice_mb_uid', 'left')
+        $data = $this->join($this->memberPrefixed(), $this->memberNoticeJoinCondition(), 'left', false)
             ->where($where, null, false)
             ->findAll();
 
@@ -324,8 +359,6 @@ class Notice_Model extends Model
     {
         $getFields = ['notice_fid', 'notice_type', 'notice_title', 'notice_content', 'notice_answer', 'notice_mb_uid',
             'notice_time_create', 'notice_state_active', 'notice_client_delete', 'mb_grade', 'mb_nickname', ];
-
-        $joinTable = 'member';
 
         $where = "notice_type = '" . NOTICE_CUSTOMER . "' ";
         $where .= "AND notice_client_delete = '" . STATE_DISABLE . "' ";
@@ -339,7 +372,7 @@ class Notice_Model extends Model
         }
 
         return $this->select($getFields)
-            ->join($joinTable, $joinTable . '.mb_uid = ' . $this->table . '.notice_mb_uid', 'left')
+            ->join($this->memberPrefixed(), $this->memberNoticeJoinCondition(), 'left', false)
             ->where($where, null, false)
             ->orderBy('notice_fid', 'DESC')
             ->findAll($count, $count * ($page - 1));
@@ -347,15 +380,13 @@ class Notice_Model extends Model
 
     public function searchMsgCount($reqData)
     {
-        $joinTable = 'member';
-
         $where = " (notice_type = '" . NOTICE_MSG_ALL . "' OR notice_type = '" . NOTICE_MSG . "') ";
         $where .= "AND notice_client_delete = '" . STATE_DISABLE . "' ";
         $where .= "AND notice_state_active = '" . STATE_ACTIVE . "' ";
         if (array_key_exists('send_uid', $reqData)) {
             $where .= 'AND notice_mb_uid = ' . $this->db->escape($reqData['send_uid']) . ' ';
         }
-        $data = $this->join($joinTable, $joinTable . '.mb_uid = ' . $this->table . '.notice_mb_uid', 'left')
+        $data = $this->join($this->memberPrefixed(), $this->memberNoticeJoinCondition(), 'left', false)
             ->where($where, null, false)
             ->findAll();
 
@@ -364,8 +395,6 @@ class Notice_Model extends Model
 
     public function searchMsgList($reqData)
     {
-        $joinTable = 'member';
-
         $where = " (notice_type = '" . NOTICE_MSG_ALL . "' OR notice_type = '" . NOTICE_MSG . "') ";
         $where .= "AND notice_client_delete = '" . STATE_DISABLE . "' ";
         $where .= "AND notice_state_active = '" . STATE_ACTIVE . "' ";
@@ -378,7 +407,7 @@ class Notice_Model extends Model
             return null;
         }
 
-        return $this->join($joinTable, $joinTable . '.mb_uid = ' . $this->table . '.notice_mb_uid', 'left')
+        return $this->join($this->memberPrefixed(), $this->memberNoticeJoinCondition(), 'left', false)
             ->where($where, null, false)
             ->orderBy('notice_fid', 'DESC')
             ->findAll($count, $count * ($page - 1));

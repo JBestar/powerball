@@ -30,8 +30,6 @@ $buildCcUrl = static function (array $extra) use ($currentId, $page, $sfl, $stx)
 	<link rel="stylesheet" href="<?= esc($local) ?>/css/bbs.css?v=<?= esc((string) $cssVer) ?>" type="text/css" />
 	<style>
 		/* common.css의 #box-ct 범위 밖에서도 선배님 레이아웃에 가깝게 */
-		.inner-right-outer { float: left; width: 830px; }
-		.inner-right-inner { float: left; width: 830px; }
 		#bo_v .viewinfo { position: relative; }
 		a.btn_b01 {
 			display: inline-block;

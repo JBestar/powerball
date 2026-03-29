@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `board_photo` (
   `mb_uid` int(10) unsigned DEFAULT NULL COMMENT '등록자 회원번호',
   PRIMARY KEY (`id`),
   KEY `idx_created` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='포토 게시 목록';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='포토 게시 목록';
 
 -- 예시 데이터 (이미지 파일을 public/uploads/photos/ 에 넣고 file_path만 맞추면 됨)
 -- INSERT INTO `board_photo` (`wr_id`, `title`, `file_path`, `created_at`) VALUES

@@ -54,8 +54,8 @@ $is_humor_admin = $is_humor_admin ?? false;
                         <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
                     </span>
                     <span style="flex:1 1 0; min-width:0; overflow:hidden; white-space:nowrap;">
-                        <a href="#"
-                           onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
+                        <a href="<?= esc(site_furl('frame/communityBoard?bo_table=humor&wr_id=' . (int) ($row->id ?? 0))) ?>"
+                           target="mainFrame"
                            title="<?= esc($row->title) ?>"
                            style="display:block; width:100%; max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; vertical-align:middle;">
                            <?= esc($humorTitle) ?>
@@ -95,8 +95,8 @@ $is_humor_admin = $is_humor_admin ?? false;
                         <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
                     </span>
                     <span style="flex:1 1 0; min-width:0; overflow:hidden; white-space:nowrap;">
-                        <a href="#"
-                           onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
+                        <a href="<?= esc(site_furl('frame/communityBoard?bo_table=humor&wr_id=' . (int) ($row->id ?? 0))) ?>"
+                           target="mainFrame"
                            title="<?= esc($row->title) ?>"
                            style="display:block; width:100%; max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; vertical-align:middle;">
                            <?= esc($humorTitle) ?>
@@ -127,7 +127,11 @@ $is_humor_admin = $is_humor_admin ?? false;
     <div class="listBox" id="list_photo" style="display:none;">
         <ul class="list"><?php foreach ($list_photo as $row) :
             $imgSrc = !empty($row->file_path) ? site_furl('uploads/photos/'.$row->file_path) : site_furl('images/transparent.png');
-        ?><li class="photo" style="vertical-align:top; line-height:0;"><img src="<?= esc($imgSrc) ?>" class="image" alt="<?= esc($row->title) ?>"></li><?php endforeach; ?></ul>
+        ?><li class="photo" style="vertical-align:top; line-height:0;">
+            <a href="<?= esc(site_furl('frame/communityBoard?bo_table=photo&wr_id=' . (int) ($row->id ?? 0))) ?>" target="mainFrame" title="<?= esc($row->title) ?>">
+                <img src="<?= esc($imgSrc) ?>" class="image" alt="<?= esc($row->title) ?>">
+            </a>
+        </li><?php endforeach; ?></ul>
     </div>
     <?php
     $list = $list_pick;
@@ -142,7 +146,7 @@ $is_humor_admin = $is_humor_admin ?? false;
                 <?php foreach ($leftList as $row) : ?>
                 <li>
                     <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
+                    <a href="<?= esc(site_furl('frame/communityBoard?bo_table=pick&wr_id=' . (int) ($row->wr_id ?? 0))) ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
                 <?php endforeach; ?>
@@ -154,7 +158,7 @@ $is_humor_admin = $is_humor_admin ?? false;
                 <?php foreach ($rightList as $row) : ?>
                 <li>
                     <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
+                    <a href="<?= esc(site_furl('frame/communityBoard?bo_table=pick&wr_id=' . (int) ($row->wr_id ?? 0))) ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
                 <?php endforeach; ?>
@@ -174,7 +178,7 @@ $is_humor_admin = $is_humor_admin ?? false;
                 <?php foreach ($leftList as $row) : ?>
                 <li>
                     <img src="<?php echo site_furl('/images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
+                    <a href="<?= esc(site_furl('frame/communityBoard?bo_table=free&wr_id=' . (int) ($row->id ?? 0))) ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
                 <?php endforeach; ?>
@@ -186,7 +190,7 @@ $is_humor_admin = $is_humor_admin ?? false;
                 <?php foreach ($rightList as $row) : ?>
                 <li>
                     <img src="<?php echo site_furl('/images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
+                    <a href="<?= esc(site_furl('frame/communityBoard?bo_table=free&wr_id=' . (int) ($row->id ?? 0))) ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
                 <?php endforeach; ?>

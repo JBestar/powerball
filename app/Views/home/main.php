@@ -147,8 +147,8 @@
                         <a href="#" onclick="<?php echo is_login(false) ? 'location.href=\'/pick\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">픽</a>
                     </li>
 
-                    <!-- 3. 커뮤니티 -->
-                    <li><a href="/bbs/board.php?bo_table=humor" target="mainFrame">커뮤니티</a></li>
+                    <!-- 3. 커뮤니티 (활성 시 a.on → #topArea .gnb ul li a.on 배경 #0d568c) -->
+                    <li><a id="gnbCommunity" href="<?= esc(site_furl('frame/communityBoard?bo_table=humor')) ?>" target="mainFrame">커뮤니티</a></li>
 
                     <!-- 4. 마켓 (로그인 체크) -->
                     <li>
@@ -500,14 +500,42 @@
                 }
             });
             $("#bestPicksterList .content").on("click", function(){ ajaxBestPickster(); });
-            // boardBox 탭 전환 (유머/포토/분석픽공유/자유)
-            $(".boardBox ul.menu li").on("click", function(){
+            // 상단 GNB: mainFrame 을 여는 링크 중 하나만 .on (배경 #0d568c — common.css .gnb a.on)
+            $("#topArea .gnb a[target=\"mainFrame\"]").on("click", function() {
+                $("#topArea .gnb a").removeClass("on");
+                $(this).addClass("on");
+            });
+            // boardBox 탭 전환 (유머/포토/분석픽공유/자유) — 유머/포토 선택 시 mainFrame에 해당 게시판 로드 + GNB 커뮤니티 활성
+            var frameCommunityHumor = "<?= esc(site_furl('frame/communityBoard?bo_table=humor'), 'js') ?>";
+            var frameCommunityPhoto = "<?= esc(site_furl('frame/communityBoard?bo_table=photo'), 'js') ?>";
+            var frameCommunityPick = "<?= esc(site_furl('frame/communityBoard?bo_table=pick'), 'js') ?>";
+            var frameCommunityFree = "<?= esc(site_furl('frame/communityBoard?bo_table=free'), 'js') ?>";
+            $(".boardBox ul.menu li").on("click", function(e){
+                if ($(e.target).closest("a").length) return;
                 var rel = $(this).attr("rel");
                 if (!rel) return;
                 $(".boardBox ul.menu li").removeClass("on");
                 $(this).addClass("on");
                 $(".boardBox .listBox").hide();
                 $("#list_" + rel).show().css("display", "block");
+                var $mf = $("#mainFrame");
+                if ($mf.length && rel === "humor") {
+                    $mf.attr("src", frameCommunityHumor);
+                    $("#topArea .gnb a").removeClass("on");
+                    $("#gnbCommunity").addClass("on");
+                } else if ($mf.length && rel === "photo") {
+                    $mf.attr("src", frameCommunityPhoto);
+                    $("#topArea .gnb a").removeClass("on");
+                    $("#gnbCommunity").addClass("on");
+                } else if ($mf.length && rel === "pick") {
+                    $mf.attr("src", frameCommunityPick);
+                    $("#topArea .gnb a").removeClass("on");
+                    $("#gnbCommunity").addClass("on");
+                } else if ($mf.length && rel === "free") {
+                    $mf.attr("src", frameCommunityFree);
+                    $("#topArea .gnb a").removeClass("on");
+                    $("#gnbCommunity").addClass("on");
+                }
             });
         });
         // 미니뷰 높이 제어 (선배님 스크립트)

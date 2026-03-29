@@ -50,12 +50,17 @@ $humorId = !empty($post) ? (int) ($post->id ?? 0) : 0;
 </head>
 <body>
 	<div class="wrap">
-		<?php if (!empty($post)): ?>
+		<?php if (!empty($post)):
+		    $humorRegNick = trim((string) ($post->mb_nickname ?? ''));
+		    if ($humorRegNick === '') {
+		        $humorRegNick = (string) ($post->mb_uid ?? '');
+		    }
+		    ?>
 			<div class="humorPanel">
 				<div class="humorPanel-title"><?= esc($post->title ?? '') ?></div>
 				<div class="humorPanel-body"><?= esc($post->content ?? '') ?></div>
 			</div>
-			<div class="meta">등록자: <?= esc($post->mb_uid ?? '') ?> / id: <?= $humorId ?></div>
+			<div class="meta">등록자: <?= esc($humorRegNick) ?> / id: <?= $humorId ?></div>
 			<div class="humorBtnRow">
 				<?php if ($is_humor_admin && $humorId > 0): ?>
 					<a class="btn btnHumorEdit" href="#" onclick="window.open('<?= site_furl('/?view=humorEdit&id=' . $humorId) ?>','humorEdit','width=600,height=650'); return false;">수정</a>

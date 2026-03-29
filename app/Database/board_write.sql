@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `board_write` (
   PRIMARY KEY (`id`),
   KEY `idx_bo_table` (`bo_table`),
   KEY `idx_created` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='메인 리스트박스 게시 목록';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='메인 리스트박스 게시 목록';
 
 -- 예시 데이터 (선택)
 INSERT INTO `board_write` (`bo_table`, `wr_id`, `title`, `comment_count`, `created_at`) VALUES

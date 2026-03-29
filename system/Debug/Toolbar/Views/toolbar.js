@@ -23,7 +23,9 @@ var ciDebugBar = {
 
 		// Allows to highlight the row of the current history request
 		var btn = document.querySelector('button[data-time="' + localStorage.getItem('debugbar-time') + '"]');
-		ciDebugBar.addClass(btn.parentNode.parentNode, 'current');
+		if (btn && btn.parentNode && btn.parentNode.parentNode) {
+			ciDebugBar.addClass(btn.parentNode.parentNode, 'current');
+		}
 
 		historyLoad = document.getElementsByClassName('ci-history-load');
 

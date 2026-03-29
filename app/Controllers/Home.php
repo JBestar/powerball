@@ -7,6 +7,8 @@ use App\Models\Domain_Model;
 use App\Models\BoardWrite_Model;
 use App\Models\BoardPhoto_Model;
 use App\Models\HumorPost_Model;
+use App\Models\PickPost_Model;
+use App\Models\FreePost_Model;
 
 class Home extends BaseController
 {
@@ -14,6 +16,45 @@ class Home extends BaseController
     {
         $this->session->setFlashdata('message', $message);
         return $this->response->redirect($url);
+    }
+
+    /**
+     * 유머·자유·분석픽 등 (mb_uid 가 로그인 아이디 문자열) — 등록/수정 시 항상 쌍으로 저장
+     *
+     * @return array{mb_uid:string, mb_nickname:string}|null
+     */
+    protected function communityAuthorUidNick(object $objMember): ?array
+    {
+        $mb_uid = trim((string) ($objMember->mb_uid ?? ''));
+        if ($mb_uid === '') {
+            return null;
+        }
+        $mb_nickname = trim((string) ($objMember->mb_nickname ?? ''));
+        if ($mb_nickname === '') {
+            $mb_nickname = $mb_uid;
+        }
+
+        return ['mb_uid' => $mb_uid, 'mb_nickname' => $mb_nickname];
+    }
+
+    /**
+     * 포토(board_photo): mb_uid=회원번호(fid), mb_nickname=닉 → 없으면 로그인아이디 → 없으면 #fid
+     *
+     * @return array{mb_uid:int, mb_nickname:string}|null
+     */
+    protected function communityPhotoAuthorFields(object $objMember): ?array
+    {
+        $fid = (int) ($objMember->mb_fid ?? 0);
+        if ($fid <= 0) {
+            return null;
+        }
+        $loginUid = trim((string) ($objMember->mb_uid ?? ''));
+        $mb_nickname = trim((string) ($objMember->mb_nickname ?? ''));
+        if ($mb_nickname === '') {
+            $mb_nickname = $loginUid !== '' ? $loginUid : ('#' . $fid);
+        }
+
+        return ['mb_uid' => $fid, 'mb_nickname' => $mb_nickname];
     }
 
     public function index()
@@ -218,13 +259,14 @@ class Home extends BaseController
                 if (mb_strlen($title) > 200) $title = mb_substr($title, 0, 200);
                 if (mb_strlen($content) > 5000) $content = mb_substr($content, 0, 5000);
 
-                $mb_uid = (string) ($objMember->mb_uid ?? '');
-                if ($mb_uid === '') {
+                $auth = $this->communityAuthorUidNick($objMember);
+                if ($auth === null) {
                     return $this->redirectWithMessage(site_furl('/?view=humorRegister'), '등록자 정보가 없습니다.');
                 }
 
                 $data = [
-                    'mb_uid' => $mb_uid,
+                    'mb_uid' => $auth['mb_uid'],
+                    'mb_nickname' => $auth['mb_nickname'],
                     'title' => $title,
                     'content' => $content,
                     'comment_count' => 0,
@@ -439,12 +481,21 @@ class Home extends BaseController
                 if (mb_strlen($title) > 200) $title = mb_substr($title, 0, 200);
                 if (mb_strlen($content) > 5000) $content = mb_substr($content, 0, 5000);
 
+                $mbUidKeep = (string) ($post->mb_uid ?? ($objMember->mb_uid ?? ''));
+                $mbNickKeep = trim((string) ($post->mb_nickname ?? ''));
+                if ($mbNickKeep === '') {
+                    $auth = $this->communityAuthorUidNick($objMember);
+                    $mbNickKeep = $auth['mb_nickname'] ?? $mbUidKeep;
+                }
+                if ($mbNickKeep === '') {
+                    $mbNickKeep = $mbUidKeep;
+                }
                 $ok = $humorModel->updateById($id, [
                     'title' => $title,
                     'content' => $content,
-                    // 작성자/created_at은 유지
                     'comment_count' => (int) ($post->comment_count ?? 0),
-                    'mb_uid' => (string) ($post->mb_uid ?? ($objMember->mb_uid ?? '')),
+                    'mb_uid' => $mbUidKeep,
+                    'mb_nickname' => $mbNickKeep,
                     'created_at' => (string) ($post->created_at ?? date('Y-m-d H:i:s')),
                 ]);
 
@@ -475,6 +526,159 @@ class Home extends BaseController
             $humorModel->deleteById($id);
             return $this->response->redirect(site_furl('/'));
         }
+
+        // 자유게시판 등록 (로그인 회원)
+        else if ($this->request->getGet('view') === 'freeRegister') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember) {
+                return $this->redirectWithMessage(site_furl('/'), '회원 정보를 확인할 수 없습니다.');
+            }
+
+            $freeModel = new FreePost_Model();
+            $freeModel->ensureTable();
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=freeRegister'), '제목과 내용을 입력해주세요.');
+                }
+
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 50000) {
+                    $content = mb_substr($content, 0, 50000);
+                }
+
+                $auth = $this->communityAuthorUidNick($objMember);
+                if ($auth === null) {
+                    return $this->redirectWithMessage(site_furl('/?view=freeRegister'), '등록자 정보가 없습니다.');
+                }
+
+                $now = date('Y-m-d H:i:s');
+                $data = [
+                    'mb_uid' => $auth['mb_uid'],
+                    'mb_nickname' => $auth['mb_nickname'],
+                    'title' => $title,
+                    'content' => $content,
+                    'comment_count' => 0,
+                    'wr_hit' => 0,
+                    'wr_good' => 0,
+                    'is_notice' => 0,
+                    'created_at' => $now,
+                ];
+                $freeModel->insert($data);
+                $newId = (int) $freeModel->getInsertID();
+
+                return $this->response->redirect(site_furl('frame/communityBoard?bo_table=free&wr_id=' . $newId));
+            }
+
+            return view('home/freeRegister');
+        }
+
+        // 자유게시판 수정 (관리자)
+        else if ($this->request->getGet('view') === 'freeEdit') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 수정 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $freeModel = new FreePost_Model();
+            $freeModel->ensureTable();
+            $post = $freeModel->find($id);
+            if (!$post) {
+                return $this->redirectWithMessage(site_furl('/'), '글을 찾을 수 없습니다.');
+            }
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=freeEdit&id=' . $id), '제목/내용을 입력하세요.');
+                }
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 50000) {
+                    $content = mb_substr($content, 0, 50000);
+                }
+
+                $mbUidKeep = (string) ($post->mb_uid ?? ($objMember->mb_uid ?? ''));
+                $mbNickKeep = trim((string) ($post->mb_nickname ?? ''));
+                if ($mbNickKeep === '') {
+                    $auth = $this->communityAuthorUidNick($objMember);
+                    $mbNickKeep = $auth['mb_nickname'] ?? $mbUidKeep;
+                }
+                if ($mbNickKeep === '') {
+                    $mbNickKeep = $mbUidKeep;
+                }
+
+                $freeModel->update($id, [
+                    'title' => $title,
+                    'content' => $content,
+                    'mb_uid' => $mbUidKeep,
+                    'mb_nickname' => $mbNickKeep,
+                    'comment_count' => (int) ($post->comment_count ?? 0),
+                    'wr_hit' => (int) ($post->wr_hit ?? 0),
+                    'wr_good' => (int) ($post->wr_good ?? 0),
+                    'is_notice' => (int) ($post->is_notice ?? 0),
+                    'created_at' => (string) ($post->created_at ?? date('Y-m-d H:i:s')),
+                ]);
+
+                return $this->response->redirect(site_furl('frame/communityBoard?bo_table=free&wr_id=' . $id));
+            }
+
+            return view('home/freeEdit', ['post' => $post]);
+        }
+
+        // 자유게시판 삭제 (관리자)
+        else if ($this->request->getGet('view') === 'freeDelete') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 삭제 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $freeModel = new FreePost_Model();
+            $freeModel->ensureTable();
+            $freeModel->delete($id);
+
+            return $this->response->redirect(site_furl('frame/communityBoard?bo_table=free'));
+        }
+
         // 2-1-5. 채팅방
         else if ($this->request->getGet('view') === 'chatRoom') {
             return $this->chat();
@@ -543,12 +747,17 @@ class Home extends BaseController
                     return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '이미지 변환에 실패했습니다.');
                 }
 
+                $photoAuth = $this->communityPhotoAuthorFields($objMember);
+                if ($photoAuth === null) {
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '회원 번호(mb_fid)를 확인할 수 없습니다.');
+                }
                 $photoModel->insert([
                     'wr_id' => 0,
                     'title' => $title,
                     'file_path' => $newName,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'mb_uid' => (int)($objMember->mb_fid ?? 0),
+                    'mb_uid' => $photoAuth['mb_uid'],
+                    'mb_nickname' => $photoAuth['mb_nickname'],
                 ]);
                 $newId = (int)$photoModel->getInsertID();
                 if ($newId > 0) {
@@ -652,9 +861,10 @@ class Home extends BaseController
             // 리스트박스용 게시 목록 (유머/분석픽공유/자유) - DB 조회
             $boardWriteModel = new BoardWrite_Model();
             $humorModel = new HumorPost_Model();
+            $freePostModel = new FreePost_Model();
             $list_humor = $humorModel->getLatest(12);
             $list_pick  = $boardWriteModel->getListForMain('pick', 10);
-            $list_free  = $boardWriteModel->getListForMain('free', 10);
+            $list_free  = $freePostModel->getLatestForMain(10);
             $boardPhotoModel = new BoardPhoto_Model();
             $list_photo = $boardPhotoModel->getListForMain(14);
 
@@ -2091,6 +2301,464 @@ class Home extends BaseController
         ]);
 
         $html = view('home/customer_center_frame', $viewData);
+        $this->response->setBody($html);
+        $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+        $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+        return $this->response;
+    }
+
+    /**
+     * iframe(mainFrame) 전용 — 선배님 커뮤니티 (유머: humor_post / 포토: board_photo + photoList)
+     * 그 외 bo_table 은 기존 /bbs/board.php 로 이동
+     */
+    public function frameCommunityBoard()
+    {
+        $this->setLanguage();
+        $headInfo = $this->getSiteConf();
+        $local = rtrim(site_furl(''), '/');
+        $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time();
+
+        $boTable = trim((string) $this->request->getGet('bo_table'));
+        if ($boTable === '') {
+            $boTable = 'humor';
+        }
+
+        if (! in_array($boTable, ['humor', 'photo', 'pick', 'free'], true)) {
+            return $this->response->redirect('/bbs/board.php?' . http_build_query(['bo_table' => $boTable]));
+        }
+
+        $page = max(1, (int) $this->request->getGet('page'));
+        $perPage = $boTable === 'photo' ? 24 : 10;
+        $sfl = (string) $this->request->getGet('sfl');
+        if ($sfl === '') {
+            $sfl = 'wr_subject';
+        }
+        $stx = trim((string) $this->request->getGet('stx'));
+        $sst = (string) $this->request->getGet('sst');
+        if ($sst === '') {
+            $sst = 'wr_datetime';
+        }
+        $sod = strtolower((string) $this->request->getGet('sod'));
+        if ($sod !== 'asc' && $sod !== 'desc') {
+            $sod = 'desc';
+        }
+        $sop = (string) $this->request->getGet('sop');
+        if ($sop === '') {
+            $sop = 'and';
+        }
+
+        if ($boTable === 'photo') {
+            $photoModel = new BoardPhoto_Model();
+            $photoModel->ensureTable();
+            $total = $photoModel->countListFiltered($sfl, $stx);
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+            $rows = $photoModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
+
+            $wrId = (int) $this->request->getGet('wr_id');
+            if ($wrId <= 0) {
+                $wrId = (int) $this->request->getGet('id');
+            }
+            $readPost = null;
+            $photoNewerId = null;
+            $photoOlderId = null;
+            $readAuthorNick = '';
+            $readAuthorGrade = 2;
+            if ($wrId > 0) {
+                $readPost = $photoModel->find($wrId);
+                if ($readPost) {
+                    $neighbors = $photoModel->getNeighborIds($wrId);
+                    $photoNewerId = $neighbors['newer_id'];
+                    $photoOlderId = $neighbors['older_id'];
+                    $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                    $fid = (int) ($readPost->mb_uid ?? 0);
+                    try {
+                        $author = $fid > 0 ? $this->modelMember->getByFid($fid) : null;
+                        if ($author) {
+                            if ($readAuthorNick === '') {
+                                $readAuthorNick = (string) ($author->mb_nickname ?? $author->mb_uid ?? '');
+                            }
+                            $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                        }
+                    } catch (\Throwable $e) {
+                    }
+                    if ($readAuthorNick === '') {
+                        $readAuthorNick = $fid > 0 ? ('#' . $fid) : '—';
+                    }
+                    if ($readAuthorGrade < 0) {
+                        $readAuthorGrade = 0;
+                    }
+                    if ($readAuthorGrade > 20) {
+                        $readAuthorGrade = 20;
+                    }
+                } else {
+                    $wrId = 0;
+                }
+            }
+
+            $loginUid = '';
+            $isPhotoAdmin = false;
+            try {
+                if (is_login(false)) {
+                    $loginUid = (string) ($this->session->user_id ?? '');
+                    $adm = $loginUid !== '' ? $this->modelMember->getByUid($loginUid) : null;
+                    $isPhotoAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 포토게시판 ' . $page . ' 페이지';
+            if ($readPost) {
+                $siteTitle = ($readPost->title ?? '포토') . ' > 포토게시판 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+            }
+
+            $viewData = array_merge($headInfo, [
+                'site_title' => $siteTitle,
+                'local' => $local,
+                'cssVer' => $cssVer,
+                'bo_table' => $boTable,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => $totalPages,
+                'rows' => $rows,
+                'sfl' => $sfl,
+                'stx' => $stx,
+                'sst' => $sst,
+                'sod' => $sod,
+                'sop' => $sop,
+                'isLogin' => is_login(false),
+                'login_uid' => $loginUid,
+                'is_photo_admin' => $isPhotoAdmin,
+                'wr_id' => $wrId,
+                'read_post' => $readPost,
+                'photo_newer_id' => $photoNewerId,
+                'photo_older_id' => $photoOlderId,
+                'read_author_nick' => $readAuthorNick,
+                'read_author_grade' => $readAuthorGrade,
+            ]);
+
+            $html = view('home/photo_board_frame', $viewData);
+            $this->response->setBody($html);
+            $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+            $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+            return $this->response;
+        }
+
+        if ($boTable === 'pick') {
+            $pickModel = new PickPost_Model();
+            $pickModel->ensureTable();
+            $total = $pickModel->countListFiltered($sfl, $stx);
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+            $rows = $pickModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
+            $pickNotice = ($page === 1) ? $pickModel->getNotice() : null;
+
+            $wrId = (int) $this->request->getGet('wr_id');
+            if ($wrId <= 0) {
+                $wrId = (int) $this->request->getGet('id');
+            }
+            $readPost = null;
+            $pickNewerId = null;
+            $pickOlderId = null;
+            $readAuthorNick = '';
+            $readAuthorGrade = 2;
+            if ($wrId > 0) {
+                $readPost = $pickModel->find($wrId);
+                if ($readPost) {
+                    $neighbors = $pickModel->getNeighborIds($wrId);
+                    $pickNewerId = $neighbors['newer_id'];
+                    $pickOlderId = $neighbors['older_id'];
+                    $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                    try {
+                        $author = $this->modelMember->getByUid((string) ($readPost->mb_uid ?? ''));
+                        if ($author) {
+                            if ($readAuthorNick === '') {
+                                $readAuthorNick = (string) ($author->mb_nickname ?? $readPost->mb_uid ?? '');
+                            }
+                            $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                        } elseif ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    } catch (\Throwable $e) {
+                        if ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    }
+                    if ($readAuthorGrade < 0) {
+                        $readAuthorGrade = 0;
+                    }
+                    if ($readAuthorGrade > 20) {
+                        $readAuthorGrade = 20;
+                    }
+                } else {
+                    $wrId = 0;
+                }
+            }
+
+            $loginUid = '';
+            $isPickAdmin = false;
+            try {
+                if (is_login(false)) {
+                    $loginUid = (string) ($this->session->user_id ?? '');
+                    $adm = $loginUid !== '' ? $this->modelMember->getByUid($loginUid) : null;
+                    $isPickAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 분석픽공유 ' . $page . ' 페이지';
+            if ($readPost) {
+                $siteTitle = ($readPost->title ?? '분석픽') . ' > 분석픽공유 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+            }
+
+            $viewData = array_merge($headInfo, [
+                'site_title' => $siteTitle,
+                'local' => $local,
+                'cssVer' => $cssVer,
+                'bo_table' => $boTable,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => $totalPages,
+                'rows' => $rows,
+                'sfl' => $sfl,
+                'stx' => $stx,
+                'sst' => $sst,
+                'sod' => $sod,
+                'sop' => $sop,
+                'isLogin' => is_login(false),
+                'login_uid' => $loginUid,
+                'is_pick_admin' => $isPickAdmin,
+                'wr_id' => $wrId,
+                'read_post' => $readPost,
+                'pick_newer_id' => $pickNewerId,
+                'pick_older_id' => $pickOlderId,
+                'read_author_nick' => $readAuthorNick,
+                'read_author_grade' => $readAuthorGrade,
+                'pick_notice' => $pickNotice,
+            ]);
+
+            $html = view('home/pick_board_frame', $viewData);
+            $this->response->setBody($html);
+            $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+            $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+            return $this->response;
+        }
+
+        if ($boTable === 'free') {
+            $freeModel = new FreePost_Model();
+            $freeModel->ensureTable();
+            $total = $freeModel->countListFiltered($sfl, $stx);
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+            $rows = $freeModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
+            $freeNotices = ($page === 1) ? $freeModel->getNotices() : [];
+
+            $wrId = (int) $this->request->getGet('wr_id');
+            if ($wrId <= 0) {
+                $wrId = (int) $this->request->getGet('id');
+            }
+            $readPost = null;
+            $freeNewerId = null;
+            $freeOlderId = null;
+            $readAuthorNick = '';
+            $readAuthorGrade = 2;
+            if ($wrId > 0) {
+                $readPost = $freeModel->find($wrId);
+                if ($readPost) {
+                    $neighbors = $freeModel->getNeighborIds($wrId);
+                    $freeNewerId = $neighbors['newer_id'];
+                    $freeOlderId = $neighbors['older_id'];
+                    $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                    try {
+                        $author = $this->modelMember->getByUid((string) ($readPost->mb_uid ?? ''));
+                        if ($author) {
+                            if ($readAuthorNick === '') {
+                                $readAuthorNick = (string) ($author->mb_nickname ?? $readPost->mb_uid ?? '');
+                            }
+                            $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                        } elseif ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    } catch (\Throwable $e) {
+                        if ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    }
+                    if ($readAuthorGrade < 0) {
+                        $readAuthorGrade = 0;
+                    }
+                    if ($readAuthorGrade > 20) {
+                        $readAuthorGrade = 20;
+                    }
+                } else {
+                    $wrId = 0;
+                }
+            }
+
+            $loginUid = '';
+            $isFreeAdmin = false;
+            try {
+                if (is_login(false)) {
+                    $loginUid = (string) ($this->session->user_id ?? '');
+                    $adm = $loginUid !== '' ? $this->modelMember->getByUid($loginUid) : null;
+                    $isFreeAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 자유게시판 ' . $page . ' 페이지';
+            if ($readPost) {
+                $siteTitle = ($readPost->title ?? '자유') . ' > 자유게시판 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+            }
+
+            $viewData = array_merge($headInfo, [
+                'site_title' => $siteTitle,
+                'local' => $local,
+                'cssVer' => $cssVer,
+                'bo_table' => $boTable,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => $totalPages,
+                'rows' => $rows,
+                'sfl' => $sfl,
+                'stx' => $stx,
+                'sst' => $sst,
+                'sod' => $sod,
+                'sop' => $sop,
+                'isLogin' => is_login(false),
+                'login_uid' => $loginUid,
+                'is_free_admin' => $isFreeAdmin,
+                'wr_id' => $wrId,
+                'read_post' => $readPost,
+                'free_newer_id' => $freeNewerId,
+                'free_older_id' => $freeOlderId,
+                'read_author_nick' => $readAuthorNick,
+                'read_author_grade' => $readAuthorGrade,
+                'free_notices' => $freeNotices,
+            ]);
+
+            $html = view('home/free_board_frame', $viewData);
+            $this->response->setBody($html);
+            $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+            $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+            return $this->response;
+        }
+
+        $latestNotice = null;
+        try {
+            $latestNotice = $this->modelNotice->getLatestNoticeOnly();
+        } catch (\Throwable $e) {
+            $latestNotice = null;
+        }
+
+        $humorModel = new HumorPost_Model();
+        $humorModel->ensureTable();
+        $total = $humorModel->countListFiltered($sfl, $stx);
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+        $rows = $humorModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
+
+        $wrId = (int) $this->request->getGet('wr_id');
+        if ($wrId <= 0) {
+            $wrId = (int) $this->request->getGet('id');
+        }
+        $readPost = null;
+        $humorNewerId = null;
+        $humorOlderId = null;
+        $readAuthorNick = '';
+        $readAuthorGrade = 2;
+        if ($wrId > 0) {
+            $readPost = $humorModel->find($wrId);
+            if ($readPost) {
+                $neighbors = $humorModel->getNeighborIds($wrId);
+                $humorNewerId = $neighbors['newer_id'];
+                $humorOlderId = $neighbors['older_id'];
+                $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                try {
+                    $author = $this->modelMember->getByUid((string) ($readPost->mb_uid ?? ''));
+                    if ($author) {
+                        if ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($author->mb_nickname ?? $readPost->mb_uid ?? '');
+                        }
+                        $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                    } elseif ($readAuthorNick === '') {
+                        $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                    }
+                } catch (\Throwable $e) {
+                    if ($readAuthorNick === '') {
+                        $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                    }
+                }
+                if ($readAuthorGrade < 0) {
+                    $readAuthorGrade = 0;
+                }
+                if ($readAuthorGrade > 20) {
+                    $readAuthorGrade = 20;
+                }
+            } else {
+                $wrId = 0;
+            }
+        }
+
+        $loginUid = '';
+        $isHumorAdmin = false;
+        try {
+            if (is_login(false)) {
+                $loginUid = (string) ($this->session->user_id ?? '');
+                $adm = $loginUid !== '' ? $this->modelMember->getByUid($loginUid) : null;
+                $isHumorAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+            }
+        } catch (\Throwable $e) {
+        }
+
+        $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 유머게시판';
+        if ($readPost) {
+            $siteTitle = ($readPost->title ?? '유머') . ' > 유머게시판 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+        }
+
+        $viewData = array_merge($headInfo, [
+            'site_title' => $siteTitle,
+            'local' => $local,
+            'cssVer' => $cssVer,
+            'bo_table' => $boTable,
+            'page' => $page,
+            'perPage' => $perPage,
+            'total' => $total,
+            'totalPages' => $totalPages,
+            'rows' => $rows,
+            'sfl' => $sfl,
+            'stx' => $stx,
+            'sst' => $sst,
+            'sod' => $sod,
+            'sop' => $sop,
+            'isLogin' => is_login(false),
+            'login_uid' => $loginUid,
+            'is_humor_admin' => $isHumorAdmin,
+            'latest_notice' => $latestNotice,
+            'wr_id' => $wrId,
+            'read_post' => $readPost,
+            'humor_newer_id' => $humorNewerId,
+            'humor_older_id' => $humorOlderId,
+            'read_author_nick' => $readAuthorNick,
+            'read_author_grade' => $readAuthorGrade,
+        ]);
+
+        $html = view('home/community_board_frame', $viewData);
         $this->response->setBody($html);
         $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
         $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');

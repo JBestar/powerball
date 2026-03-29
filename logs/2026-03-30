@@ -1,0 +1,367 @@
+[0:00:49] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:00:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:49] [index] main dashboard is_login(false)=0
+[0:00:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:50] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:00:50] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:00:50] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:50] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:00:55] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:00:55] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:04] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:04] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:13] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:01:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:01:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [index] main dashboard is_login(false)=0
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:30] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:07:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:38] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:07:38] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:17] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:17] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:29] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:29] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:35] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:35] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:47] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:47] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:09:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:03] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:03] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:05] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:05] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:10:06] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:06] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:10:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:11:00] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:11:00] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:11:00] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:11:00] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [index] main dashboard is_login(false)=0
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:21] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:17:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:45] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:17:45] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:45] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:17:45] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [index] main dashboard is_login(false)=0
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:31] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:27:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:27:34] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:28:07] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:28:07] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:28:19] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:28:19] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [index] main dashboard is_login(false)=0
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:31:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:31:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:35] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:35] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:38] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:38] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:48] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:48] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:32:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [index] main dashboard is_login(false)=0
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:42:46] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:43:19] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:19] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:20] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:20] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:28] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:47] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:43:47] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:45:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:45:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:33] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:40] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:47:40] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:40] [index] main dashboard is_login(false)=0
+[0:47:41] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:41] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[0:47:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:56] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:47:56] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:48:00] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[0:48:00] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [index] main dashboard is_login(false)=0
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:03:27] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:03:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:03:30] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [index] main dashboard is_login(false)=0
+[1:19:16] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:16] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:17] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:19:17] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:19:17] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:17] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:19:42] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:19:42] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [index] main dashboard is_login(false)=0
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:21:59] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:00] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:03] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:03] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [index] main dashboard is_login(false)=0
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:43] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:22:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:46] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:48] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:48] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:50] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:50] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:54] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:54] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:57] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:57] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:22:58] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:23:01] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:23:01] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [index] main dashboard is_login(false)=0
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:09] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [index] main dashboard is_login(false)=0
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:49] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:31:52] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:52] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:55] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:31:55] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:02] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:05] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:05] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:12] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:12] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:13] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:15] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:15] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:18] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:18] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:20] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:20] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:22] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:22] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:25] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:25] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:27] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:29] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:32:29] [is_login] checkCookie=0 session(logged_in)=not set cookie(logged)=not set
+[1:33:04] [is_login] checkCookie=1 session(logged_in)=not set cookie(logged)=not set
+[1:33:08] [doLogin] start id=jbestar returnUrl=/
+[1:33:08] [doLogin] session set logged_in=1 user_id=jbestar session_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[1:33:08] [doLogin] redirect to / with cookie logged=yes
+[1:33:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [index] main dashboard is_login(false)=1
+[1:33:08] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:33:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:12] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:13] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:14] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:18] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:28] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:28] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:40] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:40] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:33:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:37:21] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:37:21] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [index] main dashboard is_login(false)=1
+[1:39:07] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:11] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:16] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:16] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [index] main dashboard is_login(false)=1
+[1:39:45] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:45] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [index] main dashboard is_login(false)=1
+[1:39:57] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:39:57] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:40:00] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:40:00] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:40:15] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[1:40:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:40:30] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[1:40:31] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set

@@ -4,25 +4,22 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class HumorPost_Model extends Model
+/**
+ * 자유게시판 — 테이블 free_post (free_post.sql)
+ */
+class FreePost_Model extends Model
 {
-    protected $table = 'humor_post';
+    protected $table = 'free_post';
     protected $primaryKey = 'id';
     protected $returnType = 'object';
-    protected $allowedFields = ['mb_uid', 'mb_nickname', 'title', 'content', 'comment_count', 'created_at'];
+    protected $allowedFields = ['mb_uid', 'mb_nickname', 'title', 'content', 'comment_count', 'wr_hit', 'wr_good', 'is_notice', 'created_at'];
     protected $useTimestamps = false;
 
-    /**
-     * DBPrefix 와 무관하게 물리 테이블명 humor_post 사용
-     */
     public function getTable(): string
     {
         return $this->table;
     }
 
-    /**
-     * chat_message 스타일로 런타임 테이블 보장
-     */
     public function ensureTable(): void
     {
         $db = \Config\Database::connect();
@@ -32,19 +29,30 @@ class HumorPost_Model extends Model
             `mb_uid` VARCHAR(64) NOT NULL,
             `mb_nickname` VARCHAR(64) NOT NULL DEFAULT '',
             `title` VARCHAR(200) NOT NULL,
-            `content` TEXT NOT NULL,
+            `content` MEDIUMTEXT NULL,
             `comment_count` INT UNSIGNED NOT NULL DEFAULT 0,
+            `wr_hit` INT UNSIGNED NOT NULL DEFAULT 0,
+            `wr_good` INT UNSIGNED NOT NULL DEFAULT 0,
+            `is_notice` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             `created_at` DATETIME NOT NULL,
             PRIMARY KEY (`id`),
             KEY `idx_created_at` (`created_at`),
-            KEY `idx_mb_uid` (`mb_uid`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+            KEY `idx_mb_uid` (`mb_uid`),
+            KEY `idx_notice` (`is_notice`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $db->query($sql);
 
-        // 예전에 CREATE IF NOT EXISTS 만 된 테이블에는 content 컬럼이 없을 수 있음 → 상세에서 제목만 보임
         if (!$db->fieldExists('content', $this->table)) {
-            // MySQL 구버전은 TEXT에 DEFAULT 제한이 있어 NULL 허용
             $db->query("ALTER TABLE `{$table}` ADD COLUMN `content` MEDIUMTEXT NULL COMMENT '본문' AFTER `title`");
+        }
+        if (!$db->fieldExists('wr_hit', $this->table)) {
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `wr_hit` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `comment_count`");
+        }
+        if (!$db->fieldExists('wr_good', $this->table)) {
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `wr_good` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `wr_hit`");
+        }
+        if (!$db->fieldExists('is_notice', $this->table)) {
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `is_notice` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `wr_good`");
         }
         if (!$db->fieldExists('mb_nickname', $this->table)) {
             $db->query("ALTER TABLE `{$table}` ADD COLUMN `mb_nickname` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '표시 닉네임' AFTER `mb_uid`");
@@ -52,21 +60,23 @@ class HumorPost_Model extends Model
         }
     }
 
-    public function getLatest(int $limit = 12): array
+    /** 메인 우측 리스트박스용 — 공지 제외 최신순 */
+    public function getLatestForMain(int $limit = 10): array
     {
         $this->ensureTable();
-
-        $rows = $this->orderBy('id', 'DESC')
+        $limit = max(1, min(30, $limit));
+        $rows = $this->where('is_notice', 0)
+            ->orderBy('id', 'DESC')
             ->findAll($limit);
 
         return is_array($rows) ? $rows : [];
     }
 
-    /** 커뮤니티 목록(검색·정렬·페이징) — 선배님 board.php 스타일용 */
     public function countListFiltered(string $sfl, string $stx): int
     {
         $this->ensureTable();
         $b = $this->builder();
+        $b->where('is_notice', 0);
         $this->applyListSearch($b, $sfl, $stx);
 
         return (int) $b->countAllResults();
@@ -83,6 +93,7 @@ class HumorPost_Model extends Model
         $off = ($page - 1) * $perPage;
 
         $b = $this->builder();
+        $b->where('is_notice', 0);
         $this->applyListSearch($b, $sfl, $stx);
         $orderField = 'id';
         $dir = strtolower($sod) === 'asc' ? 'ASC' : 'DESC';
@@ -91,7 +102,11 @@ class HumorPost_Model extends Model
                 $orderField = 'created_at';
                 break;
             case 'wr_hit':
+                $orderField = 'wr_hit';
+                break;
             case 'wr_good':
+                $orderField = 'wr_good';
+                break;
             default:
                 $orderField = 'id';
                 break;
@@ -99,6 +114,23 @@ class HumorPost_Model extends Model
         $b->orderBy($orderField, $dir);
 
         return $b->get($perPage, $off)->getResultObject() ?: [];
+    }
+
+    public function getNotice(): ?object
+    {
+        $this->ensureTable();
+        $r = $this->where('is_notice', 1)->orderBy('id', 'ASC')->first();
+
+        return $r ?: null;
+    }
+
+    /** 상단 공지 전체 (선배 자유게시판처럼 복수 공지) */
+    public function getNotices(): array
+    {
+        $this->ensureTable();
+        $rows = $this->where('is_notice', 1)->orderBy('id', 'ASC')->findAll();
+
+        return is_array($rows) ? $rows : [];
     }
 
     protected function applyListSearch($b, string $sfl, string $stx): void
@@ -137,16 +169,7 @@ class HumorPost_Model extends Model
         }
     }
 
-    public function findById(int $id)
-    {
-        $this->ensureTable();
-        if ($id <= 0) return null;
-        return $this->find($id);
-    }
-
     /**
-     * 선배 게시판 이전글/다음글 (wr_id 증가=목록 앞쪽): 이전글=newer_id, 다음글=older_id
-     *
      * @return array{newer_id:int|null,older_id:int|null}
      */
     public function getNeighborIds(int $id): array
@@ -157,11 +180,11 @@ class HumorPost_Model extends Model
         }
         $t = $this->getTable();
         $newer = $this->db->query(
-            "SELECT MIN(`id`) AS i FROM `{$t}` WHERE `id` > ?",
+            "SELECT MIN(`id`) AS i FROM `{$t}` WHERE `id` > ? AND `is_notice` = 0",
             [$id]
         )->getRow();
         $older = $this->db->query(
-            "SELECT MAX(`id`) AS i FROM `{$t}` WHERE `id` < ?",
+            "SELECT MAX(`id`) AS i FROM `{$t}` WHERE `id` < ? AND `is_notice` = 0",
             [$id]
         )->getRow();
 
@@ -170,21 +193,4 @@ class HumorPost_Model extends Model
             'older_id' => ($older && $older->i) ? (int) $older->i : null,
         ];
     }
-
-    public function updateById(int $id, array $data): bool
-    {
-        $this->ensureTable();
-        if ($id <= 0) return false;
-        $data = array_intersect_key($data, array_flip($this->allowedFields));
-        if (!$data) return false;
-        return (bool) $this->update($id, $data);
-    }
-
-    public function deleteById(int $id): bool
-    {
-        $this->ensureTable();
-        if ($id <= 0) return false;
-        return (bool) $this->delete($id);
-    }
 }
-
