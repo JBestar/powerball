@@ -31,6 +31,12 @@ class HumorPost_Model extends Model
             KEY `idx_mb_uid` (`mb_uid`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         $db->query($sql);
+
+        // 예전에 CREATE IF NOT EXISTS 만 된 테이블에는 content 컬럼이 없을 수 있음 → 상세에서 제목만 보임
+        if (!$db->fieldExists('content', $this->table)) {
+            // MySQL 구버전은 TEXT에 DEFAULT 제한이 있어 NULL 허용
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `content` MEDIUMTEXT NULL COMMENT '본문' AFTER `title`");
+        }
     }
 
     public function getLatest(int $limit = 12): array

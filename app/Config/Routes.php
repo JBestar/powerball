@@ -71,6 +71,7 @@ $routes->setAutoRoute(true);
  * frame/dayLog 는 iframe 전용이므로 가장 먼저 매칭되도록 상단에 정의
  */
 $routes->get('frame/dayLog', 'Home::frameDayLog');
+$routes->get('frame/customerCenter', 'Home::frameCustomerCenter');
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.

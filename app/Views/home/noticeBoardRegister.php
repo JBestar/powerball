@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<title>유머 수정</title>
+	<title>공지 등록</title>
 	<?php $local = rtrim(site_furl(''), '/'); ?>
 	<link rel="stylesheet" href="<?php echo $local; ?>/css/common_logged.css?v=<?php echo time(); ?>" type="text/css"/>
 	<style>
@@ -13,14 +13,14 @@
 		.input { width:100%; border:1px solid #949494; padding:6px; box-sizing:border-box; }
 		textarea.input { min-height:220px; resize:vertical; }
 		.btn { display:inline-block; background:#127CCB; color:#fff; font-weight:bold; border:1px solid #0e609c; padding:8px 14px; cursor:pointer; }
-		.humorRegisterWrap {
+		.wrapBox {
 			background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
 			border: 1px solid #d5d5d5;
 			border-radius: 10px;
 			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 			padding: 14px;
 		}
-		.humorTitleBar {
+		.titleBar {
 			display:flex;
 			align-items:center;
 			justify-content:space-between;
@@ -37,34 +37,56 @@
 		.input::placeholder, textarea.input::placeholder { color:#888; }
 		.formRow td { border: 0 none; padding: 0; }
 		.formBox { border:1px solid #d5d5d5; border-radius: 8px; padding: 10px; background:#fff; }
+		.flashMsg {
+			border:1px solid #f1b8ba;
+			background:#fff3f4;
+			color:#b0111a;
+			padding:8px 10px;
+			margin-bottom:10px;
+			border-radius:6px;
+			font-size:12px;
+		}
 	</style>
 </head>
 <body>
-	<div class="humorRegisterWrap">
-		<div class="humorTitleBar">
-			<div>유머 수정</div>
-			<div class="hint">제목과 내용을 수정 후 저장하세요.</div>
+	<div class="wrapBox">
+		<div class="titleBar">
+			<div>공지 등록</div>
+			<div class="hint">제목·내용 입력 후 등록</div>
 		</div>
-		<form method="post" action="<?= site_furl('/?view=humorEdit&id=' . (int) ($post->id ?? 0)) ?>">
+		<?php $flashMsg = session('message'); ?>
+		<?php if (!empty($flashMsg)): ?>
+			<div class="flashMsg"><?= esc($flashMsg) ?></div>
+		<?php endif; ?>
+		<form method="post" action="<?= site_furl('/?view=noticeBoardRegister') ?>">
 			<table class="defaultTable">
 				<tr class="formRow">
 					<td>
 						<div class="formBox">
-							<input type="text" name="title" class="input" maxlength="200" placeholder="제목" value="<?= esc($post->title ?? '') ?>" />
+							<select name="notice_type" class="input" style="max-width:200px;">
+								<option value="<?= esc(\App\Models\Notice_Model::TYPE_NOTICE) ?>">공지</option>
+								<option value="<?= esc(\App\Models\Notice_Model::TYPE_GUIDE) ?>">안내</option>
+							</select>
 						</div>
 					</td>
 				</tr>
 				<tr class="formRow">
 					<td>
 						<div class="formBox" style="margin-top:10px;">
-							<textarea name="content" class="input" maxlength="5000" placeholder="내용"><?= esc($post->content ?? '') ?></textarea>
+							<input type="text" name="title" class="input" maxlength="200" placeholder="제목" />
+						</div>
+					</td>
+				</tr>
+				<tr class="formRow">
+					<td>
+						<div class="formBox" style="margin-top:10px;">
+							<textarea name="content" class="input" maxlength="100000" placeholder="내용"></textarea>
 						</div>
 					</td>
 				</tr>
 			</table>
-
 			<div style="margin-top:12px; text-align:right;">
-				<button type="submit" class="btn">수정</button>
+				<button type="submit" class="btn">등록</button>
 			</div>
 		</form>
 	</div>

@@ -26,6 +26,9 @@ class Home extends BaseController
         // inner-right iframe용: URI가 frame/dayLog(또는 .../frame/dayLog)이면 반드시 dayLog만 반환 (메인 헤더 중복 방지)
         $path = $this->request->uri->getPath();
         $path = trim($path, '/');
+        if (strpos($path, 'frame/customerCenter') !== false) {
+            return $this->frameCustomerCenter();
+        }
         if (strpos($path, 'frame/dayLog') !== false || preg_match('#^frame/#', $path)) {
             return $this->frameDayLog();
         }
@@ -235,12 +238,231 @@ class Home extends BaseController
             return view('home/humorRegister');
         }
 
+        // 2-1-4-1b. 상단 공지(고객센터) 등록 (관리자)
+        else if ($this->request->getGet('view') === 'noticeBoardRegister') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 등록 가능합니다.');
+            }
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+                $noticeType = trim((string) $this->request->getPost('notice_type'));
+                if (!in_array($noticeType, \App\Models\Notice_Model::siteBoardTypes(), true)) {
+                    $noticeType = \App\Models\Notice_Model::TYPE_NOTICE;
+                }
+
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=noticeBoardRegister'), '제목과 내용을 입력해주세요.');
+                }
+
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 100000) {
+                    $content = mb_substr($content, 0, 100000);
+                }
+
+                $mbUid = (string) ($objMember->mb_uid ?? '');
+                if ($mbUid === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=noticeBoardRegister'), '등록자 정보가 없습니다.');
+                }
+
+                $now = date('Y-m-d H:i:s');
+                $data = [
+                    'notice_type' => $noticeType,
+                    'notice_title' => $title,
+                    'notice_content' => $content,
+                    'notice_answer' => '',
+                    'notice_mb_uid' => $mbUid,
+                    'notice_emp_fid' => 0,
+                    'notice_hit' => 0,
+                    'notice_read_count' => 0,
+                    'notice_time_create' => $now,
+                    'notice_time_update' => $now,
+                    'notice_state_active' => STATE_ACTIVE,
+                    'notice_state_delete' => STATE_DISABLE,
+                    'notice_client_delete' => STATE_DISABLE,
+                ];
+
+                $ok = $this->modelNotice->registerNotice($data);
+                if (!$ok) {
+                    return $this->redirectWithMessage(site_furl('/?view=noticeBoardRegister'), '등록에 실패했습니다.');
+                }
+
+                return view('home/noticeBoardRegisterSuccess');
+            }
+
+            return view('home/noticeBoardRegister');
+        }
+
+        // 2-1-4-1c. 상단 공지(고객센터) 수정 (관리자)
+        else if ($this->request->getGet('view') === 'noticeBoardEdit') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 수정 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $post = $id > 0 ? $this->modelNotice->getBoardById($id) : null;
+            if (!$post) {
+                return $this->redirectWithMessage(site_furl('/'), '글을 찾을 수 없습니다.');
+            }
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+                $noticeType = trim((string) $this->request->getPost('notice_type'));
+                if (!in_array($noticeType, \App\Models\Notice_Model::siteBoardTypes(), true)) {
+                    $noticeType = \App\Models\Notice_Model::TYPE_NOTICE;
+                }
+
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=noticeBoardEdit&id=' . $id), '제목과 내용을 입력해주세요.');
+                }
+
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 100000) {
+                    $content = mb_substr($content, 0, 100000);
+                }
+
+                $ok = $this->modelNotice->updateSiteBoard($id, [
+                    'notice_type' => $noticeType,
+                    'notice_title' => $title,
+                    'notice_content' => $content,
+                ]);
+                if (!$ok) {
+                    return $this->redirectWithMessage(site_furl('/?view=noticeBoardEdit&id=' . $id), '수정에 실패했습니다.');
+                }
+
+                return view('home/noticeBoardRegisterSuccess');
+            }
+
+            return view('home/noticeBoardEdit', ['post' => $post]);
+        }
+
+        // 2-1-4-1d. 상단 공지(고객센터) 삭제 (관리자)
+        else if ($this->request->getGet('view') === 'noticeBoardDelete') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 삭제 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            if ($id > 0) {
+                $this->modelNotice->softDeleteSiteBoard($id);
+            }
+
+            return $this->response->redirect(site_furl('frame/customerCenter'));
+        }
+
         // 2-1-4-2. 유머 상세 (모두)
         else if ($this->request->getGet('view') === 'humorDetail') {
             $id = (int) $this->request->getGet('id');
             $humorModel = new HumorPost_Model();
             $post = $humorModel->findById($id);
-            return view('home/humorDetail', ['post' => $post]);
+
+            $hasContentCol = false;
+            try {
+                $hasContentCol = \Config\Database::connect()->fieldExists('content', 'humor_post');
+            } catch (\Throwable $e) {
+                log_message('critical', 'humorDetail dbg: fieldExists failed: ' . $e->getMessage());
+            }
+            if ($post !== null) {
+                $props = get_object_vars($post);
+                $keys = array_keys($props);
+                $rawContent = $props['content'] ?? null;
+                log_message('critical', 'humorDetail dbg: id=' . $id . ' rowKeys=' . json_encode($keys, JSON_UNESCAPED_UNICODE)
+                    . ' dbHasContentCol=' . ($hasContentCol ? '1' : '0')
+                    . ' contentPropIsset=' . (array_key_exists('content', $props) ? '1' : '0')
+                    . ' contentLen=' . (is_string($rawContent) ? strlen($rawContent) : 'n/a')
+                    . ' titleLen=' . strlen((string) ($props['title'] ?? '')));
+
+                $cStr = is_string($rawContent) ? $rawContent : '';
+                $cTrim = trim($cStr);
+                $hexMax = 96;
+                log_message('critical', 'humorDetail dbg2: id=' . $id
+                    . ' ctype=' . gettype($rawContent)
+                    . ' is_string=' . (is_string($rawContent) ? '1' : '0')
+                    . ' mb_strlen=' . mb_strlen($cStr, 'UTF-8')
+                    . ' mb_strlen_trim=' . mb_strlen($cTrim, 'UTF-8')
+                    . ' byteHex(' . min(strlen($cStr), $hexMax) . ')=' . bin2hex(substr($cStr, 0, $hexMax))
+                    . ' onlyWhitespace=' . ($cStr !== '' && $cTrim === '' ? '1' : '0'));
+
+                try {
+                    $db = \Config\Database::connect();
+                    $tn = $db->prefixTable('humor_post');
+                    $sqlRow = $db->query(
+                        "SELECT LENGTH(`content`) AS blen, CHAR_LENGTH(`content`) AS clen, HEX(LEFT(`content`, 48)) AS h48 FROM `{$tn}` WHERE `id` = ? LIMIT 1",
+                        [$id]
+                    )->getRow();
+                    if ($sqlRow) {
+                        log_message('critical', 'humorDetail dbg3: id=' . $id . ' SQL_LENGTH_bytes=' . ($sqlRow->blen ?? '')
+                            . ' SQL_CHAR_LENGTH=' . ($sqlRow->clen ?? '')
+                            . ' SQL_hex48=' . ($sqlRow->h48 ?? ''));
+                    } else {
+                        log_message('critical', 'humorDetail dbg3: id=' . $id . ' SQL row missing');
+                    }
+                } catch (\Throwable $e) {
+                    log_message('critical', 'humorDetail dbg3: SQL probe failed: ' . $e->getMessage());
+                }
+
+                try {
+                    $escOut = esc($cStr);
+                    log_message('critical', 'humorDetail dbg4: id=' . $id . ' esc_strlen=' . strlen($escOut)
+                        . ' esc_mb_strlen=' . mb_strlen($escOut, 'UTF-8')
+                        . ' esc_prefix_hex48=' . bin2hex(substr($escOut, 0, 24)));
+                } catch (\Throwable $e) {
+                    log_message('critical', 'humorDetail dbg4: esc failed: ' . $e->getMessage());
+                }
+            } else {
+                log_message('critical', 'humorDetail dbg: id=' . $id . ' post=null dbHasContentCol=' . ($hasContentCol ? '1' : '0'));
+            }
+
+            $isHumorAdmin = false;
+            try {
+                if (is_login(false)) {
+                    $uid = $this->session->user_id ?? '';
+                    $adm = $uid !== '' ? $this->modelMember->getByUid($uid) : null;
+                    $isHumorAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            return view('home/humorDetail', [
+                'post' => $post,
+                'is_humor_admin' => $isHumorAdmin,
+            ]);
         }
         // 2-1-4-3. 유머 수정 (관리자)
         else if ($this->request->getGet('view') === 'humorEdit') {
@@ -482,6 +704,8 @@ class Home extends BaseController
                 $boards = $this->modelNotice->getBoards();
                 $boards = is_array($boards) ? array_slice($boards, 0, 10) : [];
             } catch (\Throwable $e) {
+                log_message('critical', 'index main getBoards exception: ' . $e->getMessage()
+                    . ' @ ' . $e->getFile() . ':' . $e->getLine());
                 $boards = [];
             }
             // 리스트박스용 게시 목록 (유머/분석픽공유/자유) - DB 조회
@@ -494,8 +718,10 @@ class Home extends BaseController
             $list_photo = $boardPhotoModel->getListForMain(14);
 
             $is_humor_admin = false;
-            if ($objMember && isset($objMember->mb_level) && (int)$objMember->mb_level >= 100) {
+            $is_notice_admin = false;
+            if ($objMember && isset($objMember->mb_level) && (int) $objMember->mb_level >= 100) {
                 $is_humor_admin = true;
+                $is_notice_admin = true;
             }
             $navInfo = getNavInfo($objMember);
             $viewData = array_merge($headInfo, $navInfo, [
@@ -506,6 +732,7 @@ class Home extends BaseController
                 'list_free'  => $list_free,
                 'list_photo' => $list_photo,
                 'is_humor_admin' => $is_humor_admin,
+                'is_notice_admin' => $is_notice_admin,
             ]);
             echo view('home/main', $viewData);
         }
@@ -1785,6 +2012,177 @@ class Home extends BaseController
         $this->response->setBody($html);
         $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
         $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        return $this->response;
+    }
+
+    /**
+     * iframe(mainFrame) 전용 — 고객센터(공지) 읽기 + 목록 (선배님 bo_v + bo_list 구조, bbs.css)
+     * GET frame/customerCenter?id=공지ID&page=페이지&sfl=&stx=
+     */
+    public function frameCustomerCenter()
+    {
+        $this->setLanguage();
+        $headInfo = $this->getSiteConf();
+        $local = rtrim(site_furl(''), '/');
+        $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time();
+
+        $boards = [];
+        try {
+            $boards = $this->modelNotice->getBoards();
+            $boards = is_array($boards) ? $boards : [];
+        } catch (\Throwable $e) {
+            log_message('critical', 'frameCustomerCenter getBoards exception: ' . $e->getMessage()
+                . ' @ ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
+            $boards = [];
+        }
+        log_message('debug', 'frameCustomerCenter after getBoards count=' . count($boards));
+
+        $stx = trim((string) $this->request->getGet('stx'));
+        $sfl = (string) $this->request->getGet('sfl');
+        if ($stx !== '') {
+            $beforeSearch = count($boards);
+            $boards = array_values(array_filter($boards, function ($row) use ($stx, $sfl) {
+                $title = (string) ($row->notice_title ?? '');
+                $content = (string) ($row->notice_content ?? '');
+                $mbUid = (string) ($row->notice_mb_uid ?? '');
+                $nick = (string) ($row->mb_nickname ?? '');
+                switch ($sfl) {
+                    case 'wr_content':
+                        return mb_stripos($content, $stx) !== false;
+                    case 'wr_subject||wr_content':
+                        return mb_stripos($title, $stx) !== false || mb_stripos($content, $stx) !== false;
+                    case 'mb_id,1':
+                        return $mbUid === $stx;
+                    case 'mb_id,0':
+                        return mb_stripos($mbUid, $stx) !== false;
+                    case 'wr_name,1':
+                        return $nick === $stx;
+                    case 'wr_name,0':
+                        return mb_stripos($nick, $stx) !== false;
+                    case 'wr_subject':
+                    default:
+                        return mb_stripos($title, $stx) !== false;
+                }
+            }));
+            log_message('debug', 'frameCustomerCenter search stx=' . json_encode($stx, JSON_UNESCAPED_UNICODE) . ' sfl=' . $sfl . ' before=' . $beforeSearch . ' after=' . count($boards));
+        }
+
+        $id = (int) $this->request->getGet('id');
+        if ($id <= 0) {
+            $id = (int) $this->request->getGet('wr_id');
+        }
+
+        $post = null;
+        if ($id > 0) {
+            try {
+                $post = $this->modelNotice->getBoardById($id);
+                if ($post) {
+                    $this->modelNotice->incrementHit($id);
+                    $post->notice_hit = (int) ($post->notice_hit ?? 0) + 1;
+                }
+            } catch (\Throwable $e) {
+                log_message('critical', 'frameCustomerCenter getBoardById(id=' . $id . ') exception: ' . $e->getMessage()
+                    . ' @ ' . $e->getFile() . ':' . $e->getLine());
+                $post = null;
+            }
+        }
+        if (!$post && $boards !== []) {
+            $first = $boards[0];
+            $fid = (int) ($first->notice_fid ?? 0);
+            if ($fid > 0) {
+                try {
+                    $post = $this->modelNotice->getBoardById($fid);
+                    if ($post) {
+                        $this->modelNotice->incrementHit($fid);
+                        $post->notice_hit = (int) ($post->notice_hit ?? 0) + 1;
+                    }
+                } catch (\Throwable $e) {
+                    log_message('critical', 'frameCustomerCenter getBoardById(first fid=' . $fid . ') exception: ' . $e->getMessage()
+                        . ' @ ' . $e->getFile() . ':' . $e->getLine());
+                    $post = null;
+                }
+            }
+        }
+
+        $page = max(1, (int) $this->request->getGet('page'));
+        $perPage = 5;
+        $total = count($boards);
+        $ceilRaw = $perPage > 0 ? ceil($total / $perPage) : 0;
+        $totalPages = max(1, (int) $ceilRaw);
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+        $boardsPage = array_slice($boards, ($page - 1) * $perPage, $perPage);
+
+        $pgCollide = [];
+        foreach (['page', 'total', 'totalPages', 'perPage', 'boards', 'boardsPage'] as $_k) {
+            if (array_key_exists($_k, $headInfo)) {
+                $pgCollide[] = $_k;
+            }
+        }
+        $fidSample = [];
+        foreach (array_slice($boards, 0, 15) as $_row) {
+            $fidSample[] = (int) ($_row->notice_fid ?? 0);
+        }
+        log_message('critical', 'frameCustomerCenter pg dbg: GET_page=' . (int) $this->request->getGet('page')
+            . ' boardCount=' . $total . ' perPage=' . $perPage . ' ceilRaw=' . $ceilRaw
+            . ' totalPages=' . $totalPages . ' finalPage=' . $page . ' sliceCount=' . count($boardsPage)
+            . ' headInfoCollide=' . json_encode($pgCollide)
+            . ' fidSample=' . json_encode($fidSample));
+
+        $prevId = null;
+        $nextId = null;
+        if ($post && $boards !== []) {
+            foreach ($boards as $i => $b) {
+                if ((int) ($b->notice_fid ?? 0) === (int) ($post->notice_fid ?? 0)) {
+                    if ($i > 0) {
+                        $prevId = (int) ($boards[$i - 1]->notice_fid ?? 0) ?: null;
+                    }
+                    if (isset($boards[$i + 1])) {
+                        $nextId = (int) ($boards[$i + 1]->notice_fid ?? 0) ?: null;
+                    }
+                    break;
+                }
+            }
+        }
+
+        $objAdm = null;
+        try {
+            if (is_login(false)) {
+                $uid = $this->session->user_id ?? '';
+                $objAdm = $uid !== '' ? $this->modelMember->getByUid($uid) : null;
+            }
+        } catch (\Throwable $e) {}
+        $is_notice_admin = $objAdm && (int) ($objAdm->mb_level ?? 0) >= 100;
+
+        $viewData = array_merge($headInfo, [
+            'site_title' => ($headInfo['site_name'] ?? '파워볼게임') . ' : 고객센터',
+            'local' => $local,
+            'cssVer' => $cssVer,
+            'post' => $post,
+            'boards' => $boards,
+            'boardsPage' => $boardsPage,
+            'page' => $page,
+            'perPage' => $perPage,
+            'total' => $total,
+            'totalPages' => $totalPages,
+            'prevId' => $prevId,
+            'nextId' => $nextId,
+            'stx' => $stx,
+            'sfl' => $sfl,
+            'isLogin' => is_login(false),
+            'is_notice_admin' => $is_notice_admin,
+        ]);
+
+        log_message('critical', 'frameCustomerCenter pg dbg: after merge view totalPages='
+            . ($viewData['totalPages'] ?? 'MISSING') . ' total=' . ($viewData['total'] ?? 'MISSING')
+            . ' perPage=' . ($viewData['perPage'] ?? 'MISSING'));
+
+        $html = view('home/customer_center_frame', $viewData);
+        $this->response->setBody($html);
+        $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+        $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
         return $this->response;
     }
 

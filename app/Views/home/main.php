@@ -24,6 +24,8 @@
         .boardBox ul.menu { display: flex; flex-wrap: nowrap; }
         .boardBox ul.menu li { float: none; flex: none; width: 155px; }
         .boardBox ul.menu li.none { width: 154px; }
+        /* 유머 목록: flex 행이 좌/우 311px 칸 안에서 넘치지 않도록 */
+        .boardBox #list_humor ul.list li { min-width: 0; }
         /* timeBox / shareBox / shareDiv (선배님 스타일) */
         div.timeBox {
             position: absolute; top: 17px; right: 125px;
@@ -91,23 +93,43 @@
                 </a>
             </div>
 
-            <!-- 로고 옆 텍스트 영역 (공지 & 가이드) -->
+            <!-- 로고 옆 텍스트 영역 (공지 & 안내) -->
             <div class="text">
                 <!-- 공지사항 (notice) -->
+                <?php
+                    $is_notice_admin = $is_notice_admin ?? false;
+                    $boardsNoticeOnly = array_values(array_filter($boards ?? [], static function ($r) {
+                        return ($r->notice_type ?? '') === \App\Models\Notice_Model::TYPE_NOTICE;
+                    }));
+                    $boardsGuideOnly = array_values(array_filter($boards ?? [], static function ($r) {
+                        return \App\Models\Notice_Model::isGuideCategory((string) ($r->notice_type ?? ''));
+                    }));
+                    $topNoticeHref = site_furl('frame/customerCenter');
+                    $topNoticeTitle = '[제재] 계좌, 톡, 연락처 및 개인정보 공유 시 경고없이 영구 차단조치 합니다.';
+                    if (!empty($boardsNoticeOnly[0])) {
+                        $topNoticeHref = site_furl('frame/customerCenter?id=' . (int) ($boardsNoticeOnly[0]->notice_fid ?? 0));
+                        $topNoticeTitle = (string) ($boardsNoticeOnly[0]->notice_title ?? $topNoticeTitle);
+                    }
+                    $topGuideHref = site_furl('frame/customerCenter');
+                    $topGuideTitle = '[업데이트] 베스트 픽스터 추가 및 선정 기준 안내';
+                    if (!empty($boardsGuideOnly[0])) {
+                        $topGuideHref = site_furl('frame/customerCenter?id=' . (int) ($boardsGuideOnly[0]->notice_fid ?? 0));
+                        $topGuideTitle = (string) ($boardsGuideOnly[0]->notice_title ?? $topGuideTitle);
+                    }
+                ?>
                 <div class="notice">
                     <img src="<?php echo site_furl('images/bl_notice.png'); ?>" width="46" height="13" alt="NOTICE">
-                    <!-- 선배님의 게시판 데이터($boards) 중 첫 번째 공지를 가져옵니다 -->
-                    <a href="/bbs/board.php?bo_table=custom&wr_id=164" target="mainFrame">
-                        [제재] 계좌, 톡, 연락처 및 개인정보 공유 시 경고없이 영구 차단조치 합니다.
-                    </a>
+                    <a href="<?= esc($topNoticeHref) ?>" target="mainFrame"><?= esc($topNoticeTitle) ?></a>
+                    <?php if ($is_notice_admin): ?>
+                        <a href="#" onclick="window.open('<?= site_furl('/?view=noticeBoardRegister') ?>','noticeBoardRegister','width=600,height=650'); return false;"
+                           style="margin-left:10px; display:inline-block; padding:2px 10px; border:1px solid #0e609c; background:#127CCB; color:#fff; font-weight:bold; border-radius:3px; font-size:11px; line-height:16px; vertical-align:middle;">등록</a>
+                    <?php endif; ?>
                 </div>
 
-                <!-- 가이드 (guide) -->
+                <!-- 안내 (guide 영역) -->
                 <div class="guide">
                     <img src="<?php echo site_furl('images/bl_guide.png'); ?>" width="46" height="13" alt="GUIDE">
-                    <a href="/bbs/board.php?bo_table=custom&wr_id=166" target="mainFrame">
-                        [업데이트] 베스트 픽스터 추가 및 선정 기준 안내
-                    </a>
+                    <a href="<?= esc($topGuideHref) ?>" target="mainFrame"><?= esc($topGuideTitle) ?></a>
                 </div>
             </div>
             <div style="position:absolute; top:0; right:2px;">
@@ -221,14 +243,22 @@
                             <!-- 공지 아이콘 이미지 (이미지 소스 경로) -->
                             <img src="<?php echo site_furl('images/text_notice.jpg'); ?>" alt="공지">
                             
-                            <div style="position:absolute" id="scrollNotice">
-                                <ul>
+                            <div style="position:absolute;top:0;left:50px;right:0;" id="scrollNotice">
+                                <ul style="margin:0;padding:0;list-style:none;">
                                     <!-- 실제로는 선배님의 $boards 데이터를 반복문으로 돌리면 됩니다 -->
-                                    <?php if(!empty($boards)) : foreach($boards as $row) : ?>
-                                        <li><a href="/bbs/view?id=<?= $row->notice_fid ?>"><?= esc($row->notice_title) ?></a></li>
-                                    <?php endforeach; else : ?>
-                                        <li><a href="#">[안내] 건전하고 매너 있는 게임 문화를 만들어갑니다.</a></li>
-                                        <li><a href="#">[제재] 타인 비방 및 욕설 시 이용이 제한될 수 있습니다.</a></li>
+                                    <?php if(!empty($boards)) : foreach($boards as $row) :
+                                        $snTitle = (string) ($row->notice_title ?? '');
+                                        $snTitleShow = mb_strlen($snTitle) > 25 ? mb_substr($snTitle, 0, 25) . '…' : $snTitle;
+                                    ?>
+                                        <li><a href="<?= esc(site_furl('frame/customerCenter?id=' . (int) $row->notice_fid)) ?>" target="mainFrame" title="<?= esc($snTitle) ?>"><?= esc($snTitleShow) ?></a></li>
+                                    <?php endforeach; else :
+                                        $snDef1 = '[안내] 건전하고 매너 있는 게임 문화를 만들어갑니다.';
+                                        $snDef2 = '[제재] 타인 비방 및 욕설 시 이용이 제한될 수 있습니다.';
+                                        $snD1 = mb_strlen($snDef1) > 25 ? mb_substr($snDef1, 0, 25) . '…' : $snDef1;
+                                        $snD2 = mb_strlen($snDef2) > 25 ? mb_substr($snDef2, 0, 25) . '…' : $snDef2;
+                                    ?>
+                                        <li><a href="<?= esc(site_furl('frame/customerCenter')) ?>" target="mainFrame" title="<?= esc($snDef1) ?>"><?= esc($snD1) ?></a></li>
+                                        <li><a href="<?= esc(site_furl('frame/customerCenter')) ?>" target="mainFrame" title="<?= esc($snDef2) ?>"><?= esc($snD2) ?></a></li>
                                     <?php endif; ?>
                                 </ul>
                             </div>
@@ -243,7 +273,7 @@
                             </a>
                         </div>
                     </div>
-                    <!-- [guide_banner] 메인 분석판 상단 가이드 영역 -->
+                    <!-- [guide_banner] 메인 분석판 상단 안내(채팅) 영역 -->
                     <div id="guide_banner">
                         <!-- 실제 분석판이 들어가는 iframe (선배님 소스 구조 그대로) -->
                         <iframe scrolling="no" frameborder="0" width="100%" height="575" 
@@ -383,19 +413,87 @@
             }
             // ajaxPattern('oddEven', '2026-03-07', 'powerball');
         });
-        // 공지 롤링 (scrollNotice)
+        // 공지 롤링 (scrollNotice) — #scrollNotice top 애니메이션 후 첫 li 를 맨 뒤로 이동
+        // 겹침 방지: 제목이 2줄로 말려도 outerHeight 는 23인데 scrollHeight 는 46일 수 있음 → 이동량은 scrollHeight 까지 반영
+        // 디버그 콘솔: ?scrollNoticeDebug=1 또는 localStorage.scrollNoticeDebug = '1'
         var $scrollNotice = $("#scrollNotice");
         if ($scrollNotice.length && $scrollNotice.find("ul li").length > 1) {
             var $ul = $scrollNotice.find("ul");
-            var h = 0;
-            $ul.find("li").each(function(){ h += $(this).outerHeight(true); });
-            $ul.css("height", h + "px");
-            var idx = 0;
-            var run = function(){
-                idx = (idx + 1) % $ul.find("li").length;
-                $ul.css("marginTop", -$ul.find("li").eq(idx).position().top + "px");
+            var rolling = false;
+            var snTick = 0;
+            var snDbg = (typeof location !== "undefined" && /[?&]scrollNoticeDebug=1(?:&|$)/.test(location.search))
+                || (typeof localStorage !== "undefined" && localStorage.getItem("scrollNoticeDebug") === "1");
+            function snLog() {
+                if (!snDbg || typeof console === "undefined" || !console.warn) return;
+                console.warn.apply(console, ["[scrollNotice]"].concat([].slice.call(arguments)));
+            }
+            function snLiSnippet($li) {
+                var t = ($li && $li.find("a").first().text()) || $li.text() || "";
+                return String(t).replace(/\s+/g, " ").trim().substring(0, 100);
+            }
+            function snMeasureHeights() {
+                var arr = [];
+                $ul.find("li").each(function() {
+                    var el = this;
+                    var $li = $(el);
+                    arr.push({
+                        h: $li.outerHeight(true),
+                        inner: $li.outerHeight(false),
+                        scroll: el.scrollHeight,
+                        client: el.clientHeight,
+                        text: snLiSnippet($li)
+                    });
+                });
+                return arr;
+            }
+            var tickNotice = function() {
+                if (rolling) {
+                    snLog("SKIP tick still rolling", "tick=" + snTick);
+                    return;
+                }
+                var $first = $ul.find("li").first();
+                var el0 = $first[0];
+                var aEl = $first.find("a").get(0);
+                var outerT = $first.outerHeight(true) || 0;
+                var scLi = el0 ? el0.scrollHeight : 0;
+                var scA = aEl ? aEl.scrollHeight : 0;
+                var lineH = Math.max(outerT, scLi, scA) || 23;
+                var topBefore = $scrollNotice.css("top");
+                var outgoing = snLiSnippet($first);
+                var next$ = $first.next("li");
+                var incomingPreview = next$.length ? snLiSnippet(next$) : "(wrap)";
+                snTick += 1;
+                var scH = scLi;
+                var clH = el0 ? el0.clientHeight : 0;
+                var kw = /완료|일부 접속|장애/.test(outgoing) || /완료|일부 접속|장애/.test(incomingPreview);
+                snLog("TICK#" + snTick,
+                    "OUT→", outgoing,
+                    "| NEXT≈", incomingPreview,
+                    "| slidePx=", lineH,
+                    "| outerT=", outerT,
+                    "| scrollLi=", scLi,
+                    "| scrollA=", scA,
+                    "| clientH=", clH,
+                    "| top=", topBefore,
+                    "| hadWrap=", scLi > outerT + 1 || scA > outerT + 1 ? "yes" : "no",
+                    kw ? "| KEYWORD" : "");
+                if (snDbg && kw) snLog("keyword tick detail");
+                if (snDbg) {
+                    var hs = snMeasureHeights();
+                    snLog("DBG heights all li", JSON.stringify(hs));
+                }
+                rolling = true;
+                var dur = Math.min(700, Math.max(350, Math.round(lineH * 12)));
+                $scrollNotice.animate({ top: -lineH }, dur, function() {
+                    $ul.append($first);
+                    $scrollNotice.css("top", "0");
+                    var $newFirst = $ul.find("li").first();
+                    snLog("END#" + snTick, "NOW=", snLiSnippet($newFirst), "| slideWas=", lineH);
+                    if (snDbg) snLog("DBG heights after rotate", JSON.stringify(snMeasureHeights()));
+                    rolling = false;
+                });
             };
-            setInterval(run, 3000);
+            setInterval(tickNotice, 3000);
         }
         // 방채팅 열기 (메인/iframe 공통)
         window.openChatRoom = function(){

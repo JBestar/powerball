@@ -31,8 +31,20 @@ class Logger extends BaseConfig
 	| For a live site you'll usually enable Critical or higher (3) to be logged otherwise
 	| your log files will fill up very fast.
 	|
+	| Non-production: constructor sets threshold to 8 (debug) — 프로퍼티 초기값에는
+	| defined() 등을 쓸 수 없어 생성자에서 처리함.
+	|
 	*/
 	public $threshold = 3;
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		if (! defined('ENVIRONMENT') || ENVIRONMENT !== 'production') {
+			$this->threshold = 8;
+		}
+	}
 
 	/*
 	|--------------------------------------------------------------------------

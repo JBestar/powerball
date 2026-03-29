@@ -37,13 +37,8 @@ $is_humor_admin = $is_humor_admin ?? false;
     $leftList = array_slice($list, 0, $half);
     $rightList = array_slice($list, $half);
 
-    // 유머 리스트를 "표"처럼 % 기반 열(column)로 나누기
-    $iconColWidth = '10%';
-    // 관리자: icon 10 + title 42 + meta 28 + actions 20 = 100
-    // 유저: icon 10 + title 68 + meta 22 = 100
-    $metaColWidth = $is_humor_admin ? '27%' : '25%';
-    $titleColWidth = $is_humor_admin ? '41%' : '65%';
-    $actionsColWidth = $is_humor_admin ? '22%' : '0%'; // 관리자일 때만 사용
+    // 유머 리스트: 제목이 flex로 남는 폭을 먹고, 메타(날짜)는 줄어들 수 있게 해 비로그인에서도 박스 밖으로 삐져나가지 않게 함
+    $iconColPx = '34px';
     $titleMaxLen = $is_humor_admin ? 8 : 12;
     ?>
     <div class="listBox" id="list_humor" style="display:block;">
@@ -54,11 +49,11 @@ $is_humor_admin = $is_humor_admin ?? false;
                     $humorTitle = (string) ($row->title ?? '');
                     if (mb_strlen($humorTitle) > $titleMaxLen) $humorTitle = mb_substr($humorTitle, 0, $titleMaxLen) . '...';
                 ?>
-                <li style="display:flex; align-items:center; width:100%; box-sizing:border-box; overflow:hidden;">
-                    <span style="flex:0 0 <?= esc($iconColWidth) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <li style="display:flex; align-items:center; width:97%; box-sizing:border-box; overflow:hidden; min-width:0;">
+                    <span style="flex:0 0 <?= esc($iconColPx) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                         <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
                     </span>
-                    <span style="flex:0 0 <?= esc($titleColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap;">
+                    <span style="flex:1 1 0; min-width:0; overflow:hidden; white-space:nowrap;">
                         <a href="#"
                            onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
                            title="<?= esc($row->title) ?>"
@@ -66,13 +61,13 @@ $is_humor_admin = $is_humor_admin ?? false;
                            <?= esc($humorTitle) ?>
                         </a>
                     </span>
-                    <span class="comment" style="flex:0 0 <?= esc($metaColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap; display:flex; align-items:center; font-size:11px; line-height:14px;">
+                    <span class="comment humorListMeta" style="flex:0 1 auto; max-width:38%; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; display:block; font-size:11px; line-height:14px; text-align:left;">
                         <?php $cc = (int)($row->comment_count ?? 0); ?>
                         <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
-                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('Y.m.d', strtotime($row->created_at))) ?>]<?php endif; ?>
+                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('n.j', strtotime($row->created_at))) ?>]<?php endif; ?>
                     </span>
                     <?php if ($is_humor_admin): ?>
-                        <span style="flex:0 0 <?= esc($actionsColWidth) ?>; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-start; white-space:nowrap; overflow:hidden; max-width:100%; margin-right:0;">
+                        <span style="flex:0 0 auto; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-end; white-space:nowrap; flex-shrink:0; margin-left:2px;">
                             <a href="#" onclick="window.open('/?view=humorEdit&id=<?= (int)($row->id ?? 0) ?>','humorEdit','width=600,height=650'); return false;"
                                style="display:inline-block; padding:1px 2px; border:1px solid #0e609c; color:#0e609c; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
                                 수정
@@ -95,11 +90,11 @@ $is_humor_admin = $is_humor_admin ?? false;
                     $humorTitle = (string) ($row->title ?? '');
                     if (mb_strlen($humorTitle) > $titleMaxLen) $humorTitle = mb_substr($humorTitle, 0, $titleMaxLen) . '...';
                 ?>
-                <li style="display:flex; align-items:center; width:100%; box-sizing:border-box; overflow:hidden;">
-                    <span style="flex:0 0 <?= esc($iconColWidth) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <li style="display:flex; align-items:center; width:97%; box-sizing:border-box; overflow:hidden; min-width:0;">
+                    <span style="flex:0 0 <?= esc($iconColPx) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                         <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
                     </span>
-                    <span style="flex:0 0 <?= esc($titleColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap;">
+                    <span style="flex:1 1 0; min-width:0; overflow:hidden; white-space:nowrap;">
                         <a href="#"
                            onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
                            title="<?= esc($row->title) ?>"
@@ -107,13 +102,13 @@ $is_humor_admin = $is_humor_admin ?? false;
                            <?= esc($humorTitle) ?>
                         </a>
                     </span>
-                    <span class="comment" style="flex:0 0 <?= esc($metaColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap; display:flex; align-items:center; font-size:11px; line-height:14px;">
+                    <span class="comment humorListMeta" style="flex:0 1 auto; max-width:38%; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; display:block; font-size:11px; line-height:14px; text-align:right;">
                         <?php $cc = (int)($row->comment_count ?? 0); ?>
                         <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
-                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('Y.m.d', strtotime($row->created_at))) ?>]<?php endif; ?>
+                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('n.j', strtotime($row->created_at))) ?>]<?php endif; ?>
                     </span>
                     <?php if ($is_humor_admin): ?>
-                        <span style="flex:0 0 <?= esc($actionsColWidth) ?>; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-start; white-space:nowrap; overflow:hidden; max-width:100%; margin-right:0;">
+                        <span style="flex:0 0 auto; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-end; white-space:nowrap; flex-shrink:0; margin-left:2px;">
                             <a href="#" onclick="window.open('/?view=humorEdit&id=<?= (int)($row->id ?? 0) ?>','humorEdit','width=600,height=650'); return false;"
                                style="display:inline-block; padding:1px 2px; border:1px solid #0e609c; color:#0e609c; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
                                 수정
