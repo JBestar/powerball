@@ -61,6 +61,15 @@
 						</div>
 					</td>
 				</tr>
+				<?php if ((int) ($post->is_notice ?? 0) !== 1): ?>
+				<tr class="formRow">
+					<td>
+						<div class="formBox" style="margin-top:10px;">
+							<label style="font-size:12px;cursor:pointer;"><input type="checkbox" name="is_secret" value="1"<?= (int) ($post->is_secret ?? 0) === 1 ? ' checked' : '' ?>> 비밀글</label>
+						</div>
+					</td>
+				</tr>
+				<?php endif; ?>
 			</table>
 
 			<div style="margin-top:12px; text-align:right;">

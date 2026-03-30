@@ -27,7 +27,7 @@
                 <span>|</span>
                 <a href="mailto:help@powerballgame.co.kr">광고 및 제휴문의</a>
                 <span>|</span>
-                <a href="/bbs/board.php?bo_table=custom" target="mainFrame">고객센터</a>
+                <a href="<?= esc(site_furl('frame/customerCenter')) ?>" target="mainFrame">고객센터</a>
             </dd>
         </dl>
 

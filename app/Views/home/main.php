@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div style="position:absolute; top:0; right:2px;">
-                <a href="/bbs/board.php?bo_table=custom&wr_id=147" target="mainFrame">
+                <a href="<?= esc(site_furl('frame/customerCenter?id=147')) ?>" target="mainFrame">
                     <img src="<?php echo site_furl('images/banner_bullet.png'); ?>" alt="총알선물">
                 </a>
             </div>
@@ -162,8 +162,8 @@
                     <li><a href="<?= esc(site_furl('frame/communityBoard?bo_table=qna')) ?>" target="mainFrame">1:1문의사항</a></li>
                     <li><a href="<?= esc(site_furl('frame/communityBoard?bo_table=faq')) ?>" target="mainFrame">자주묻는질문</a></li>
                     <li><a href="<?= esc(site_furl('frame/communityBoard?bo_table=request')) ?>" target="mainFrame">기능개선요청</a></li>
-                    <li><a href="/bbs/board.php?bo_table=custom" target="mainFrame">고객센터</a></li>
-                    <li><a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">출석체크</a></li>
+                    <li><a href="<?= esc(site_furl('frame/customerCenter')) ?>" target="mainFrame">고객센터</a></li>
+                    <li><a href="<?php echo site_furl('frame/attendance'); ?>" target="mainFrame">출석체크</a></li>
                 </ul>
             </div>
         </div>
@@ -282,16 +282,16 @@
                         <!-- 분석판 위에 떠 있는 퀵 메뉴 버튼들 -->
                         <div class="top_banner" style="top:-280px; left:-46px;">
                             <div class="lb1">
-                                <a href="/bbs/board.php?bo_table=custom&wr_id=4" target="mainFrame">매뉴얼</a>
+                                <a href="<?= esc(site_furl('frame/customerCenter?id=4')) ?>" target="mainFrame">매뉴얼</a>
                             </div>
                             <div class="lb2">
                                 <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">랭킹</a>
                             </div>
                             <div class="lb3">
-                                <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">출석</a>
+                                <a href="<?php echo site_furl('frame/attendance'); ?>" target="mainFrame">출석</a>
                             </div>
                             <div class="lb4">
-                                <a href="/bbs/board.php?bo_table=custom&wr_id=537" target="mainFrame">
+                                <a href="<?= esc(site_furl('frame/customerCenter?id=537')) ?>" target="mainFrame">
                                     <img src="<?php echo site_furl('images/banner_security.png'); ?>" width="44" height="75" alt="보안접속">
                                 </a>
                             </div>

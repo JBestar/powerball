@@ -12,6 +12,7 @@ use App\Models\FreePost_Model;
 use App\Models\QnaPost_Model;
 use App\Models\FaqPost_Model;
 use App\Models\RequestPost_Model;
+use App\Models\Attendance_Model;
 
 class Home extends BaseController
 {
@@ -72,6 +73,9 @@ class Home extends BaseController
         $path = trim($path, '/');
         if (strpos($path, 'frame/customerCenter') !== false) {
             return $this->frameCustomerCenter();
+        }
+        if (strpos($path, 'frame/attendance') !== false) {
+            return $this->frameAttendance();
         }
         if (strpos($path, 'frame/dayLog') !== false || preg_match('#^frame/#', $path)) {
             return $this->frameDayLog();
@@ -723,6 +727,8 @@ class Home extends BaseController
                 }
 
                 $now = date('Y-m-d H:i:s');
+                $wrSecret = $this->request->getPost('wr_secret');
+                $isSecret = ($wrSecret === '1' || $wrSecret === 'on' || $wrSecret === 'Y');
                 $data = [
                     'mb_uid' => $auth['mb_uid'],
                     'mb_nickname' => $auth['mb_nickname'],
@@ -732,6 +738,8 @@ class Home extends BaseController
                     'wr_hit' => 0,
                     'wr_good' => 0,
                     'is_notice' => 0,
+                    'is_secret' => $isSecret ? 1 : 0,
+                    'parent_id' => null,
                     'created_at' => $now,
                 ];
                 $qnaModel->insert($data);
@@ -791,6 +799,13 @@ class Home extends BaseController
                     $mbNickKeep = $mbUidKeep;
                 }
 
+                $noticeFlag = (int) ($post->is_notice ?? 0);
+                $secPost = $this->request->getPost('is_secret');
+                $isSecretUp = $noticeFlag === 1 ? 0 : (($secPost === '1' || $secPost === 'on') ? 1 : 0);
+                $parentKeep = null;
+                if (isset($post->parent_id) && $post->parent_id !== null && $post->parent_id !== '') {
+                    $parentKeep = (int) $post->parent_id;
+                }
                 $qnaModel->update($id, [
                     'title' => $title,
                     'content' => $content,
@@ -799,7 +814,9 @@ class Home extends BaseController
                     'comment_count' => (int) ($post->comment_count ?? 0),
                     'wr_hit' => (int) ($post->wr_hit ?? 0),
                     'wr_good' => (int) ($post->wr_good ?? 0),
-                    'is_notice' => (int) ($post->is_notice ?? 0),
+                    'is_notice' => $noticeFlag,
+                    'is_secret' => $isSecretUp,
+                    'parent_id' => $parentKeep !== null && $parentKeep !== '' ? (int) $parentKeep : null,
                     'created_at' => (string) ($post->created_at ?? date('Y-m-d H:i:s')),
                 ]);
 
@@ -2474,6 +2491,145 @@ class Home extends BaseController
     }
 
     /**
+     * 출석 AJAX (선배님 POST: view=action&action=attendance&actionType=insert)
+     */
+    private function attendanceJsonInsert(Attendance_Model $model): \CodeIgniter\HTTP\ResponseInterface
+    {
+        if (! is_login(false)) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '로그인 후 이용해 주세요.']);
+        }
+        $uid = (string) ($this->session->user_id ?? '');
+        $member = $this->modelMember->getByUid($uid);
+        if (! $member) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '회원 정보를 찾을 수 없습니다.']);
+        }
+        $mbFid = (int) ($member->mb_fid ?? 0);
+        if ($mbFid <= 0) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '회원 정보를 찾을 수 없습니다.']);
+        }
+        $today = date('Y-m-d');
+        if ($model->hasAttendedOn($mbFid, $today)) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '오늘은 이미 출석했습니다.']);
+        }
+        $select = (int) $this->request->getPost('selectNumber');
+        if (! in_array($select, [1, 2, 3], true)) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '사다리 숫자를 선택해주세요.']);
+        }
+        $comment = trim((string) $this->request->getPost('comment'));
+        if ($comment === '') {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '출석 코멘트를 입력해주세요.']);
+        }
+        if (mb_strlen($comment) > 500) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '코멘트가 너무 깁니다.']);
+        }
+        $resultNum = random_int(1, 3);
+        $isWin = ($select === $resultNum);
+        try {
+            $newId = $model->insertAttendance($mbFid, $today, $select, $resultNum, $isWin, $comment);
+        } catch (\Throwable $e) {
+            $newId = null;
+        }
+        if (! $newId) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => '출석 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.']);
+        }
+
+        return $this->response->setJSON([
+            'state'        => 'success',
+            'selectNumber' => (string) $select,
+            'number'       => (string) $resultNum,
+            'ladderResult' => $isWin ? 'win' : 'lose',
+        ]);
+    }
+
+    /**
+     * iframe(mainFrame) 전용 — 선배님 출석체크 (?view=attendance 와 동등 UI)
+     * GET|POST frame/attendance?curMonth=Y-m&page=
+     */
+    public function frameAttendance()
+    {
+        $this->setLanguage();
+        $headInfo = $this->getSiteConf();
+        $local = rtrim(site_furl(''), '/');
+        $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time();
+
+        $model = new Attendance_Model();
+        $model->ensureTable();
+
+        if ($this->request->getMethod() === 'post') {
+            $view = (string) $this->request->getPost('view');
+            $action = (string) $this->request->getPost('action');
+            $actionType = (string) $this->request->getPost('actionType');
+            if ($view === 'action' && $action === 'attendance' && $actionType === 'insert') {
+                return $this->attendanceJsonInsert($model);
+            }
+        }
+
+        $curMonth = trim((string) $this->request->getGet('curMonth'));
+        if (! preg_match('/^\d{4}-\d{2}$/', $curMonth)) {
+            $curMonth = date('Y-m');
+        }
+        $parts = explode('-', $curMonth);
+        $calendarYear = (int) ($parts[0] ?? (int) date('Y'));
+        $calendarMonth = (int) ($parts[1] ?? (int) date('m'));
+        if ($calendarMonth < 1 || $calendarMonth > 12) {
+            $calendarMonth = (int) date('m');
+            $curMonth = date('Y-m');
+        }
+
+        $page = max(1, (int) $this->request->getGet('page'));
+        $perPage = 20;
+        $totalRows = $model->countAllRows();
+        $totalPages = max(1, (int) ceil($totalRows / $perPage));
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+        $list = $model->getListPageJoined($page, $perPage);
+
+        $isLogin = is_login(false);
+        $attendedYmd = [];
+        $alreadyToday = false;
+        if ($isLogin) {
+            $uid = (string) ($this->session->user_id ?? '');
+            $m = $this->modelMember->getByUid($uid);
+            $mbFid = (int) ($m->mb_fid ?? 0);
+            if ($mbFid > 0) {
+                $attendedYmd = $model->getAttendedYmdSetForMonth($mbFid, $calendarYear, $calendarMonth);
+                $alreadyToday = $model->hasAttendedOn($mbFid, date('Y-m-d'));
+            }
+        }
+
+        $pool = Attendance_Model::commentPool();
+        $commentNo = array_rand($pool);
+        $commentPreset = $pool[$commentNo];
+
+        $html = view('home/attendance_frame', array_merge($headInfo, [
+            'site_title'     => ($headInfo['site_name'] ?? '파워볼게임') . ' : 출석체크',
+            'local'          => $local,
+            'cssVer'         => $cssVer,
+            'curMonth'       => $curMonth,
+            'calendarYear'   => $calendarYear,
+            'calendarMonth'  => $calendarMonth,
+            'page'           => $page,
+            'perPage'        => $perPage,
+            'totalRows'      => $totalRows,
+            'totalPages'     => $totalPages,
+            'list'           => $list,
+            'isLogin'        => $isLogin,
+            'alreadyToday'   => $alreadyToday,
+            'attendedYmd'    => $attendedYmd,
+            'commentNo'      => $commentNo,
+            'commentPreset'  => $commentPreset,
+            'simg'           => 'https://simg.powerballgame.co.kr',
+            'postUrl'        => site_furl('frame/attendance'),
+        ]));
+        $this->response->setBody($html);
+        $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+        $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+        return $this->response;
+    }
+
+    /**
      * iframe(mainFrame) 전용 — 고객센터(공지) 읽기 + 목록 (선배님 bo_v + bo_list 구조, bbs.css)
      * GET frame/customerCenter?id=공지ID&page=페이지&sfl=&stx=
      */
@@ -2484,11 +2640,20 @@ class Home extends BaseController
         $local = rtrim(site_furl(''), '/');
         $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time();
 
+        // 진단: 기본 Logger threshold=3 이면 emergency/alert/critical 만 파일에 기록됨 (app/Config/Logger.php)
+        $ccLog = static function (string $msg): void {
+            log_message('critical', '[frameCustomerCenter] ' . $msg);
+        };
+        $reqUri = (string) ($this->request->getServer('REQUEST_URI') ?? '');
+        $ccLog('request=' . $reqUri);
+
         $boards = [];
         try {
             $boards = $this->modelNotice->getBoards();
             $boards = is_array($boards) ? $boards : [];
+            $ccLog('getBoards ok count=' . count($boards));
         } catch (\Throwable $e) {
+            $ccLog('getBoards EXCEPTION: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             $boards = [];
         }
 
@@ -2518,6 +2683,7 @@ class Home extends BaseController
                         return mb_stripos($title, $stx) !== false;
                 }
             }));
+            $ccLog('after search filter stx=' . json_encode($stx, JSON_UNESCAPED_UNICODE) . ' sfl=' . json_encode($sfl, JSON_UNESCAPED_UNICODE) . ' count=' . count($boards));
         }
 
         $id = (int) $this->request->getGet('id');
@@ -2537,24 +2703,14 @@ class Home extends BaseController
                 $post = null;
             }
         }
-        if (!$post && $boards !== []) {
-            $first = $boards[0];
-            $fid = (int) ($first->notice_fid ?? 0);
-            if ($fid > 0) {
-                try {
-                    $post = $this->modelNotice->getBoardById($fid);
-                    if ($post) {
-                        $this->modelNotice->incrementHit($fid);
-                        $post->notice_hit = (int) ($post->notice_hit ?? 0) + 1;
-                    }
-                } catch (\Throwable $e) {
-                    $post = null;
-                }
-            }
-        }
+
+        $ccLog(
+            'resolved post notice_fid=' . ($post ? (string) (int) ($post->notice_fid ?? 0) : 'null')
+            . ' boards_empty=' . ($boards === [] ? '1' : '0')
+        );
 
         $page = max(1, (int) $this->request->getGet('page'));
-        $perPage = 5;
+        $perPage = 20;
         $total = count($boards);
         $ceilRaw = $perPage > 0 ? ceil($total / $perPage) : 0;
         $totalPages = max(1, (int) $ceilRaw);
@@ -2588,8 +2744,16 @@ class Home extends BaseController
         } catch (\Throwable $e) {}
         $is_notice_admin = $objAdm && (int) ($objAdm->mb_level ?? 0) >= 100;
 
+        $siteTitleCc = ($headInfo['site_name'] ?? '파워볼게임') . ' : 고객센터';
+        if ($post) {
+            $t = trim((string) ($post->notice_title ?? ''));
+            if ($t !== '') {
+                $siteTitleCc = ($headInfo['site_name'] ?? '파워볼게임') . ' : ' . $t;
+            }
+        }
+
         $viewData = array_merge($headInfo, [
-            'site_title' => ($headInfo['site_name'] ?? '파워볼게임') . ' : 고객센터',
+            'site_title' => $siteTitleCc,
             'local' => $local,
             'cssVer' => $cssVer,
             'post' => $post,
@@ -2607,7 +2771,13 @@ class Home extends BaseController
             'is_notice_admin' => $is_notice_admin,
         ]);
 
-        $html = view('home/customer_center_frame', $viewData);
+        try {
+            $html = view('home/customer_center_frame', $viewData);
+            $ccLog('view render ok bytes=' . strlen($html));
+        } catch (\Throwable $e) {
+            $ccLog('view EXCEPTION: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            throw $e;
+        }
         $this->response->setBody($html);
         $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
         $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -2636,7 +2806,7 @@ class Home extends BaseController
         }
 
         $page = max(1, (int) $this->request->getGet('page'));
-        $perPage = $boTable === 'photo' ? 24 : ($boTable === 'faq' ? 50 : ($boTable === 'request' ? 20 : 10));
+        $perPage = $boTable === 'photo' ? 24 : ($boTable === 'faq' ? 50 : (($boTable === 'request' || $boTable === 'qna') ? 20 : 10));
         $sfl = (string) $this->request->getGet('sfl');
         if ($sfl === '') {
             $sfl = 'wr_subject';
@@ -2975,48 +3145,6 @@ class Home extends BaseController
             $rows = $qnaModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
             $qnaNotices = ($page === 1) ? $qnaModel->getNotices() : [];
 
-            $wrId = (int) $this->request->getGet('wr_id');
-            if ($wrId <= 0) {
-                $wrId = (int) $this->request->getGet('id');
-            }
-            $readPost = null;
-            $qnaNewerId = null;
-            $qnaOlderId = null;
-            $readAuthorNick = '';
-            $readAuthorGrade = 2;
-            if ($wrId > 0) {
-                $readPost = $qnaModel->find($wrId);
-                if ($readPost) {
-                    $neighbors = $qnaModel->getNeighborIds($wrId);
-                    $qnaNewerId = $neighbors['newer_id'];
-                    $qnaOlderId = $neighbors['older_id'];
-                    $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
-                    try {
-                        $author = $this->modelMember->getByUid((string) ($readPost->mb_uid ?? ''));
-                        if ($author) {
-                            if ($readAuthorNick === '') {
-                                $readAuthorNick = (string) ($author->mb_nickname ?? $readPost->mb_uid ?? '');
-                            }
-                            $readAuthorGrade = (int) ($author->mb_grade ?? 2);
-                        } elseif ($readAuthorNick === '') {
-                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
-                        }
-                    } catch (\Throwable $e) {
-                        if ($readAuthorNick === '') {
-                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
-                        }
-                    }
-                    if ($readAuthorGrade < 0) {
-                        $readAuthorGrade = 0;
-                    }
-                    if ($readAuthorGrade > 20) {
-                        $readAuthorGrade = 20;
-                    }
-                } else {
-                    $wrId = 0;
-                }
-            }
-
             $loginUid = '';
             $isQnaAdmin = false;
             try {
@@ -3028,9 +3156,68 @@ class Home extends BaseController
             } catch (\Throwable $e) {
             }
 
+            $wrId = (int) $this->request->getGet('wr_id');
+            if ($wrId <= 0) {
+                $wrId = (int) $this->request->getGet('id');
+            }
+            $readPost = null;
+            $qnaNewerId = null;
+            $qnaOlderId = null;
+            $readAuthorNick = '';
+            $readAuthorGrade = 2;
+            $qnaSecretDenied = false;
+            if ($wrId > 0) {
+                $readPost = $qnaModel->find($wrId);
+                if ($readPost) {
+                    $secretRead = (int) ($readPost->is_secret ?? 0) === 1;
+                    $authorUid = (string) ($readPost->mb_uid ?? '');
+                    $canOpenSecret = !$secretRead || $isQnaAdmin || ($loginUid !== '' && $loginUid === $authorUid);
+                    if (!$canOpenSecret) {
+                        $qnaSecretDenied = true;
+                        $readPost = null;
+                        $wrId = 0;
+                    } else {
+                        $neighbors = $qnaModel->getNeighborIds((int) $readPost->id);
+                        $qnaNewerId = $neighbors['newer_id'];
+                        $qnaOlderId = $neighbors['older_id'];
+                        $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                        try {
+                            $author = $this->modelMember->getByUid($authorUid);
+                            if ($author) {
+                                if ($readAuthorNick === '') {
+                                    $readAuthorNick = (string) ($author->mb_nickname ?? $authorUid);
+                                }
+                                $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                            } elseif ($readAuthorNick === '') {
+                                $readAuthorNick = $authorUid;
+                            }
+                        } catch (\Throwable $e) {
+                            if ($readAuthorNick === '') {
+                                $readAuthorNick = $authorUid;
+                            }
+                        }
+                        if ($authorUid === 'operator') {
+                            $readAuthorGrade = 30;
+                        } elseif (strpos($authorUid, 'anon_qna_') === 0 || trim((string) ($readPost->mb_nickname ?? '')) === '익명') {
+                            $readAuthorGrade = min($readAuthorGrade, 1);
+                        }
+                        if ($readAuthorGrade < 0) {
+                            $readAuthorGrade = 0;
+                        }
+                        if ($readAuthorGrade > 20) {
+                            $readAuthorGrade = 20;
+                        }
+                    }
+                } else {
+                    $wrId = 0;
+                }
+            }
+
             $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 1:1문의사항 ' . $page . ' 페이지';
             if ($readPost) {
                 $siteTitle = ($readPost->title ?? '1:1문의') . ' > 1:1문의사항 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+            } elseif ($qnaSecretDenied) {
+                $siteTitle = '1:1문의사항 | ' . ($headInfo['site_name'] ?? '파워볼게임');
             }
 
             $viewData = array_merge($headInfo, [
@@ -3058,6 +3245,7 @@ class Home extends BaseController
                 'read_author_nick' => $readAuthorNick,
                 'read_author_grade' => $readAuthorGrade,
                 'qna_notices' => $qnaNotices,
+                'qna_secret_denied' => $qnaSecretDenied,
             ]);
 
             $html = view('home/qna_board_frame', $viewData);

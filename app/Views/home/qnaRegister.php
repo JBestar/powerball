@@ -61,6 +61,13 @@
 						</div>
 					</td>
 				</tr>
+				<tr class="formRow">
+					<td>
+						<div class="formBox" style="margin-top:10px;">
+							<label style="font-size:12px;cursor:pointer;"><input type="checkbox" name="wr_secret" value="1" checked> 비밀글 (목록에서 제목이 가려집니다)</label>
+						</div>
+					</td>
+				</tr>
 			</table>
 
 			<div style="margin-top:12px; text-align:right;">

@@ -28,6 +28,24 @@ $read_author_grade = (int) ($read_author_grade ?? 2);
 $icoNotice = site_furl('images/ico_notice.png');
 $icoReply = site_furl('skin/board/community/img/icon_reply.png');
 $icoSecret = site_furl('skin/board/community/img/icon_secret.png');
+$icoCmt = site_furl('skin/board/community/img/icon_comment.gif');
+$qna_secret_denied = $qna_secret_denied ?? false;
+
+$qnaListGradeGif = static function (object $row): string {
+    $uid = (string) ($row->mb_uid ?? '');
+    if ($uid === 'operator') {
+        $g = 30;
+    } elseif (strpos($uid, 'anon_qna_') === 0 || trim((string) ($row->mb_nickname ?? '')) === '익명') {
+        $g = 1;
+    } else {
+        $g = 2;
+    }
+    if ($g > 20) {
+        $g = 20;
+    }
+
+    return site_furl('images/class/M' . $g . '.gif');
+};
 
 $buildUrl = static function (array $q) use ($bo_table): string {
     $q = array_merge(['bo_table' => $bo_table], $q);
@@ -161,6 +179,9 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 	</script>
 </head>
 <body>
+<?php if ($qna_secret_denied): ?>
+<script>alert('비밀글은 작성자와 운영진만 열람 가능합니다.');</script>
+<?php endif; ?>
 <?php if ($isLogin && $login_uid !== ''): ?>
 <div id="hd_login_msg"><?= esc($login_uid) ?>님 로그인 중 <a href="<?= esc(site_furl('/logout')) ?>">로그아웃</a></div>
 <?php endif; ?>
@@ -257,7 +278,10 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 			<td class="td_num"><img src="<?= esc($icoNotice) ?>" style="vertical-align:top;" alt="공지"></td>
 			<td class="td_subject">
 				<a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $nid]))) ?>"><?= esc($ntitle) ?>
-					<?php if ($ncc > 0): ?><span class="sound_only">댓글</span><span class="cnt_cmt">[<?= $ncc ?>]</span><span class="sound_only">개</span><?php endif; ?>
+					<?php if ($ncc > 0): ?>
+					<img src="<?= esc($icoCmt) ?>" width="12" height="11" alt="" style="vertical-align:middle;margin-left:4px;border:0;">
+					<span class="sound_only">댓글</span><span class="cnt_cmt">[<?= $ncc ?>]</span><span class="sound_only">개</span>
+					<?php endif; ?>
 				</a>
 			</td>
 			<td class="td_name sv_use"><img src="<?= esc($nGif) ?>" alt="" onerror="this.style.display='none'"> <span class="sv_member"><?= esc($nmb) ?></span></td>
@@ -283,7 +307,15 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 	        $dShow = $dRaw ? date('m-d', strtotime((string) $dRaw)) : '';
 	        $numShow = $listNumBase - $idx;
 	        $rowRead = ($wr_id > 0 && $hid === $wr_id);
-	        $isReplyRow = strncasecmp(ltrim($title), 're:', 3) === 0;
+	        $rowUid = (string) ($row->mb_uid ?? '');
+	        $isSecretRow = (int) ($row->is_secret ?? 0) === 1;
+	        $parentId = (int) ($row->parent_id ?? 0);
+	        $isReplyRow = $parentId > 0;
+	        $canSeeRow = $is_qna_admin || ($login_uid !== '' && $login_uid === $rowUid);
+	        $listTitle = ($isSecretRow && !$canSeeRow) ? '비밀글로 작성된 글입니다.' : $title;
+	        $rowHref = $buildUrl(array_merge($listBaseQuery, ['wr_id' => $hid]));
+	        $secretOnClick = ($isSecretRow && !$canSeeRow) ? ' onclick="alert(\'비밀글은 작성자와 운영진만 열람 가능합니다.\');return false;"' : '';
+	        $rowGif = $qnaListGradeGif($row);
 	        ?>
 		<tr class="<?= $rowRead ? 'bo_read' : '' ?>">
 			<td class="td_num"><?= $hid > 0 ? $numShow : '' ?></td>
@@ -291,12 +323,21 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 				<?php if ($isReplyRow): ?>
 				<img src="<?= esc($icoReply) ?>" style="margin-left:10px;" alt="답변글">
 				<?php endif; ?>
-				<a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $hid]))) ?>"><?= esc($title) ?>
-					<?php if ($cc > 0): ?><span class="sound_only">댓글</span><span class="cnt_cmt">[<?= $cc ?>]</span><span class="sound_only">개</span><?php endif; ?>
+				<a href="<?= esc($rowHref) ?>"<?= $secretOnClick ?><?php if ($isSecretRow && !$canSeeRow): ?> class="qna_secret_stub"<?php endif; ?>><?php if ($isSecretRow && !$canSeeRow): ?>
+					<span class="gray"><?= esc($listTitle) ?></span>
+					<?php else: ?>
+					<?= esc($listTitle) ?>
+					<?php endif; ?>
+					<?php if ($cc > 0): ?>
+					<img src="<?= esc($icoCmt) ?>" width="12" height="11" alt="" style="vertical-align:middle;margin-left:4px;border:0;">
+					<span class="sound_only">댓글</span><span class="cnt_cmt">[<?= $cc ?>]</span><span class="sound_only">개</span>
+					<?php endif; ?>
 				</a>
+				<?php if ($isSecretRow): ?>
 				<img src="<?= esc($icoSecret) ?>" alt="비밀글">
+				<?php endif; ?>
 			</td>
-			<td class="td_name sv_use"><img src="<?= esc(site_furl('images/class/M2.gif')) ?>" alt=""> <span class="sv_member"><?= esc($mb) ?></span></td>
+			<td class="td_name sv_use"><img src="<?= esc($rowGif) ?>" alt="" onerror="this.style.display='none'"> <span class="sv_member"><?= esc($mb) ?></span></td>
 			<td class="td_date"><?= esc($dShow) ?></td>
 			<td class="td_num"><?= number_format($hit) ?></td>
 			<?php if ($is_qna_admin): ?>

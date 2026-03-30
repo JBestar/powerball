@@ -12,7 +12,7 @@ class QnaPost_Model extends Model
     protected $table = 'qna_post';
     protected $primaryKey = 'id';
     protected $returnType = 'object';
-    protected $allowedFields = ['mb_uid', 'mb_nickname', 'title', 'content', 'comment_count', 'wr_hit', 'wr_good', 'is_notice', 'created_at'];
+    protected $allowedFields = ['mb_uid', 'mb_nickname', 'title', 'content', 'comment_count', 'wr_hit', 'wr_good', 'is_notice', 'is_secret', 'parent_id', 'created_at'];
     protected $useTimestamps = false;
 
     public function getTable(): string
@@ -34,11 +34,14 @@ class QnaPost_Model extends Model
             `wr_hit` INT UNSIGNED NOT NULL DEFAULT 0,
             `wr_good` INT UNSIGNED NOT NULL DEFAULT 0,
             `is_notice` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            `is_secret` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            `parent_id` INT UNSIGNED NULL DEFAULT NULL,
             `created_at` DATETIME NOT NULL,
             PRIMARY KEY (`id`),
             KEY `idx_created_at` (`created_at`),
             KEY `idx_mb_uid` (`mb_uid`),
-            KEY `idx_notice` (`is_notice`)
+            KEY `idx_notice` (`is_notice`),
+            KEY `idx_parent` (`parent_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $db->query($sql);
 
@@ -57,6 +60,16 @@ class QnaPost_Model extends Model
         if (!$db->fieldExists('mb_nickname', $this->table)) {
             $db->query("ALTER TABLE `{$table}` ADD COLUMN `mb_nickname` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '표시 닉네임' AFTER `mb_uid`");
             $db->query("UPDATE `{$table}` SET `mb_nickname` = `mb_uid` WHERE `mb_nickname` = ''");
+        }
+        if (!$db->fieldExists('is_secret', $this->table)) {
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `is_secret` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '비밀글' AFTER `is_notice`");
+        }
+        if (!$db->fieldExists('parent_id', $this->table)) {
+            $db->query("ALTER TABLE `{$table}` ADD COLUMN `parent_id` INT UNSIGNED NULL DEFAULT NULL COMMENT '답변 원글 id' AFTER `is_secret`");
+        }
+        $idxParent = $db->query("SHOW INDEX FROM `{$table}` WHERE Key_name = 'idx_parent'")->getFirstRow();
+        if ($idxParent === null) {
+            $db->query("ALTER TABLE `{$table}` ADD KEY `idx_parent` (`parent_id`)");
         }
     }
 

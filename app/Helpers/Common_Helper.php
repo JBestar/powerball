@@ -1106,4 +1106,57 @@
       $secs = intval($seed);
       return $randStr.intval($seed).intval(($seed-$secs)*1000000);
     }
+
+    /**
+     * public/images/class/*.gif 중 파일명이 M숫자 또는 F숫자인 것만 모음 (선배님 등급 아이콘).
+     */
+    function member_class_gif_pool(): array
+    {
+        static $cache = null;
+        if ($cache !== null) {
+            return $cache;
+        }
+        $cache = [];
+        if (defined('FCPATH')) {
+            $dir = FCPATH . 'images' . DIRECTORY_SEPARATOR . 'class';
+            if (is_dir($dir)) {
+                $files = glob($dir . DIRECTORY_SEPARATOR . '*.gif');
+                if (is_array($files)) {
+                    foreach ($files as $path) {
+                        $base = basename($path, '.gif');
+                        if (preg_match('/^([MF])(\d+)$/i', $base, $m)) {
+                            $cache[] = strtoupper($m[1]) . (int) $m[2];
+                        }
+                    }
+                }
+            }
+        }
+        $cache = array_values(array_unique($cache));
+        sort($cache, SORT_NATURAL);
+        if ($cache === []) {
+            $cache = ['M1'];
+        }
+        return $cache;
+    }
+
+    /**
+     * 닉 옆 /images/class/Mxx.gif 용 식별자.
+     * mb_color 가 M15·F20 형태이고 해당 파일이 풀에 있으면 그대로, 아니면 mb_fid 로 풀에서 고정(매번 랜덤이 아님).
+     */
+    function member_class_gif_id_for_display($mbColor, int $mbFid): string
+    {
+        $pool = member_class_gif_pool();
+        $raw = trim((string) $mbColor);
+        $rawNoHash = ltrim($raw, '#');
+        if (preg_match('/^([MF])(\d{1,3})$/i', $rawNoHash, $m)) {
+            $id = strtoupper($m[1]) . (int) $m[2];
+            if (in_array($id, $pool, true)) {
+                return $id;
+            }
+        }
+        $n = count($pool);
+        $idx = $mbFid > 0 ? (abs((int) crc32((string) $mbFid)) % $n) : 0;
+
+        return $pool[$idx];
+    }
 ?>

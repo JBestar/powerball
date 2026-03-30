@@ -529,3 +529,277 @@
 [2:34:19] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
 [2:34:25] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
 [2:34:25] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:47:18] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:47:18] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [index] main dashboard is_login(false)=1
+[2:48:48] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:48] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[2:48:51] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:48:51] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:01] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:01] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:41] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:41] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:54] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:54] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:59] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:49:59] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:00] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:00] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:03] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:03] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[2:50:05] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [index] main dashboard is_login(false)=1
+[9:25:22] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:25:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:23] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:25:23] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:25:23] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:23] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:25:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:27] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:27] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:29] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:29] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:34] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:25:34] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [index] main dashboard is_login(false)=1
+[9:31:24] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:24] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [index] main dashboard is_login(false)=1
+[9:31:32] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:32] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [index] main dashboard is_login(false)=1
+[9:31:36] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [index] main dashboard is_login(false)=1
+[9:31:38] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:31:38] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [index] main dashboard is_login(false)=1
+[9:35:15] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:15] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [index] main dashboard is_login(false)=1
+[9:35:55] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:35:55] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:55] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:56] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:35:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:35:57] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:07] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:09] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:09] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:14] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:14] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:16] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:36:16] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:30] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:36:30] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [index] main dashboard is_login(false)=1
+[9:42:04] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:04] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:42:06] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:06] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:10] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:10] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:12] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:12] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:14] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:42:14] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [index] main dashboard is_login(false)=1
+[9:55:56] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:55:56] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:55:57] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:55:58] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [index] main dashboard is_login(false)=1
+[9:56:20] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[9:56:20] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:20] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:21] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:56:21] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:56:21] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[9:56:21] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[9:56:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [index] main dashboard is_login(false)=1
+[10:04:05] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:05] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [index] main dashboard is_login(false)=1
+[10:04:11] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:04:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:12] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:12] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:12] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:04:12] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:04:13] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [index] main dashboard is_login(false)=1
+[10:05:36] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:05:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:05:39] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [index] main dashboard is_login(false)=1
+[10:06:08] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:06:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:08] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:09] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:06:09] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:06:09] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:06:09] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:06:11] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [index] main dashboard is_login(false)=1
+[10:09:36] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:09:36] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:09:38] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [index] main dashboard is_login(false)=1
+[10:16:22] [sess_action] sess_id=h07cr4ctvvkb29qfpaq3q39ou12cimmb
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set
+[10:16:22] [is_login] checkCookie=1 session(logged_in)=true cookie(logged)=not set
+[10:16:26] [is_login] checkCookie=0 session(logged_in)=true cookie(logged)=not set

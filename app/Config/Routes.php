@@ -71,6 +71,7 @@ $routes->setAutoRoute(true);
  * frame/dayLog 는 iframe 전용이므로 가장 먼저 매칭되도록 상단에 정의
  */
 $routes->get('frame/dayLog', 'Home::frameDayLog');
+$routes->match(['get', 'post'], 'frame/attendance', 'Home::frameAttendance');
 $routes->get('frame/customerCenter', 'Home::frameCustomerCenter');
 $routes->get('frame/communityBoard', 'Home::frameCommunityBoard');
 

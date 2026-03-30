@@ -3,7 +3,8 @@
  * mainFrame 전용 — 선배님 고객센터(bo_v + bo_list) 구조
  * 스타일: public/css/default.css, style.css, bbs.css (+ 필요 시 본 문서 인라인)
  */
-$currentId = (int) ($post->notice_fid ?? 0);
+$post = $post ?? null;
+$currentId = $post ? (int) ($post->notice_fid ?? 0) : 0;
 $is_notice_admin = $is_notice_admin ?? false;
 $listColspan = $is_notice_admin ? 6 : 5;
 $buildCcUrl = static function (array $extra) use ($currentId, $page, $sfl, $stx) {
@@ -83,38 +84,35 @@ $buildCcUrl = static function (array $extra) use ($currentId, $page, $sfl, $stx)
 <body>
 
 <script src="<?= esc($local) ?>/js/jquery-1.11.2.min.js"></script>
+<?php if ($post): ?>
 <script src="<?= esc($local) ?>/js/viewimageresize.js"></script>
+<?php endif; ?>
 
+<?php if ($post): ?>
 <article id="bo_v">
 	<div class="viewinfo">
 		<div class="thumb"><img src="<?= esc(site_furl('images/profile.png')) ?>" alt=""></div>
-		<div class="title"><h1><?= $post ? esc($post->notice_title ?? '') : '공지사항' ?></h1></div>
+		<div class="title"><h1><?= esc($post->notice_title ?? '') ?></h1></div>
 		<div class="info">
-			<?php if ($post): ?>
-				<?php
-					$grade = (int) ($post->mb_grade ?? 30);
-					$classGif = site_furl('images/class/M' . $grade . '.gif');
-				?>
-				<img src="<?= esc($classGif) ?>" alt="" onerror="this.style.display='none'">
-				<a href="#" class="uname" onclick="return false;"><span class="sv_member"><?= esc($post->mb_nickname ?? '운영자') ?></span></a>
-				<span class="bar">|</span>
-				<?= esc($post->notice_time_create ? date('Y-m-d H:i', strtotime($post->notice_time_create)) : '') ?>
-				<span class="bar">|</span>
-				조회 <?= esc(number_format((int) ($post->notice_hit ?? 0))) ?>
-			<?php else: ?>
-				<span>등록된 공지가 없습니다.</span>
-			<?php endif; ?>
+			<?php
+				$grade = (int) ($post->mb_grade ?? 30);
+				$classGif = site_furl('images/class/M' . $grade . '.gif');
+			?>
+			<img src="<?= esc($classGif) ?>" alt="" onerror="this.style.display='none'">
+			<a href="#" class="uname" onclick="return false;"><span class="sv_member"><?= esc($post->mb_nickname ?? '운영자') ?></span></a>
+			<span class="bar">|</span>
+			<?= esc($post->notice_time_create ? date('Y-m-d H:i', strtotime($post->notice_time_create)) : '') ?>
+			<span class="bar">|</span>
+			조회 <?= esc(number_format((int) ($post->notice_hit ?? 0))) ?>
 		</div>
 	</div>
 
 	<section id="bo_v_atc">
 		<div id="bo_v_con">
-			<?php if ($post && !empty($post->notice_content)): ?>
+			<?php if (!empty($post->notice_content)): ?>
 				<div class="cc_notice_body"><?= esc($post->notice_content) ?></div>
-			<?php elseif ($post): ?>
-				<p>내용이 없습니다.</p>
 			<?php else: ?>
-				<p>표시할 게시물이 없습니다.</p>
+				<p>내용이 없습니다.</p>
 			<?php endif; ?>
 		</div>
 
@@ -162,17 +160,18 @@ comment_box('', 'c');
 		<?php endif; ?>
 	</ul>
 	<ul class="bo_v_com">
-		<li><a href="<?= esc($buildCcUrl(['id' => null, 'page' => 1])) ?>" class="btn_b01">목록</a></li>
+		<li><a href="<?= esc($buildCcUrl(['id' => null, 'page' => $page])) ?>" class="btn_b01">목록</a></li>
 	</ul>
 </div>
+<?php endif; ?>
 
 <div id="bo_list" style="width:100%">
 	<nav id="bo_cate">
 		<h2 class="sound_only">고객센터 카테고리</h2>
 		<ul id="bo_cate_ul">
-			<li><a href="<?= esc($buildCcUrl(['page' => 1])) ?>" id="bo_cate_on">전체</a></li>
-			<li><a href="<?= esc($buildCcUrl(['page' => 1, 'stx' => '', 'sfl' => ''])) ?>">공지사항</a></li>
-			<li><a href="<?= esc($buildCcUrl(['page' => 1])) ?>">이벤트</a></li>
+			<li><a href="<?= esc($buildCcUrl(['page' => 1, 'id' => null])) ?>" id="bo_cate_on">전체</a></li>
+			<li><a href="<?= esc($buildCcUrl(['page' => 1, 'id' => null, 'stx' => '', 'sfl' => ''])) ?>">공지사항</a></li>
+			<li><a href="<?= esc($buildCcUrl(['page' => 1, 'id' => null])) ?>">이벤트</a></li>
 			<li><a href="<?= esc(site_furl('/?view=prison')) ?>" target="_top">영창</a></li>
 		</ul>
 	</nav>
@@ -225,7 +224,8 @@ comment_box('', 'c');
 					</td>
 					<td class="td_name sv_use">
 						<img src="<?= esc($classGifR) ?>" alt="" onerror="this.style.display='none'">
-						<span class="sv_member"><?= esc($row->mb_nickname ?? '') ?></span>
+						<?php $nickShow = trim((string) ($row->mb_nickname ?? '')); ?>
+						<span class="sv_member"><?= esc($nickShow !== '' ? $nickShow : '운영자') ?></span>
 					</td>
 					<td class="td_date"><?= esc($rowDate) ?></td>
 					<td class="td_num"><?= (int) ($row->notice_hit ?? 0) ?></td>
@@ -256,11 +256,11 @@ $pgShowEnd = $totalPages > 0 && $pgEnd < $totalPages;
 	<?php if ($p === $page) : ?>
 		<span class="sound_only">열린</span><strong class="pg_current"><?= $p ?></strong><span class="sound_only">페이지</span>
 	<?php else : ?>
-		<a href="<?= esc($buildCcUrl(['page' => $p])) ?>" class="pg_page"><?= $p ?><span class="sound_only">페이지</span></a>
+		<a href="<?= esc($buildCcUrl(['page' => $p, 'id' => null])) ?>" class="pg_page"><?= $p ?><span class="sound_only">페이지</span></a>
 	<?php endif; ?>
 <?php endfor; ?>
 <?php if ($pgShowEnd) : ?>
-	<a href="<?= esc($buildCcUrl(['page' => $totalPages])) ?>" class="pg_page pg_end">&gt;&gt;</a>
+	<a href="<?= esc($buildCcUrl(['page' => $totalPages, 'id' => null])) ?>" class="pg_page pg_end">&gt;&gt;</a>
 <?php endif; ?>
 </span></nav>
 
@@ -287,11 +287,13 @@ $pgShowEnd = $totalPages > 0 && $pgEnd < $totalPages;
 	</form>
 </fieldset>
 
+<?php if ($post): ?>
 <script>
 $(function() {
 	$("#bo_v_atc").viewimageresize();
 });
 </script>
+<?php endif; ?>
 
 </body>
 </html>
