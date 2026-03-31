@@ -41,7 +41,7 @@
         plugin.settings = {}
 
     var $element = $(element),
-        element = element;
+        element = $(element);
 
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
@@ -155,7 +155,7 @@
   $.fn.simpleTicker = function(options) {
     return this.each(function() {
       if (undefined == $(this).data('simpleTicker')) {
-        var plugin = new $.simpleTiecker(this, options);
+        var plugin = new $.simpleTicker(this, options);
         $(this).data('simpleTicker', plugin);
       }
     });

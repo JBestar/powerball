@@ -3630,24 +3630,81 @@ class Home extends BaseController
 		// }
 		
 	}
+
+    /**
+     * sess: 최근 2분 내 sess_action 또는 sess_update 기준 접속 세션 수 (선배님 접속자 집계와 유사).
+     */
+    protected function getConnectUserCount(): int
+    {
+        try {
+            $sessModel = new \App\Models\Sess_Model();
+            $tmLast = date('Y-m-d H:i:s', strtotime('-2 minutes'));
+
+            return (int) $sessModel
+                ->groupStart()
+                ->where('sess_action >=', $tmLast)
+                ->orWhere('sess_update >=', $tmLast)
+                ->groupEnd()
+                ->countAllResults();
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
+
+    /** 채팅 조회 시 현재 세션의 sess_update 갱신 → 접속 집계에 포함 */
+    protected function touchSessUpdateForChat(): void
+    {
+        try {
+            $sid = (string) ($this->session->session_id ?? '');
+            if ($sid === '') {
+                return;
+            }
+            (new \App\Models\Sess_Model())->updateLast($sid);
+        } catch (\Throwable $e) {
+        }
+    }
+
     public function chat()
     {
         $headInfo = $this->getSiteConf();
         $objMember = null;
         $userToken = '';
+        $loginYN = 'N';
+        $level = 1;
+        $nickname = '';
+        $classGifId = 'M1';
         if (is_login(true)) {
             $user_id = $this->session->user_id;
             $objMember = $this->modelMember->getByUid($user_id);
             $userToken = md5($this->session->session_id . ($objMember->mb_uid ?? ''));
+            $loginYN = 'Y';
+            $level = max(1, min(20, (int) ($objMember->mb_grade ?? 1)));
+            $nickname = (string) ($objMember->mb_nickname ?? $objMember->mb_uid ?? '');
+            $classGifId = member_class_gif_id_for_display((string) ($objMember->mb_color ?? ''), (int) ($objMember->mb_fid ?? 0));
         }
+        $notices = [];
+        try {
+            $boards = $this->modelNotice->getBoards();
+            if (is_array($boards)) {
+                $notices = array_slice($boards, 0, 5);
+            }
+        } catch (\Throwable $e) {}
         $timerInfo = $this->getDrawTimerInfo();
+        $this->touchSessUpdateForChat();
+        $connect_user_cnt = $this->getConnectUserCount();
         $data = [
             'site_title'   => $headInfo['site_title'] ?? $headInfo['site_name'] ?? '파워볼 채팅',
             'server_time'  => time(),
             'objMember'    => $objMember,
             'userToken'    => $userToken,
+            'loginYN'      => $loginYN,
+            'level'        => $level,
+            'nickname'     => $nickname,
+            'classGifId'   => $classGifId,
+            'notices'      => $notices,
             'time_round'   => (int) ($timerInfo['next_round'] ?? 1),
             'remain_time'  => (int) ($timerInfo['remain_seconds'] ?? 300),
+            'connect_user_cnt' => $connect_user_cnt,
         ];
         return view('home/chat', $data);
     }
@@ -3655,11 +3712,57 @@ class Home extends BaseController
     public function ajaxChatTimer()
     {
         $timerInfo = $this->getDrawTimerInfo();
+
         return $this->response->setJSON([
             'state' => 'success',
             'time_round' => (int) ($timerInfo['next_round'] ?? 1),
             'remain_seconds' => (int) ($timerInfo['remain_seconds'] ?? 300),
+            'connectUserCnt' => $this->getConnectUserCount(),
         ]);
+    }
+
+    /**
+     * 채팅 연병장용 최근 확정 추첨 1회 (getOrGenerate 호출 없음 — 목록 폴링에서 부작용 방지).
+     * 홀짝·언오·대중소 규칙은 일자별 분석(computeStatsForDraws)과 동일.
+     *
+     * @return array<string, mixed>|null
+     */
+    protected function buildChatLastDrawPayload(?object $draw): ?array
+    {
+        if (! $draw || ! isset($draw->round)) {
+            return null;
+        }
+        $ts = ! empty($draw->drawn_at) ? strtotime((string) $draw->drawn_at) : time();
+        if ($ts === false) {
+            $ts = time();
+        }
+        $dateLabel = sprintf('%02d월%02d일', (int) date('n', $ts), (int) date('j', $ts));
+        $round    = (int) $draw->round;
+        $pb       = (int) ($draw->powerball ?? 0);
+        $sum      = (int) ($draw->ball_sum ?? 0);
+        $pbOddKr  = ($pb % 2 === 1) ? '홀' : '짝';
+        $pbUoKr   = ($pb <= 4) ? '언더' : '오버';
+        $sumOddKr = ($sum % 2 === 1) ? '홀' : '짝';
+        $sumUoKr  = ($sum <= 72) ? '언더' : '오버';
+        if ($sum <= 64) {
+            $sizeKr = '소';
+        } elseif ($sum <= 80) {
+            $sizeKr = '중';
+        } else {
+            $sizeKr = '대';
+        }
+
+        return [
+            'round'               => $round,
+            'date_label'          => $dateLabel,
+            'powerball'           => $pb,
+            'powerball_odd_even'  => $pbOddKr,
+            'powerball_under_over'=> $pbUoKr,
+            'ball_sum'            => $sum,
+            'sum_odd_even'        => $sumOddKr,
+            'sum_under_over'      => $sumUoKr,
+            'sum_size'            => $sizeKr,
+        ];
     }
 
     public function ajaxChatList()
@@ -3687,19 +3790,22 @@ class Home extends BaseController
             ];
         }
 
-        $connectCnt = 0;
+        $this->touchSessUpdateForChat();
+        $connectCnt = $this->getConnectUserCount();
+
+        $lastDraw = null;
         try {
-            $sessModel = new \App\Models\Sess_Model();
-            $tmLast = date('Y-m-d H:i:s', strtotime('-2 minutes'));
-            $connectCnt = (int) $sessModel->where('sess_update >=', $tmLast)->countAllResults();
+            $drawModel = new \App\Models\PowerballDraw_Model();
+            $lastDraw = $this->buildChatLastDrawPayload($drawModel->getLatest());
         } catch (\Throwable $e) {
-            $connectCnt = 0;
+            $lastDraw = null;
         }
 
         return $this->response->setJSON([
             'state' => 'success',
             'connectUserCnt' => $connectCnt,
             'messages' => $messages,
+            'lastDraw' => $lastDraw,
         ]);
     }
 

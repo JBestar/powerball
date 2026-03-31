@@ -362,6 +362,14 @@
                         </div>
                     </div>
                     <div id="banner_left2_area" style="text-align:center;">
+                        <div style="text-align:center;margin-top:10px;">
+                            <script>
+                            document.write("<d"+"iv id='mobonDivBanner_338713'><iframe name='ifrad' id='mobonIframe_338713' src='//www.mediacategory.com/servlet/adBanner?from="+escape(document.referrer)+"&s=338713&igb=61&iwh=250_250&cntad=1&cntsr=1' frameborder='0' scrolling='no' style='height:250px; width:250px;'></iframe></div>");
+                            </script>
+                        </div>
+                        <div style="margin-top:10px;text-align:center;cursor:pointer;" onclick="window.open('https://www.tbfoundation.io/promotion')">
+                            <img src="<?= esc(site_furl('images/336x600-1.png')) ?>" width="336" height="600" alt="">
+                        </div>
                     </div>
                     
                 </div>
