@@ -175,6 +175,26 @@ function rebuildBallsNoWhitespace(containerId, includeId) {
 	$container.html(parts.join(''));
 }
 
+/** 메인·일자별분석과 동일: ajaxChatTimer로 서버 시계 동기화 (iframe별 클라이언트 카운트다운 편차 방지) */
+function syncMiniViewDrawTimerFromServer() {
+	var base = (window.POWERBALL_BASE_URL || window.ACTION_BASE_URL || '').replace(/\/$/, '') + '/';
+	if (!base || base === '/') return;
+	$.post(base, { view: 'action', action: 'ajaxChatTimer' }, function(resp) {
+		if (!resp || resp.state !== 'success') return;
+		var sec = parseInt(resp.remain_seconds, 10);
+		if (isNaN(sec)) sec = 0;
+		remainTime = sec;
+		if (typeof resp.time_round !== 'undefined') {
+			$('#timeRound').text(resp.time_round);
+			$('.nextRound').text(resp.time_round);
+		}
+		var remain_i = Math.floor(remainTime / 60);
+		var remain_s = remainTime % 60;
+		$('#ladderTimer').find('.minute').text(remain_i);
+		$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
+	}, 'json');
+}
+
 $(document).ready(function(){
 	rebuildBallsNoWhitespace('lotteryResult', true);
 	rebuildBallsNoWhitespace('beforeResult', false);
@@ -183,6 +203,17 @@ $(document).ready(function(){
 		$('#lotteryBox .play').css('display', 'block').show();
 		$('#ladderReady').hide();
 	}
+	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 300);
+	setInterval(function() {
+		try {
+			if (!document.hidden) syncMiniViewDrawTimerFromServer();
+		} catch (e) {}
+	}, 5000);
+	$(document).on('visibilitychange.miniviewtimer', function() {
+		if (!document.hidden) {
+			try { syncMiniViewDrawTimerFromServer(); } catch (e) {}
+		}
+	});
 	setInterval(function(){
 		ladderResultTimer('ladderTimer');
 	},1000);

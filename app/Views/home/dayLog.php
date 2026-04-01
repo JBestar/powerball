@@ -153,6 +153,7 @@
 		}
 		$(document).on('visibilitychange', function() {
 			if (!document.hidden) {
+				try { syncDayLogDrawTimerFromServer(); } catch(e) {}
 				// 돌아오는 즉시 1회 + 빠른 추격
 				try { dataRefresh(); } catch(e) {}
 				startCatchUp();
@@ -160,6 +161,14 @@
 				stopCatchUp();
 			}
 		});
+
+		// 타이머 표시: 서버와 5초마다 재동기화 (클라이언트만 카운트다운할 때 생기는 3곳 불일치 방지)
+		setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
+		setInterval(function() {
+			try {
+				if (!document.hidden) syncDayLogDrawTimerFromServer();
+			} catch(e) {}
+		}, 5000);
 
 /*
 		$('.defaultTable .menu').mouseover(function(){
@@ -491,6 +500,26 @@
 
 	// ladderTimer (서버에서 다음 추첨까지 남은 초·다음 회차로 초기화)
 	var remainTime = <?= (int)($remain_seconds ?? 300) ?>;
+
+	/** 서버 시계와 동기화 — 채팅(ajaxChatTimer)과 동일 소스로 맞춤 (다중 타이머·iframe 간 편차 방지) */
+	function syncDayLogDrawTimerFromServer() {
+		try {
+			if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate != today) return;
+		} catch (e) {}
+		$.post(actionBaseUrl, { view: 'action', action: 'ajaxChatTimer' }, function(resp) {
+			if (!resp || resp.state !== 'success') return;
+			var sec = parseInt(resp.remain_seconds, 10);
+			if (isNaN(sec)) sec = 0;
+			remainTime = sec;
+			var ri = Math.floor(remainTime / 60);
+			var rs = remainTime % 60;
+			$('#dayLogTimer .minute').text(ri);
+			$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
+			if (typeof resp.time_round !== 'undefined') {
+				$('#timeRound').text(resp.time_round);
+			}
+		}, 'json');
+	}
 
 	$(window).load(function(){
 		if(getCookie('MINIVIEWLAYER') == 'Y')
