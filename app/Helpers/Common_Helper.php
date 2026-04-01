@@ -25,10 +25,40 @@
       return false;
     }
 
+    if (! function_exists('is_request_https')) {
+        /**
+         * 프록시(X-Forwarded-Proto) 뒤에서도 HTTPS 페이지로 판별 (Mixed Content 방지).
+         */
+        function is_request_https(): bool
+        {
+            if (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+                return true;
+            }
+            if (isset($_SERVER['SERVER_PORT']) && (string) $_SERVER['SERVER_PORT'] === '443') {
+                return true;
+            }
+            if (! empty($_SERVER['HTTP_X_FORWARDED_PROTO'])
+                && strtolower((string) $_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
+                return true;
+            }
+            if (! empty($_SERVER['HTTP_X_FORWARDED_SSL']) && (string) $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     function site_furl($url){
-      if(substr($url, 0, 1) == "/")
-        return $_ENV['app.furl'].$url;
-      else return $_ENV['app.furl']."/".$url;
+      $base = $_ENV['app.furl'] ?? '';
+      $out = (substr($url, 0, 1) == "/")
+        ? $base.$url
+        : $base."/".$url;
+      if (is_request_https() && preg_match('#^http://#i', $out)) {
+        $out = preg_replace('#^http://#i', 'https://', $out, 1);
+      }
+
+      return $out;
     }
     
     function num_format($numVal,$afterPoint=2,$minAfterPoint=0,$thousandSep=",",$decPoint="."){
