@@ -105,32 +105,15 @@ $listBaseQuery = [
 		.photoList li a .thumb img { width: 200px; height: 200px; object-fit: cover; }
 		.photoList ul li .title {
 			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			background-color: rgba(13, 86, 140, 0.75);
-			width: 100%;
-			box-sizing: border-box;
+    		bottom: 0;
+    		background-color: rgba(13,86,140,0.75);
+    		width: 100%;
 		}
 		.photoList ul li .title a {
-			display: block;
-			height: 26px;
-			line-height: 26px;
-			padding: 0 5px;
-			color: #fff;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.photoList ul li .title .photo-author {
-			display: block;
-			font-size: 11px;
-			line-height: 16px;
-			padding: 0 5px 5px;
-			color: rgba(255, 255, 255, 0.88);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+			height: 30px;
+    		line-height: 30px;
+    		padding: 0 5px;
+    		color: #fff;
 		}
 		.photoList ul li .title .comment { color: #C11A20; padding-left: 3px; }
 		.photoList li.photo-current { box-shadow: inset 0 0 0 2px #127CCB; }
@@ -268,11 +251,6 @@ $listBaseQuery = [
 	            $liClass .= ($liClass !== '' ? ' ' : '') . 'photo-current';
 	        }
 	        $itemUrl = $buildUrl(array_merge($listBaseQuery, ['wr_id' => $pid]));
-	        $photoAuthor = trim((string) ($row->mb_nickname ?? ''));
-	        if ($photoAuthor === '') {
-	            $fidRow = (int) ($row->mb_uid ?? 0);
-	            $photoAuthor = $fidRow > 0 ? ('#' . $fidRow) : '—';
-	        }
 	        ?>
 				<li<?= $liClass !== '' ? ' class="' . esc($liClass) . '"' : '' ?>>
 					<a href="<?= esc($itemUrl) ?>">
@@ -281,7 +259,6 @@ $listBaseQuery = [
 					<div class="title">
 						<a href="<?= esc($itemUrl) ?>"></a>
 						<a href="<?= esc($itemUrl) ?>"><?= esc($title) ?></a>
-						<span class="photo-author"><?= esc($photoAuthor) ?></span>
 						<span class="comment"><?php if ($cc > 0): ?><span style="color:yellow;">[<?= $cc ?>]</span><?php endif; ?></span>
 					</div>
 				</li>
