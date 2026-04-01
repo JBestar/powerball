@@ -307,13 +307,15 @@ $staticChatRooms = [
                     $msg.empty();
                 }
 
+                var nickMap = (resp.nicknames && typeof resp.nicknames === "object") ? resp.nicknames : {};
                 for (var j = 0; j < newMsgs.length; j++) {
                     var r2 = newMsgs[j];
                     var uid = String(r2.uid || "");
+                    var displayName = String(r2.nickname || nickMap[uid] || uid || "");
                     var txt = String(r2.message || "");
                     var time = String(r2.time || "");
                     var li = '<li><span style="position:relative;"><img src="' + escHtml(classGif) + '" width="23" height="23"></span> '
-                        + '<strong><a href="#" onclick="return false;" class="uname">' + escHtml(uid) + '</a></strong> '
+                        + '<strong><a href="#" onclick="return false;" class="uname">' + escHtml(displayName) + '</a></strong> '
                         + escHtml(txt) + '<span class="time">' + escHtml(time) + '</span></li>';
                     $msg.append(li);
                     lastMsgId = Math.max(lastMsgId, r2.id);
@@ -370,8 +372,9 @@ $staticChatRooms = [
                 }
 
                 Object.keys(users).forEach(function(u) {
+                    var un = nickMap[u] || u;
                     $con.append('<li><span style="position:relative;"><img src="' + escHtml(classGif) + '" width="23" height="23"></span> <strong>'
-                        + '<a href="#" onclick="return false;" class="uname">' + escHtml(u) + '</a></strong></li>');
+                        + '<a href="#" onclick="return false;" class="uname">' + escHtml(un) + '</a></strong></li>');
                 });
                 $("#connectUserCnt").text(resp.connectUserCnt || 0).attr("rel", resp.connectUserCnt || 0);
             }, "json");

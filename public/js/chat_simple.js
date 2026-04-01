@@ -35,7 +35,7 @@
 		var rows = messages || [];
 		for (var i = 0; i < rows.length; i++) {
 			var m = rows[i] || {};
-			var uid = escapeHtml(m.uid);
+			var uid = escapeHtml(m.nickname || m.uid);
 			var tm = escapeHtml(m.time);
 			var msg = escapeHtml(m.message).replace(/\r\n|\r|\n/g, '<br>');
 			var html = '<li style="border-bottom:1px solid #e5e5e5;padding:6px 8px;line-height:1.5;">'

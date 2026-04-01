@@ -3560,6 +3560,17 @@ class Home extends BaseController
 		$sessId = $this->session->session_id ?? 'n/a';
 		writeLog("[doLogin] session set logged_in=1 user_id=" . ($member->mb_uid ?? '') . " session_id=" . $sessId);
 
+		// 접속자 수(sess 테이블) 집계용 — 기존에는 add 미호출로 connectUserCnt 가 항상 0
+		try {
+			$sip = (string) $this->request->getIPAddress();
+			if ($sip !== '') {
+				$member->mb_ip_last = $sip;
+			}
+			$this->modelSess->add($member, (string) ($this->session->session_id ?? ''));
+		} catch (\Throwable $e) {
+			writeLog('[doLogin] sess add: ' . $e->getMessage());
+		}
+
 		// is_login(true) 는 세션 + 쿠키(logged=yes) 둘 다 필요하므로
 		// 리다이렉트 응답에 쿠키를 반드시 포함시킨다.
 		$response = $this->response->redirect($returnUrl);
@@ -3659,7 +3670,29 @@ class Home extends BaseController
             if ($sid === '') {
                 return;
             }
-            (new \App\Models\Sess_Model())->updateLast($sid);
+            $sessModel = new \App\Models\Sess_Model();
+            $sessModel->updateLast($sid);
+            // 로그인만 하고 sess 테이블에 행이 없으면(기존 코드에 add 미호출) updateLast는 무효 → 1회 등록
+            if (! is_login(false)) {
+                return;
+            }
+            $row = (new \App\Models\Sess_Model())->getBySess($sid);
+            if ($row) {
+                return;
+            }
+            $uid = (string) ($this->session->user_id ?? '');
+            if ($uid === '') {
+                return;
+            }
+            $member = $this->modelMember->getByUid($uid);
+            if (! $member) {
+                return;
+            }
+            $sip = (string) $this->request->getIPAddress();
+            if ($sip !== '') {
+                $member->mb_ip_last = $sip;
+            }
+            $this->modelSess->add($member, $sid);
         } catch (\Throwable $e) {
         }
     }
@@ -3778,12 +3811,39 @@ class Home extends BaseController
         $currentMember = $currentUid !== '' ? $this->modelMember->getByUid($currentUid) : null;
         $isAdmin = $currentMember && (int)($currentMember->mb_level ?? 0) >= 100;
 
+        $uniqueUids = [];
+        foreach ($rows as $row) {
+            $u = trim((string) ($row->mb_uid ?? ''));
+            if ($u !== '') {
+                $uniqueUids[$u] = true;
+            }
+        }
+        $uidList = array_keys($uniqueUids);
+        $nickByUid = [];
+        if ($uidList !== []) {
+            $memberRows = $this->modelMember->select('mb_uid, mb_nickname')
+                ->whereIn('mb_uid', $uidList)
+                ->findAll();
+            foreach ($memberRows as $m) {
+                $uk = (string) ($m->mb_uid ?? '');
+                $nn = trim((string) ($m->mb_nickname ?? ''));
+                $nickByUid[$uk] = $nn !== '' ? $nn : $uk;
+            }
+            foreach ($uidList as $uk) {
+                if (! isset($nickByUid[$uk])) {
+                    $nickByUid[$uk] = $uk;
+                }
+            }
+        }
+
         $messages = [];
         foreach ($rows as $row) {
             $uid = (string) ($row->mb_uid ?? '');
+            $nickname = $nickByUid[$uid] ?? $uid;
             $messages[] = [
                 'id' => (int) ($row->id ?? 0),
                 'uid' => $uid,
+                'nickname' => $nickname,
                 'message' => (string) ($row->message ?? ''),
                 'time' => !empty($row->created_at) ? date('H:i:s', strtotime($row->created_at)) : '',
                 'canDelete' => $isAdmin || ($currentUid !== '' && $uid === $currentUid),
@@ -3805,6 +3865,7 @@ class Home extends BaseController
             'state' => 'success',
             'connectUserCnt' => $connectCnt,
             'messages' => $messages,
+            'nicknames' => $nickByUid,
             'lastDraw' => $lastDraw,
         ]);
     }
