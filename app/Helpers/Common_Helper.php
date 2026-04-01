@@ -31,6 +31,9 @@
          */
         function is_request_https(): bool
         {
+            if (! empty($_SERVER['REQUEST_SCHEME']) && strtolower((string) $_SERVER['REQUEST_SCHEME']) === 'https') {
+                return true;
+            }
             if (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
                 return true;
             }
@@ -41,7 +44,11 @@
                 && strtolower((string) $_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
                 return true;
             }
-            if (! empty($_SERVER['HTTP_X_FORWARDED_SSL']) && (string) $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+            if (! empty($_SERVER['HTTP_X_FORWARDED_SSL'])
+                && strtolower((string) $_SERVER['HTTP_X_FORWARDED_SSL']) === 'on') {
+                return true;
+            }
+            if (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && (string) $_SERVER['HTTP_X_FORWARDED_SSL'] === '1') {
                 return true;
             }
 

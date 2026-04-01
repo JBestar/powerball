@@ -55,7 +55,21 @@
         return (window.location.origin || '') + dir;
     }
 
+    /** PHP/프록시가 http URL 을 넘겨도, 페이지가 HTTPS 면 AJAX 는 https 로 (Mixed Content 방지). */
+    function upgradeBaseToMatchPageHttps(baseUrl) {
+        if (!baseUrl || typeof baseUrl !== 'string') {
+            return baseUrl;
+        }
+        try {
+            if (window.location.protocol === 'https:' && /^http:\/\//i.test(baseUrl)) {
+                return baseUrl.replace(/^http:\/\//i, 'https://');
+            }
+        } catch (e) {}
+        return baseUrl;
+    }
+
     var base = normalizeHubBase(typeof window.DRAW_TIMER_HUB_BASE === 'string' ? window.DRAW_TIMER_HUB_BASE : '');
+    base = upgradeBaseToMatchPageHttps(base);
     if (!base || base === '/') {
         dbgWarn('중단: POST URL 을 결정할 수 없음 (DRAW_TIMER_HUB_BASE=', window.DRAW_TIMER_HUB_BASE, ')');
         return;
