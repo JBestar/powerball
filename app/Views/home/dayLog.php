@@ -125,6 +125,42 @@
 			}catch(e){}
 		},10000);
 
+		// 탭이 백그라운드로 가면 브라우저가 timer/ajax를 스로틀링해서 누락이 발생한다.
+		// 다시 돌아왔을 때(visible) 빠르게 따라잡기 위해 짧은 주기로 dataRefresh()를 연속 호출한다.
+		var catchUpTimer = 0;
+		function stopCatchUp() {
+			if (catchUpTimer) {
+				clearInterval(catchUpTimer);
+				catchUpTimer = 0;
+			}
+		}
+		function startCatchUp() {
+			stopCatchUp();
+			if (!(curDate == today)) return;
+			if (document.hidden) return;
+			var ticks = 0;
+			catchUpTimer = setInterval(function() {
+				try {
+					if (document.hidden) { stopCatchUp(); return; }
+					dataRefresh();
+					ticks++;
+					// 최대 60회(약 18초)만 빠른 추격 후 종료 (무한 루프 방지)
+					if (ticks >= 60) stopCatchUp();
+				} catch(e) {
+					stopCatchUp();
+				}
+			}, 300);
+		}
+		$(document).on('visibilitychange', function() {
+			if (!document.hidden) {
+				// 돌아오는 즉시 1회 + 빠른 추격
+				try { dataRefresh(); } catch(e) {}
+				startCatchUp();
+			} else {
+				stopCatchUp();
+			}
+		});
+
 /*
 		$('.defaultTable .menu').mouseover(function(){
 			$(this).find('a').addClass('on');
