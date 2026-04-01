@@ -1245,8 +1245,7 @@ class Home extends BaseController
             return $this->response->setJSON(['state' => 'error', 'msg' => 'Invalid date']);
         }
         $date = substr($segment, 0, 4) . '-' . substr($segment, 4, 2) . '-' . substr($segment, 6, 2);
-        $dateFrom = $date . ' 00:00:00';
-        $dateTo   = $date . ' 23:59:59';
+        [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
 
         $drawModel = new \App\Models\PowerballDraw_Model();
         $rows = $drawModel
@@ -1506,6 +1505,7 @@ class Home extends BaseController
     {
         $actionType = $this->request->getPost('actionType');
         $drawModel  = new \App\Models\PowerballDraw_Model();
+        $drawModel->ensureDailyRoundColumn();
 
         if ($actionType === 'dayLog') {
             $date = $this->request->getPost('date');
@@ -1519,8 +1519,7 @@ class Home extends BaseController
             $perPage = 30;
             $offset  = $page * $perPage;
 
-            $dateFrom = $date . ' 00:00:00';
-            $dateTo   = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -1530,7 +1529,7 @@ class Home extends BaseController
 
             $content = [];
             foreach ($rows as $i => $draw) {
-                $content[] = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, $offset + $i);
+                $content[] = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, $offset + $i, null);
             }
             // 한 번에 최대 30개만 반환 (31개 이상 방지)
             $content = \array_slice($content, 0, $perPage);
@@ -1553,8 +1552,7 @@ class Home extends BaseController
             }
             $afterRound = (int) $this->request->getPost('round');
 
-            $dateFrom = $date . ' 00:00:00';
-            $dateTo   = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $draw = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -1566,7 +1564,7 @@ class Home extends BaseController
                 return $this->response->setJSON(['state' => 'success', 'round' => $afterRound, 'content' => []]);
             }
 
-            $row = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, 0);
+            $row = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, 0, null);
             return $this->response->setJSON([
                 'state'   => 'success',
                 'round'   => (int) $draw->round,
@@ -1599,7 +1597,7 @@ class Home extends BaseController
 
             $content = [];
             foreach ($rows as $i => $draw) {
-                $content[] = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, $offset + $i);
+                $content[] = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, $offset + $i, null);
             }
             $content = \array_slice($content, 0, $perPage);
 
@@ -1789,7 +1787,7 @@ class Home extends BaseController
                     $nextRound = (int) ($nextDraw->round ?? 0);
                     $results[] = [
                         'trClass' => ($matchIdx % 2 === 0) ? 'trOdd' : 'trEven',
-                        'date' => $nextDraw->drawn_at ? date('Y-m-d', strtotime($nextDraw->drawn_at)) : '',
+                        'date' => $nextDraw->drawn_at ? \App\Models\PowerballDraw_Model::gameDayKeyKstFromDrawnAt((string) $nextDraw->drawn_at) : '',
                         'subList' => $subList,
                         'nextResult_round' => $nextRound % 1000,
                         'nextResult_img' => $nextValue ? ('sp-' . $nextValue) : '',
@@ -1851,8 +1849,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -1886,8 +1883,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -1919,8 +1915,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -1953,8 +1948,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -2028,8 +2022,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -2178,8 +2171,7 @@ class Home extends BaseController
             $rows = $drawModel->orderBy('round', 'DESC')->findAll($roundCnt);
             usort($rows, static fn($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
         } else {
-            $dateFrom  = $date . ' 00:00:00';
-            $dateTo    = $date . ' 23:59:59';
+            [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
             $rows      = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
@@ -2268,8 +2260,7 @@ class Home extends BaseController
     protected function computePeriodLogStats(string $startDate, string $endDate): array
     {
         $drawModel = new \App\Models\PowerballDraw_Model();
-        $from = $startDate . ' 00:00:00';
-        $to   = $endDate . ' 23:59:59';
+        [$from, $to] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerRange($startDate, $endDate);
         $rows = $drawModel
             ->where('drawn_at >=', $from)
             ->where('drawn_at <=', $to)
@@ -2278,7 +2269,7 @@ class Home extends BaseController
 
         $byDate = [];
         foreach ($rows as $draw) {
-            $d = $draw->drawn_at ? date('Y-m-d', strtotime($draw->drawn_at)) : '';
+            $d = $draw->drawn_at ? \App\Models\PowerballDraw_Model::gameDayKeyKstFromDrawnAt((string) $draw->drawn_at) : '';
             if ($d === '') continue;
             if (!isset($byDate[$d])) $byDate[$d] = [];
             $byDate[$d][] = $draw;
