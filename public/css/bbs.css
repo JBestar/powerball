@@ -55,7 +55,7 @@ hr{display:none;}
 
 #bo_v_atc #bo_v_con {padding:15px 0;}
 #bo_v_atc #bo_v_act #good_button {position:relative;display:block;width:60px;height:60px;border-radius:60px;border:1px solid #d9ded9;margin:0 auto;text-decoration:none;}
-#bo_v_atc #bo_v_act #good_button span {position:absolute;left:8px;bottom:10px;width:60px;height:20px;line-height:20px;background:url(https://simg.powerballgame.co.kr/images/btn_recom.png) 5px 3px no-repeat;}
+#bo_v_atc #bo_v_act #good_button span {position:absolute;left:8px;bottom:10px;width:60px;height:20px;line-height:20px;background:url(/images/btn_recom.png) 5px 3px no-repeat;}
 #bo_v_atc #bo_v_act #good_button:hover {background-color:red;border:1px solid #cc0000;color:#fff;}
 #bo_v_atc #bo_v_act #good_button:hover strong {color:#fff;}
 #bo_v_atc #bo_v_act #good_button strong {font-size:14px;font-family:tahoma;line-height:40px;color:red;}

@@ -109,7 +109,7 @@
 	</table>
 
 	<div class="displayNone center" id="pageDiv" pageval="0" offset="0" searchpattern="">
-		<img src="https://simg.powerballgame.co.kr/images/loading2.gif" width="50" height="50">
+		<img src="/images/loading2.gif" width="50" height="50" alt="">
 	</div>
 	<div class="displayNone moreBox"><a href="#" onclick="moreClick();return false;">더보기</a></div>
 

@@ -235,96 +235,96 @@ div.ticker ul{margin:auto;}
 div.ticker ul li a {color:#fff;}
 
 /* sp_chat */
-.sp-bl_pp {width:25px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -139px;display:inline-block;}
-.sp-btn_chat_adminSound {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -298px -490px;display:block;}
-.sp-btn_chat_adminSound.on {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -598px -443px;display:block;}
-.sp-btn_ladder {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -250px -490px;display:block;}
-.sp-btn_ladder.on {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -202px -490px;display:block;}
-.sp-btn_chat1 {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -154px -490px;display:block;}
-.sp-btn_chat2 {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -106px -490px;display:block;}
-.sp-btn_chat3 {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -443px;display:block;}
-.sp-btn_chat4 {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -490px;display:block;}
-.sp-btn_chat5 {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -463px -430px;display:block;}
-.sp-btn_chat_sound {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -430px;display:block;}
-.sp-btn_chat_sound.on {width:28px;height:25px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -58px -490px;display:block;}
-.sp-btn_enter {width:22px;height:22px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -215px;}
-.sp-badge5 {width:8px;height:8px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -625px -490px;}
-.sp-badge10 {width:8px;height:13px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -597px;}
-.sp-badge15 {width:8px;height:18px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -327px;}
-.sp-badge20 {width:8px;height:23px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -367px;}
-.sp-win1 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -351px -566px;}
-.sp-win2 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -289px -566px;}
-.sp-win3 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -258px -566px;}
-.sp-win4 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -227px -566px;}
-.sp-win5 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -196px -566px;}
-.sp-win6 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -165px -566px;}
-.sp-win7 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -134px -566px;}
-.sp-win8 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -103px -566px;}
-.sp-win9 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -72px -566px;}
-.sp-win10 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -41px -566px;}
-.sp-win11 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -566px;}
-.sp-win12 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -599px -535px;}
-.sp-win13 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -568px -535px;}
-.sp-win14 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -537px -535px;}
-.sp-win15 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -506px -535px;}
-.sp-win16 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -475px -535px;}
-.sp-win17 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -408px -490px;}
-.sp-win18 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -320px -566px;}
-.sp-win19 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -320px -535px;}
-.sp-win20 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -382px -566px;}
-.sp-win21 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -413px -566px;}
-.sp-win22 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -444px -566px;}
-.sp-win23 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -257px;}
-.sp-win24 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -410px;}
-.sp-win25 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -511px -430px;}
-.sp-win26 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -346px -490px;}
-.sp-win27 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -377px -490px;}
-.sp-win28 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -475px -566px;}
-.sp-win29 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -439px -490px;}
-.sp-win30 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -470px -490px;}
-.sp-win31 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -501px -490px;}
-.sp-win32 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -532px -490px;}
-.sp-win33 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -563px -490px;}
-.sp-win34 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -594px -490px;}
-.sp-win35 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -535px;}
-.sp-win36 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -41px -535px;}
-.sp-win37 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -72px -535px;}
-.sp-win38 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -103px -535px;}
-.sp-win39 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -134px -535px;}
-.sp-win40 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -165px -535px;}
-.sp-win41 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -196px -535px;}
-.sp-win42 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -227px -535px;}
-.sp-win43 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -258px -535px;}
-.sp-win44 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -289px -535px;}
-.sp-win45 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -184px;}
-.sp-win46 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -351px -535px;}
-.sp-win47 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -382px -535px;}
-.sp-win48 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -413px -535px;}
-.sp-win49 {width:11px;height:11px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -444px -535px;}
-.sp-bullet1 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -10px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet2 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -145px -250px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet3 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -130px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet4 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -145px -130px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet5 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -280px -10px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet6 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -280px -130px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet7 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -250px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet8 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -10px;position:relative;top:-53px;margin:0 auto;}
-.sp-bullet9 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -280px -250px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -145px -370px;margin:0 auto;}
-.sp-biscuit1 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -145px -370px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit2 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -145px -10px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit3 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -130px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit4 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -250px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit5 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -10px -370px;position:relative;top:-53px;margin:0 auto;}
-.sp-biscuit6 {width:115px;height:100px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -280px -370px;position:relative;top:-53px;margin:0 auto;}
-.sp-icon_mobile {width:16px;height:16px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -608px -291px;display:inline-block;vertical-align:middle;}
-.sp-badge5_s {width:38px;height:56px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -367px;}
-.sp-badge10_s {width:38px;height:56px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -139px;}
-.sp-badge15_s {width:38px;height:56px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -215px;}
-.sp-badge20_s {width:38px;height:56px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -291px;}
-.sp-target {width:84px;height:109px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -10px;margin:0 auto;}
-.sp-profile {width:40px;height:40px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -475px -370px;}
-.sp-lock {width:40px;height:40px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -370px;margin:0 auto;}
+.sp-bl_pp {width:25px;height:25px;background:url(../../images/sp_chat.png) -608px -139px;display:inline-block;}
+.sp-btn_chat_adminSound {width:28px;height:25px;background:url(../../images/sp_chat.png) -298px -490px;display:block;}
+.sp-btn_chat_adminSound.on {width:28px;height:25px;background:url(../../images/sp_chat.png) -598px -443px;display:block;}
+.sp-btn_ladder {width:28px;height:25px;background:url(../../images/sp_chat.png) -250px -490px;display:block;}
+.sp-btn_ladder.on {width:28px;height:25px;background:url(../../images/sp_chat.png) -202px -490px;display:block;}
+.sp-btn_chat1 {width:28px;height:25px;background:url(../../images/sp_chat.png) -154px -490px;display:block;}
+.sp-btn_chat2 {width:28px;height:25px;background:url(../../images/sp_chat.png) -106px -490px;display:block;}
+.sp-btn_chat3 {width:28px;height:25px;background:url(../../images/sp_chat.png) -550px -443px;display:block;}
+.sp-btn_chat4 {width:28px;height:25px;background:url(../../images/sp_chat.png) -10px -490px;display:block;}
+.sp-btn_chat5 {width:28px;height:25px;background:url(../../images/sp_chat.png) -463px -430px;display:block;}
+.sp-btn_chat_sound {width:28px;height:25px;background:url(../../images/sp_chat.png) -415px -430px;display:block;}
+.sp-btn_chat_sound.on {width:28px;height:25px;background:url(../../images/sp_chat.png) -58px -490px;display:block;}
+.sp-btn_enter {width:22px;height:22px;background:url(../../images/sp_chat.png) -608px -215px;}
+.sp-badge5 {width:8px;height:8px;background:url(../../images/sp_chat.png) -625px -490px;}
+.sp-badge10 {width:8px;height:13px;background:url(../../images/sp_chat.png) -10px -597px;}
+.sp-badge15 {width:8px;height:18px;background:url(../../images/sp_chat.png) -608px -327px;}
+.sp-badge20 {width:8px;height:23px;background:url(../../images/sp_chat.png) -608px -367px;}
+.sp-win1 {width:11px;height:11px;background:url(../../images/sp_chat.png) -351px -566px;}
+.sp-win2 {width:11px;height:11px;background:url(../../images/sp_chat.png) -289px -566px;}
+.sp-win3 {width:11px;height:11px;background:url(../../images/sp_chat.png) -258px -566px;}
+.sp-win4 {width:11px;height:11px;background:url(../../images/sp_chat.png) -227px -566px;}
+.sp-win5 {width:11px;height:11px;background:url(../../images/sp_chat.png) -196px -566px;}
+.sp-win6 {width:11px;height:11px;background:url(../../images/sp_chat.png) -165px -566px;}
+.sp-win7 {width:11px;height:11px;background:url(../../images/sp_chat.png) -134px -566px;}
+.sp-win8 {width:11px;height:11px;background:url(../../images/sp_chat.png) -103px -566px;}
+.sp-win9 {width:11px;height:11px;background:url(../../images/sp_chat.png) -72px -566px;}
+.sp-win10 {width:11px;height:11px;background:url(../../images/sp_chat.png) -41px -566px;}
+.sp-win11 {width:11px;height:11px;background:url(../../images/sp_chat.png) -10px -566px;}
+.sp-win12 {width:11px;height:11px;background:url(../../images/sp_chat.png) -599px -535px;}
+.sp-win13 {width:11px;height:11px;background:url(../../images/sp_chat.png) -568px -535px;}
+.sp-win14 {width:11px;height:11px;background:url(../../images/sp_chat.png) -537px -535px;}
+.sp-win15 {width:11px;height:11px;background:url(../../images/sp_chat.png) -506px -535px;}
+.sp-win16 {width:11px;height:11px;background:url(../../images/sp_chat.png) -475px -535px;}
+.sp-win17 {width:11px;height:11px;background:url(../../images/sp_chat.png) -408px -490px;}
+.sp-win18 {width:11px;height:11px;background:url(../../images/sp_chat.png) -320px -566px;}
+.sp-win19 {width:11px;height:11px;background:url(../../images/sp_chat.png) -320px -535px;}
+.sp-win20 {width:11px;height:11px;background:url(../../images/sp_chat.png) -382px -566px;}
+.sp-win21 {width:11px;height:11px;background:url(../../images/sp_chat.png) -413px -566px;}
+.sp-win22 {width:11px;height:11px;background:url(../../images/sp_chat.png) -444px -566px;}
+.sp-win23 {width:11px;height:11px;background:url(../../images/sp_chat.png) -608px -257px;}
+.sp-win24 {width:11px;height:11px;background:url(../../images/sp_chat.png) -608px -410px;}
+.sp-win25 {width:11px;height:11px;background:url(../../images/sp_chat.png) -511px -430px;}
+.sp-win26 {width:11px;height:11px;background:url(../../images/sp_chat.png) -346px -490px;}
+.sp-win27 {width:11px;height:11px;background:url(../../images/sp_chat.png) -377px -490px;}
+.sp-win28 {width:11px;height:11px;background:url(../../images/sp_chat.png) -475px -566px;}
+.sp-win29 {width:11px;height:11px;background:url(../../images/sp_chat.png) -439px -490px;}
+.sp-win30 {width:11px;height:11px;background:url(../../images/sp_chat.png) -470px -490px;}
+.sp-win31 {width:11px;height:11px;background:url(../../images/sp_chat.png) -501px -490px;}
+.sp-win32 {width:11px;height:11px;background:url(../../images/sp_chat.png) -532px -490px;}
+.sp-win33 {width:11px;height:11px;background:url(../../images/sp_chat.png) -563px -490px;}
+.sp-win34 {width:11px;height:11px;background:url(../../images/sp_chat.png) -594px -490px;}
+.sp-win35 {width:11px;height:11px;background:url(../../images/sp_chat.png) -10px -535px;}
+.sp-win36 {width:11px;height:11px;background:url(../../images/sp_chat.png) -41px -535px;}
+.sp-win37 {width:11px;height:11px;background:url(../../images/sp_chat.png) -72px -535px;}
+.sp-win38 {width:11px;height:11px;background:url(../../images/sp_chat.png) -103px -535px;}
+.sp-win39 {width:11px;height:11px;background:url(../../images/sp_chat.png) -134px -535px;}
+.sp-win40 {width:11px;height:11px;background:url(../../images/sp_chat.png) -165px -535px;}
+.sp-win41 {width:11px;height:11px;background:url(../../images/sp_chat.png) -196px -535px;}
+.sp-win42 {width:11px;height:11px;background:url(../../images/sp_chat.png) -227px -535px;}
+.sp-win43 {width:11px;height:11px;background:url(../../images/sp_chat.png) -258px -535px;}
+.sp-win44 {width:11px;height:11px;background:url(../../images/sp_chat.png) -289px -535px;}
+.sp-win45 {width:11px;height:11px;background:url(../../images/sp_chat.png) -608px -184px;}
+.sp-win46 {width:11px;height:11px;background:url(../../images/sp_chat.png) -351px -535px;}
+.sp-win47 {width:11px;height:11px;background:url(../../images/sp_chat.png) -382px -535px;}
+.sp-win48 {width:11px;height:11px;background:url(../../images/sp_chat.png) -413px -535px;}
+.sp-win49 {width:11px;height:11px;background:url(../../images/sp_chat.png) -444px -535px;}
+.sp-bullet1 {width:115px;height:100px;background:url(../../images/sp_chat.png) -415px -10px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet2 {width:115px;height:100px;background:url(../../images/sp_chat.png) -145px -250px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet3 {width:115px;height:100px;background:url(../../images/sp_chat.png) -10px -130px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet4 {width:115px;height:100px;background:url(../../images/sp_chat.png) -145px -130px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet5 {width:115px;height:100px;background:url(../../images/sp_chat.png) -280px -10px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet6 {width:115px;height:100px;background:url(../../images/sp_chat.png) -280px -130px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet7 {width:115px;height:100px;background:url(../../images/sp_chat.png) -10px -250px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet8 {width:115px;height:100px;background:url(../../images/sp_chat.png) -10px -10px;position:relative;top:-53px;margin:0 auto;}
+.sp-bullet9 {width:115px;height:100px;background:url(../../images/sp_chat.png) -280px -250px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit {width:115px;height:100px;background:url(../../images/sp_chat.png) -145px -370px;margin:0 auto;}
+.sp-biscuit1 {width:115px;height:100px;background:url(../../images/sp_chat.png) -145px -370px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit2 {width:115px;height:100px;background:url(../../images/sp_chat.png) -145px -10px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit3 {width:115px;height:100px;background:url(../../images/sp_chat.png) -415px -130px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit4 {width:115px;height:100px;background:url(../../images/sp_chat.png) -415px -250px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit5 {width:115px;height:100px;background:url(../../images/sp_chat.png) -10px -370px;position:relative;top:-53px;margin:0 auto;}
+.sp-biscuit6 {width:115px;height:100px;background:url(../../images/sp_chat.png) -280px -370px;position:relative;top:-53px;margin:0 auto;}
+.sp-icon_mobile {width:16px;height:16px;background:url(../../images/sp_chat.png) -608px -291px;display:inline-block;vertical-align:middle;}
+.sp-badge5_s {width:38px;height:56px;background:url(../../images/sp_chat.png) -550px -367px;}
+.sp-badge10_s {width:38px;height:56px;background:url(../../images/sp_chat.png) -550px -139px;}
+.sp-badge15_s {width:38px;height:56px;background:url(../../images/sp_chat.png) -550px -215px;}
+.sp-badge20_s {width:38px;height:56px;background:url(../../images/sp_chat.png) -550px -291px;}
+.sp-target {width:84px;height:109px;background:url(../../images/sp_chat.png) -550px -10px;margin:0 auto;}
+.sp-profile {width:40px;height:40px;background:url(../../images/sp_chat.png) -475px -370px;}
+.sp-lock {width:40px;height:40px;background:url(../../images/sp_chat.png) -415px -370px;margin:0 auto;}
 
 /* local asset override (sprite) */
 [class^="sp-"], [class*=" sp-"] { background-image:url(/images/sp_chat.png) !important; }

@@ -919,7 +919,7 @@
 		</tbody>
 	</table>
 
-	<div class="displayNone center" id="pageDiv" pageVal="0" round="<?= max(0, (int)($next_round ?? 1) - 1) ?>"><img src="https://simg.powerballgame.co.kr/images/loading2.gif" width="50" height="50"></div>
+	<div class="displayNone center" id="pageDiv" pageVal="0" round="<?= max(0, (int)($next_round ?? 1) - 1) ?>"><img src="/images/loading2.gif" width="50" height="50" alt=""></div>
 	<div class="moreBox"><a href="#" onclick="moreClick();return false;">더보기</a></div>
 
 	<!-- tmpl -->

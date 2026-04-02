@@ -156,26 +156,60 @@ body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.u
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList img.mark {margin-top:-12px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList img {vertical-align:middle;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList .uname {color:#5E5E5E;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_opener {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 0;text-indent:-9999px;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_manager {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -26px;text-indent:-9999px;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_fixMember {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -39px;text-indent:-9999px;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_managerFixMember {position:absolute;top:19px;left:5px;width:32px;height:26px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg {float:right;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn {max-width:121px;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_opener {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/images/sp_chatRoomMark2.png) no-repeat 0 0;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_manager {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/images/sp_chatRoomMark2.png) no-repeat 0 -26px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_fixMember {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/images/sp_chatRoomMark2.png) no-repeat 0 -39px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_managerFixMember {position:absolute;top:19px;left:5px;width:32px;height:26px;background:url(/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg {float:right;background:url(/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn {max-width:121px;background:url(/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn p {height:25px;overflow:hidden;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn p span {display:table-cell;height:25px;line-height:13px;color:#3e3e3e;font-size:11px;vertical-align:middle;}
 
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList {overflow-y:auto;width:100%;flex:1 1 auto;min-height:0;height:auto !important;background-color:#fff;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .chat-popup-result-scroll {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	background-color: #fff;
+}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .chat-popup-result-scroll ul.resultList {
+	overflow-y: auto;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	flex: 1 1 auto;
+	min-height: 0;
+	height: auto !important;
+	background-color: #fff;
+}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li {height:60px;border-bottom:1px dotted #bfbfbf;padding:5px 5px 5px 10px;background-color:none;}
 
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li.win_all {background-color:#FFFFD9;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li.win {background-color:#F0FDFF;}
 
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResult .win {font-weight:bold;background:url(/simg.powerballgame.co.kr/chat/images/bl_win.png) no-repeat 5px 0px;padding-left:10px;}
+@keyframes slideDownPush {
+	from {
+		opacity: 0;
+		transform: translate3d(0, -14px, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li.animate-push {
+	animation: slideDownPush 0.5s ease-out forwards;
+	overflow: hidden;
+	will-change: transform, opacity;
+}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResult .win {font-weight:bold;background:url(/chat/images/bl_win.png) no-repeat 5px 0px;padding-left:10px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs {display:table-cell;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs {display:table-cell;width:68px;height:60px;background:url(/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .blank {display:table-cell;width:5px;}
 /* odd, even, under, over, period */
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnnn {background-position:0 0;}
@@ -521,8 +555,8 @@ body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li 
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoom {background-position:-1088px -1020px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoos {background-position:-1156px -1020px;}
 
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
 /* odd, even, under, over, period */
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnnn {background-position:0 0;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnnb {background-position:-68px 0;}
@@ -870,7 +904,7 @@ body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li 
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.pass {background-position:0 0;}
 
 /* pick result */
-body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span {position:absolute;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span {position:absolute;width:68px;height:60px;background:url(/chat/images/sprite_pick.png) no-repeat;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_tl {background-position:-1224px -60px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_tr {background-position:-1224px -120px;}
 body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_bl {background-position:-1224px -180px;}

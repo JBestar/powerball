@@ -204,7 +204,9 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
                             <ul class="userList" id="connectManagerList"></ul>
                             <ul class="userList" id="connectUserList"></ul>
                         </div>
-                        <ul class="resultList" id="resultList"></ul>
+                        <div class="chat-popup-result-scroll">
+                            <ul class="resultList" id="resultList"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -257,6 +259,8 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
         var me = <?= json_encode((string) ($objMember->mb_uid ?? ''), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var fontSize = 12;
         var isChatPopup = document.body.classList.contains("chat-popup-window");
+        /** 방장픽 목록: 마지막으로 그린 최신 회차(null이면 아직 한 번도 안 그림 → 추첨 나올 때만 갱신) */
+        var lastOwnerPickRenderedRound = null;
         function showChatPanel($el) {
             if (isChatPopup) {
                 $el.css({ display: "flex" });
@@ -269,7 +273,7 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
 
         window.chatManager = function(type) {
             if (type === "clearChat") { $("#msgBox").empty(); return; }
-            if (type === "refresh") { loadChatList(); return; }
+            if (type === "refresh") { lastOwnerPickRenderedRound = null; loadChatList(); return; }
             if (type === "popupChat") {
                 var u = String(location.href || "");
                 if (u.indexOf("view=chatRoom") === -1) {
@@ -348,6 +352,248 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
             var powerballLi = '<li><p class="' + pbClass + '"><span>[' + dl + '-' + rno + '회]</span> 파워볼 결과 [<span class="b">' + pb + '</span>][<span class="b">' + poe + '</span>][<span class="b">' + puo + '</span>]</p></li>';
             var sumLi = '<li><p class="' + sumClass + '"><span>[' + dl + '-' + rno + '회]</span> 숫자합 결과 [<span class="b">' + sm + '</span>][<span class="b">' + soe + '</span>][<span class="b">' + suo + '</span>][<span class="b">' + sz + '</span>]</p></li>';
             return { powerball: powerballLi, sum: sumLi };
+        }
+
+        /** 방장픽 .rs 배경이 CSS 기본값(68px)에 머물면 해당 스프라이트 규칙이 안 먹은 것 */
+        function probeOwnerPickRsSprites() {
+            if (!window.console) return;
+            var nodes = document.querySelectorAll("#resultList li .rs");
+            if (!nodes.length) return;
+            var issues = [];
+            for (var i = 0; i < nodes.length; i++) {
+                var el = nodes[i];
+                if (el.classList.contains("ready")) continue;
+                var li = el.closest ? el.closest("li") : null;
+                var liId = li && li.id ? li.id : "";
+                var cls = [];
+                for (var j = 0; j < el.classList.length; j++) {
+                    if (el.classList[j] !== "rs") cls.push(el.classList[j]);
+                }
+                var spriteClass = cls.join(" ");
+                var cs = window.getComputedStyle(el);
+                var drx = (cs.getPropertyValue("background-position-x") || cs.backgroundPositionX || "").toString().trim();
+                var dry = (cs.getPropertyValue("background-position-y") || cs.backgroundPositionY || "").toString().trim();
+                var x = drx || "";
+                var xNum = parseFloat(x);
+                var isDefault = (x === "68px" || x === "68.0000px" || (!isNaN(xNum) && xNum === 68));
+                if (isDefault) {
+                    issues.push({
+                        liId: liId,
+                        spriteClass: spriteClass,
+                        dataKey: li ? li.getAttribute("data-pick-sprite-key") : "",
+                        bgPosX: x,
+                        bgPosY: dry
+                    });
+                }
+            }
+            if (issues.length) {
+                console.warn("[ownerPickSprite][DOM_DEFAULT_BG] .rs가 기본 좌표(68px) → 선택자 미일치 또는 스프라이트 미적용 의심", issues);
+            } else if (window.__OWNER_PICK_DEBUG && nodes.length) {
+                console.log("[ownerPickSprite][DOM_PROBE_OK] .rs " + nodes.length + "개 — 기본 68px 아님(스프라이트 적용됨)");
+            }
+        }
+
+        /** 이상 시 경고는 항상. 진단용 log/table은 window.__OWNER_PICK_DEBUG === true 일 때만 */
+        function logOwnerPickSpriteDiag(resp, opts) {
+            opts = opts || {};
+            if (!resp || !window.console) return;
+            var miss = resp.pick_sprite_css_missing_keys;
+            if (miss && miss.length) {
+                console.warn("[ownerPickSprite][MISSING_CSS_RULE]", miss);
+                if (resp.pick_sprite_audit) console.table(resp.pick_sprite_audit);
+            }
+            if (!window.__OWNER_PICK_DEBUG) return;
+            var nAudit = (resp.pick_sprite_audit && resp.pick_sprite_audit.length) ? resp.pick_sprite_audit.length : 0;
+            var nMiss = (miss && miss.length) ? miss.length : 0;
+            if (opts.summary) {
+                console.log("[ownerPickSprite][diag]", "audit행=" + nAudit + ", missingCss=" + nMiss);
+            }
+            if (resp.pick_sprite_audit) {
+                console.table(resp.pick_sprite_audit);
+                var focus = [];
+                for (var a = 0; a < resp.pick_sprite_audit.length; a++) {
+                    var row = resp.pick_sprite_audit[a];
+                    if (!row) continue;
+                    if ((row.pb_even && row.sum_even) || row.sum_small) focus.push(row);
+                }
+                if (focus.length) console.log("[ownerPickSprite][audit 짝·짝 또는 숫자합 소]", focus);
+            }
+        }
+
+        /** 발표된 한 행 HTML (대기행 → 결과+패스 치환용과 전체 렌더 공통) */
+        function ownerPickCompletedRowHtml(d) {
+            var pickResultDash = '<div class="pickResultText"><div style="width:60px;text-align:center;">-</div></div>';
+            d = d || {};
+            var r = parseInt(d.round, 10) || 0;
+            var dl = escHtml(String(d.date_label || ""));
+            var pbRaw = d.powerball;
+            var sumRaw = d.ball_sum;
+            var rawSk = String(d.pick_sprite_key != null ? d.pick_sprite_key : "oouus");
+            var sk = rawSk;
+            if (!/^[oeumsb]{5}$/.test(sk)) {
+                if (window.console && console.warn) {
+                    console.warn("[ownerPickSprite][KEY_FALLBACK] 스프라이트 키 비정상 → oouus 대체", { round: r, rawKey: rawSk, powerball: pbRaw, ball_sum: sumRaw });
+                }
+                sk = "oouus";
+            }
+            return '<li id="pick-' + r + '" regdate="0" class="" style="display:list-item;"'
+                + ' data-pick-sprite-key="' + escHtml(sk) + '"'
+                + ' data-powerball="' + escHtml(String(pbRaw != null ? pbRaw : "")) + '"'
+                + ' data-ball-sum="' + escHtml(String(sumRaw != null ? sumRaw : "")) + '">'
+                + '<div class="num">' + dl + '<br>' + r + '회</div>'
+                + '<div class="rs ' + escHtml(sk) + '"></div>'
+                + '<div class="blank"></div>'
+                + '<div class="pick pass"></div>'
+                + pickResultDash
+                + '</li>';
+        }
+
+        function ownerPickWaitingRowHtml(nr, dateLabelEscaped) {
+            nr = parseInt(nr, 10) || 0;
+            return '<li id="pick-' + nr + '" class="" style="display:list-item;">'
+                + '<div class="num">' + dateLabelEscaped + '<br>' + nr + '회</div>'
+                + '<div class="rs ready"></div>'
+                + '<div class="blank"></div>'
+                + '<div class="pick"></div>'
+                + '<div class="pickResultText"></div>'
+                + '</li>';
+        }
+
+        /** 맨 위 대기 행(li)을 떼지 않고 제자리에서 결과+패스로만 바꿈 — replaceWith보다 백판/깜빡임이 적음 */
+        function ownerPickMorphWaitingLiToCompleted($li, d) {
+            var dashInner = '<div style="width:60px;text-align:center;">-</div>';
+            d = d || {};
+            var r = parseInt(d.round, 10) || 0;
+            var dl = escHtml(String(d.date_label || ""));
+            var pbRaw = d.powerball;
+            var sumRaw = d.ball_sum;
+            var rawSk = String(d.pick_sprite_key != null ? d.pick_sprite_key : "oouus");
+            var sk = rawSk;
+            if (!/^[oeumsb]{5}$/.test(sk)) {
+                if (window.console && console.warn) {
+                    console.warn("[ownerPickSprite][KEY_FALLBACK] 스프라이트 키 비정상 → oouus 대체", { round: r, rawKey: rawSk, powerball: pbRaw, ball_sum: sumRaw });
+                }
+                sk = "oouus";
+            }
+            $li.attr("id", "pick-" + r);
+            $li.attr("regdate", "0");
+            $li.attr("data-pick-sprite-key", escHtml(sk));
+            $li.attr("data-powerball", escHtml(String(pbRaw != null ? pbRaw : "")));
+            $li.attr("data-ball-sum", escHtml(String(sumRaw != null ? sumRaw : "")));
+            $li.find(".num").first().html(dl + "<br>" + r + "회");
+            $li.find(".rs").first().attr("class", "rs " + sk);
+            $li.find(".pick").first().attr("class", "pick pass");
+            $li.find(".pickResultText").first().html(dashInner);
+        }
+
+        /** 추첨 반영 행(결과+패스)에만 붙임 — 전체 목록 비우기로 인한 깜빡임 시 첫 행이 대기로 잡히는 것 방지 */
+        function ownerPickAnimateTargetRow($list) {
+            var $done = $list.find("li .pick.pass").first().closest("li");
+            if ($done.length) return $done;
+            var $first = $list.children("li").first();
+            if ($first.length && !$first.hasClass("resultList-empty")) return $first;
+            return $();
+        }
+
+        function scheduleOwnerPickAnimatePush($row) {
+            if (!$row || !$row.length) return;
+            var el = $row[0];
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    setTimeout(function() {
+                        $row.addClass("animate-push");
+                        function clearAnim(ev) {
+                            if (ev && ev.animationName && ev.animationName !== "slideDownPush") return;
+                            el.removeEventListener("animationend", clearAnim);
+                            $row.removeClass("animate-push");
+                        }
+                        el.addEventListener("animationend", clearAnim);
+                        setTimeout(function() {
+                            if ($row.hasClass("animate-push")) {
+                                $row.removeClass("animate-push");
+                            }
+                        }, 650);
+                    }, 0);
+                });
+            });
+        }
+
+        /** 방장픽 우측 #resultList — 선배님 DOM과 동일 (num → rs → blank → pick|pick pass → pickResultText). 발표됨: pick pass, 다음 회차 대기: pick만 */
+        function renderOwnerPickResultList(draws, nextRound, nextDateLabel, lastDraw, shouldAnimatePush) {
+            var $list = $("#resultList");
+            if (!$list.length) return;
+            draws = draws || [];
+            nextRound = parseInt(nextRound, 10) || 0;
+            nextDateLabel = escHtml(String(nextDateLabel || ""));
+            var newestCompleted = 0;
+            if (draws.length > 0) {
+                newestCompleted = parseInt(draws[0].round, 10) || 0;
+            } else if (lastDraw && lastDraw.round) {
+                newestCompleted = parseInt(lastDraw.round, 10) || 0;
+            }
+
+            var $top = $list.children("li").first();
+            var topId = String($top.attr("id") || "");
+            var idMatch = /^pick-(\d+)$/.exec(topId);
+            var topRound = idMatch ? parseInt(idMatch[1], 10) : 0;
+            var d0Round = draws.length > 0 ? (parseInt(draws[0].round, 10) || 0) : 0;
+            var canMorphInPlace = shouldAnimatePush
+                && draws.length > 0
+                && $top.length
+                && !$top.hasClass("resultList-empty")
+                && topRound > 0
+                && topRound === d0Round
+                && topRound === newestCompleted
+                && $top.find(".rs").first().hasClass("ready");
+
+            if (canMorphInPlace) {
+                var d0 = draws[0];
+                /* ① 맨 위 대기 행을 제자리에서 결과+패스로 갱신 → ② 그 다음에만 다음 회차 대기 행을 위에 붙임 (prepend 먼저 하면 갱신이 “아래 줄”로 보임) */
+                ownerPickMorphWaitingLiToCompleted($top, d0);
+                var insertedWaiting = false;
+                if (nextRound > 0 && nextRound > newestCompleted) {
+                    $list.prepend(ownerPickWaitingRowHtml(nextRound, nextDateLabel));
+                    insertedWaiting = true;
+                }
+                var tailFrom = insertedWaiting ? 2 : 1;
+                var $kids = $list.children("li");
+                if ($kids.length > tailFrom) {
+                    $kids.slice(tailFrom).remove();
+                }
+                for (var t = 1; t < draws.length; t++) {
+                    $list.append(ownerPickCompletedRowHtml(draws[t]));
+                }
+                var $animFallback = insertedWaiting ? $list.children("li").eq(1) : $list.children("li").eq(0);
+                var $animRow = ownerPickAnimateTargetRow($list);
+                scheduleOwnerPickAnimatePush($animRow.length ? $animRow : $animFallback);
+                return;
+            }
+
+            var html = "";
+            if (nextRound > 0 && nextRound > newestCompleted) {
+                html += ownerPickWaitingRowHtml(nextRound, nextDateLabel);
+            }
+            for (var i = 0; i < draws.length; i++) {
+                html += ownerPickCompletedRowHtml(draws[i] || {});
+            }
+            if (html === "") {
+                html = '<li class="resultList-empty">등록된 추첨 결과가 없습니다.</li>';
+            }
+            var prevListH = $list.outerHeight();
+            if (prevListH > 0) {
+                $list.css("min-height", prevListH + "px");
+            }
+            $list.html(html);
+            if (prevListH > 0) {
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        $list.css("min-height", "");
+                    });
+                });
+            }
+            if (shouldAnimatePush) {
+                scheduleOwnerPickAnimatePush(ownerPickAnimateTargetRow($list));
+            }
         }
 
         var lastMsgId = 0;
@@ -452,6 +698,35 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
                         + '<a href="#" onclick="return false;" class="uname">' + escHtml(un) + '</a></strong></li>');
                 });
                 $("#connectUserCnt").text(resp.connectUserCnt || 0).attr("rel", resp.connectUserCnt || 0);
+                if (isChatPopup) {
+                    if (window.__OWNER_PICK_DEBUG && !window.__ownerPickSpriteInitLogged) {
+                        window.__ownerPickSpriteInitLogged = true;
+                        console.log("[ownerPickSprite][init] body=" + (document.body && document.body.className) + " #resultList=" + (document.getElementById("resultList") ? "1" : "0") + " " + String(location.href || ""));
+                    }
+                    logOwnerPickSpriteDiag(resp, { summary: true });
+                    setTimeout(probeOwnerPickRsSprites, 0);
+                } else if (window.__OWNER_PICK_DEBUG && !window.__ownerPickEmbedNoted) {
+                    window.__ownerPickEmbedNoted = true;
+                    console.log("[ownerPickSprite] embed 모드 — 팝업은 view=chatRoom");
+                }
+                if (isChatPopup && $("#resultList").length) {
+                    var dr = resp.recentDraws || [];
+                    var newestRound = 0;
+                    if (dr.length > 0) {
+                        newestRound = parseInt(dr[0].round, 10) || 0;
+                    } else if (resp.lastDraw && resp.lastDraw.round) {
+                        newestRound = parseInt(resp.lastDraw.round, 10) || 0;
+                    }
+                    var needOwnerPick =
+                        lastOwnerPickRenderedRound === null
+                        || newestRound > lastOwnerPickRenderedRound;
+                    if (needOwnerPick) {
+                        var prevPickRound = lastOwnerPickRenderedRound;
+                        var pushAnimate = prevPickRound !== null && newestRound > prevPickRound;
+                        renderOwnerPickResultList(dr, resp.time_round, resp.next_draw_date_label, resp.lastDraw, pushAnimate);
+                        lastOwnerPickRenderedRound = newestRound;
+                    }
+                }
             }, "json");
         }
 

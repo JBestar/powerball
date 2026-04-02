@@ -16,6 +16,9 @@ use App\Models\Attendance_Model;
 
 class Home extends BaseController
 {
+    /** @var string|null 방장픽 스프라이트 CSS 전체 캐시 (요청당 1회 읽기) */
+    private static $chatOwnerPickCssCache = null;
+
     private function redirectWithMessage(string $url, string $message)
     {
         $this->session->setFlashdata('message', $message);
@@ -991,7 +994,7 @@ class Home extends BaseController
         }
 
         // 2-1-5. 채팅방
-        else if ($this->request->getGet('view') === 'chatRoom') {
+        else if (strtolower((string) ($this->request->getGet('view') ?? '')) === 'chatroom') {
             return $this->chat();
         }
         // 2-1-6. 포토 등록 (관리자)
@@ -2577,7 +2580,7 @@ class Home extends BaseController
             'attendedYmd'    => $attendedYmd,
             'commentNo'      => $commentNo,
             'commentPreset'  => $commentPreset,
-            'simg'           => 'https://simg.powerballgame.co.kr',
+            'simg'           => '',
             'postUrl'        => site_furl('frame/attendance'),
         ]));
         $this->response->setBody($html);
@@ -3737,7 +3740,7 @@ class Home extends BaseController
             'remain_time'  => (int) ($timerInfo['remain_seconds'] ?? 300),
             'connect_user_cnt' => $connect_user_cnt,
             /** GNB 방채팅 팝업(?view=chatRoom)에서만 우측 방장픽 패널 표시. iframe home/chat 은 false */
-            'chat_popup_mode' => ($this->request->getGet('view') === 'chatRoom'),
+            'chat_popup_mode' => (strtolower((string) ($this->request->getGet('view') ?? '')) === 'chatroom'),
         ];
         return view('home/chat', $data);
     }
@@ -3795,6 +3798,89 @@ class Home extends BaseController
             'sum_odd_even'        => $sumOddKr,
             'sum_under_over'      => $sumUoKr,
             'sum_size'            => $sizeKr,
+        ];
+    }
+
+    /**
+     * 방장픽 스프라이트(sprite_pick.png)용 5글자 클래스 키.
+     * 선배 규칙: 홀=o, 짝=e, 언더=u, 오버=o, 소=s, 중=m, 대=b (1·2 파워볼/숫자합 홀짝, 3·4 언오, 5 대중소).
+     *
+     * @return string 5 chars [oeumsb] (o가 홀·오버에 공통 사용, 위치로 구분)
+     */
+    protected function buildChatPickSpriteKey(object $draw): string
+    {
+        $pb  = (int) ($draw->powerball ?? 0);
+        $sum = (int) ($draw->ball_sum ?? 0);
+        $c0  = ($pb % 2 === 1) ? 'o' : 'e';
+        $c1  = ($sum % 2 === 1) ? 'o' : 'e';
+        $c2  = ($pb <= 4) ? 'u' : 'o';
+        $c3  = ($sum <= 72) ? 'u' : 'o';
+        if ($sum <= 64) {
+            $c4 = 's';
+        } elseif ($sum <= 80) {
+            $c4 = 'm';
+        } else {
+            $c4 = 'b';
+        }
+
+        return $c0 . $c1 . $c2 . $c3 . $c4;
+    }
+
+    /**
+     * 방장픽 `chat_owner_pick.css`에 `.rs.{key}` 규칙이 있는지 (스프라이트 미표시 원인 조사용).
+     */
+    protected function loadChatOwnerPickCssForSpriteAudit(): string
+    {
+        if (self::$chatOwnerPickCssCache !== null) {
+            return self::$chatOwnerPickCssCache;
+        }
+        $path = FCPATH . 'css/chat_owner_pick.css';
+        self::$chatOwnerPickCssCache = is_file($path) ? (string) file_get_contents($path) : '';
+
+        return self::$chatOwnerPickCssCache;
+    }
+
+    protected function chatOwnerPickSpriteCssHasRsRule(string $key): bool
+    {
+        if (strlen($key) !== 5 || ! preg_match('/^[oeumsb]{5}$/u', $key)) {
+            return false;
+        }
+        $css = $this->loadChatOwnerPickCssForSpriteAudit();
+
+        return $css !== '' && strpos($css, 'li .rs.' . $key . ' {') !== false;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $recentDraws
+     * @return array{missing_keys: list<string>, audit: list<array<string, mixed>>}
+     */
+    protected function buildOwnerPickSpriteAudit(array $recentDraws): array
+    {
+        $missing = [];
+        $audit   = [];
+        foreach ($recentDraws as $p) {
+            $k  = (string) ($p['pick_sprite_key'] ?? '');
+            $pb = (int) ($p['powerball'] ?? 0);
+            $su = (int) ($p['ball_sum'] ?? 0);
+            $ok = $this->chatOwnerPickSpriteCssHasRsRule($k);
+            if (! $ok) {
+                $missing[] = $k;
+            }
+            $audit[] = [
+                'round'       => $p['round'] ?? null,
+                'key'         => $k,
+                'powerball'   => $pb,
+                'ball_sum'    => $su,
+                'pb_even'     => $pb % 2 === 0,
+                'sum_even'    => $su % 2 === 0,
+                'sum_small'   => $su <= 64,
+                'css_rs_rule' => $ok,
+            ];
+        }
+
+        return [
+            'missing_keys' => array_values(array_unique($missing)),
+            'audit'        => $audit,
         ];
     }
 
@@ -3861,13 +3947,45 @@ class Home extends BaseController
             $lastDraw = null;
         }
 
-        return $this->response->setJSON([
+        $recentDraws = [];
+        try {
+            $drawModel = new \App\Models\PowerballDraw_Model();
+            foreach ($drawModel->getRecent(30) as $dr) {
+                $p = $this->buildChatLastDrawPayload($dr);
+                if ($p !== null) {
+                    $p['pick_sprite_key'] = $this->buildChatPickSpriteKey($dr);
+                    $recentDraws[]        = $p;
+                }
+            }
+        } catch (\Throwable $e) {
+            $recentDraws = [];
+        }
+
+        $timerInfo = $this->getDrawTimerInfo();
+        $nextDrawDateLabel = sprintf('%02d월%02d일', (int) date('n'), (int) date('j'));
+
+        $pickSpriteDiag = $this->buildOwnerPickSpriteAudit($recentDraws);
+        if ($pickSpriteDiag['missing_keys'] !== []) {
+            error_log('[ownerPickSprite][MISSING_CSS] ' . json_encode($pickSpriteDiag['missing_keys'], JSON_UNESCAPED_UNICODE));
+        }
+        if ($this->loadChatOwnerPickCssForSpriteAudit() === '' && $recentDraws !== []) {
+            error_log('[ownerPickSprite][EMPTY_CSS_FILE] ' . FCPATH . 'css/chat_owner_pick.css');
+        }
+
+        $json = [
             'state' => 'success',
             'connectUserCnt' => $connectCnt,
             'messages' => $messages,
             'nicknames' => $nickByUid,
             'lastDraw' => $lastDraw,
-        ]);
+            'recentDraws' => $recentDraws,
+            'time_round' => (int) ($timerInfo['next_round'] ?? 1),
+            'next_draw_date_label' => $nextDrawDateLabel,
+            'pick_sprite_audit' => $pickSpriteDiag['audit'],
+            'pick_sprite_css_missing_keys' => $pickSpriteDiag['missing_keys'],
+        ];
+
+        return $this->response->setJSON($json);
     }
 
     public function ajaxChatSend()

@@ -115,20 +115,20 @@ body {overflow-y:hidden;}
 .rightArea .userList ul li img.mark {margin-top:-12px;}
 .rightArea .userList ul li img {vertical-align:middle;}
 .rightArea .userList ul li .uname {color:#5E5E5E;}
-.rightArea .userList ul li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(https://simg.powerballgame.co.kr/images/sp_chatRoomMark.png) no-repeat 0 -26px;text-indent:-9999px;}
-.rightArea .userList ul li .todayMsg {float:right;background:url(https://simg.powerballgame.co.kr/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
-.rightArea .userList ul li .todayMsg .inn {max-width:121px;background:url(https://simg.powerballgame.co.kr/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
+.rightArea .userList ul li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/images/sp_chatRoomMark.png) no-repeat 0 -26px;text-indent:-9999px;}
+.rightArea .userList ul li .todayMsg {float:right;background:url(/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
+.rightArea .userList ul li .todayMsg .inn {max-width:121px;background:url(/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
 .rightArea .userList ul li .todayMsg .inn p {height:25px;overflow:hidden;}
 .rightArea .userList ul li .todayMsg .inn p span {display:table-cell;height:25px;line-height:13px;color:#3e3e3e;font-size:11px;vertical-align:middle;}
 
 .rightBanner {padding:8px 0;text-align:center;}
 
 /* modal layer */
-.modalLayer {position:absolute;top:0;left:0;width:100%;height:100%;background:url(https://simg.powerballgame.co.kr/images/bg_mask.png);z-index:9999;display:none;}
+.modalLayer {position:absolute;top:0;left:0;width:100%;height:100%;background:url(/images/bg_mask.png);z-index:9999;display:none;}
 .modalLayer .passwdInput {position:relative;width:250px;border:1px solid #0E578D;background-color:#fafafa;display:none;}
 .modalLayer .passwdInput .tit {position:relative;height:35px;border-bottom:1px solid #0E578D;background-color:#127CCB;}
 .modalLayer .passwdInput .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'굴림',Gulim;color:#fff;}
-.modalLayer .passwdInput .tit .close {position:absolute;top:9px;right:9px;background:url(https://simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+.modalLayer .passwdInput .tit .close {position:absolute;top:9px;right:9px;background:url(/images/btn_close.png);width:16px;height:16px;}
 .modalLayer .passwdInput .content {padding:5px 30px;border-bottom:1px dotted #e1e1e1;}
 .modalLayer .passwdInput .content input {margin:20px auto 5px auto;display:block;padding:0 5px;width:120px;height:30px;line-height:30px;font-size:20px;border:1px solid #d4d4d4;text-align:center;}
 .modalLayer .passwdInput .content p {text-align:center;color:#666;padding-bottom:10px;font-size:11px;}
@@ -139,7 +139,7 @@ body {overflow-y:hidden;}
 .modalLayer .createChatRoom {position:relative;width:430px;height:410px;border:1px solid #0E578D;background-color:#fafafa;display:none;}
 .modalLayer .createChatRoom .tit {position:relative;height:35px;border-bottom:1px solid #0E578D;background-color:#127CCB;}
 .modalLayer .createChatRoom .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'굴림',Gulim;color:#fff;}
-.modalLayer .createChatRoom .tit .close {position:absolute;top:9px;right:9px;background:url(https://simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+.modalLayer .createChatRoom .tit .close {position:absolute;top:9px;right:9px;background:url(/images/btn_close.png);width:16px;height:16px;}
 
 .modalLayer .createChatRoom dl {margin:30px auto;width:370px;border-top:1px dotted #e1e1e1;}
 .modalLayer .createChatRoom dt {float:left;padding:8px 0 0 10px;width:100px;height:23px;border-right:1px dotted #e1e1e1;border-bottom:1px dotted #e1e1e1;background-color:#fcfcfc;color:#666;}

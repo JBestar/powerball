@@ -93,6 +93,18 @@ class PowerballDraw_Model extends Model
     }
 
     /**
+     * 최신 추첨 N건 (회차 내림차순)
+     *
+     * @return list<object>
+     */
+    public function getRecent(int $limit = 30): array
+    {
+        $limit = max(1, min(100, $limit));
+
+        return $this->orderBy('round', 'DESC')->findAll($limit);
+    }
+
+    /**
      * 회차로 1건 조회
      */
     public function getByRound(int $round): ?object

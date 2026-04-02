@@ -4,7 +4,7 @@
  */
 $local = $local ?? rtrim(site_furl(''), '/');
 $cssVer = $cssVer ?? '1';
-$simg = $simg ?? 'https://simg.powerballgame.co.kr';
+$simg = $simg ?? '';
 $postUrl = $postUrl ?? site_furl('frame/attendance');
 $curMonth = $curMonth ?? date('Y-m');
 $calendarYear = (int) ($calendarYear ?? (int) date('Y'));

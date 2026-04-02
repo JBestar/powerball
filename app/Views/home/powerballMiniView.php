@@ -45,7 +45,7 @@
             <!-- 추첨결과에 따라 공 번호·색상은 JS(updateResult/showNumber/ballColorSel)에서 동적 생성 -->
             <div id="lotteryBox">
                 <div id="lotteryBall"></div>
-                <div class="play" style="display:none;"><img src="https://simg.powerballgame.co.kr/images/lottery_play.gif" height="265" alt="" onerror="this.src='<?php echo rtrim(site_furl(""), "/"); ?>/images/lottery_play.gif';"></div>
+                <div class="play" style="display:none;"><img src="<?php echo rtrim(site_furl(""), "/"); ?>/images/lottery_play.gif" height="265" alt=""></div>
             </div>
         </div>
         <?php
