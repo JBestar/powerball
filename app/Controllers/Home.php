@@ -1524,8 +1524,7 @@ class Home extends BaseController
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
                 ->orderBy('round', 'DESC')
-                ->limit($perPage, $offset)
-                ->findAll();
+                ->findAll($perPage, $offset);
 
             $content = [];
             foreach ($rows as $i => $draw) {
@@ -1592,8 +1591,7 @@ class Home extends BaseController
 
             $rows = $drawModel
                 ->orderBy('round', 'DESC')
-                ->limit($perPage, $offset)
-                ->findAll();
+                ->findAll($perPage, $offset);
 
             $content = [];
             foreach ($rows as $i => $draw) {
@@ -1673,7 +1671,7 @@ class Home extends BaseController
         if ($maxCnt < 1 || $maxCnt > 26) $maxCnt = 26;
 
         $drawModel = new \App\Models\PowerballDraw_Model();
-        $rows = $drawModel->orderBy('round', 'DESC')->limit($maxCnt)->findAll();
+        $rows = $drawModel->orderBy('round', 'DESC')->findAll($maxCnt);
         $rows = array_reverse($rows); // oldest -> newest for UI
 
         $items = [];
@@ -1736,7 +1734,7 @@ class Home extends BaseController
         // 검색 성능을 위해 최근 데이터 범위만 사용 (DB 크기에 따라 조절 가능)
         $searchLimit = 3000;
         $drawModel = new \App\Models\PowerballDraw_Model();
-        $rows = $drawModel->orderBy('round', 'DESC')->limit($searchLimit)->findAll();
+        $rows = $drawModel->orderBy('round', 'DESC')->findAll($searchLimit);
         $rows = array_reverse($rows); // oldest -> newest for index scanning
 
         $rowCount = count($rows);
@@ -3738,6 +3736,8 @@ class Home extends BaseController
             'time_round'   => (int) ($timerInfo['next_round'] ?? 1),
             'remain_time'  => (int) ($timerInfo['remain_seconds'] ?? 300),
             'connect_user_cnt' => $connect_user_cnt,
+            /** GNB 방채팅 팝업(?view=chatRoom)에서만 우측 방장픽 패널 표시. iframe home/chat 은 false */
+            'chat_popup_mode' => ($this->request->getGet('view') === 'chatRoom'),
         ];
         return view('home/chat', $data);
     }

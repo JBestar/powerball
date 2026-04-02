@@ -1,0 +1,1614 @@
+@charset "utf-8";
+
+@font-face {font-family:DINWeb-Bold; src:local(※),url(/font/DINWeb-Bold.eot);}
+@font-face {font-family:DINWeb-Bold; src:local(※),url(/font/DINWeb-Bold.woff) format('woff');}
+
+* {margin:0; padding:0;}
+html, body{width:100%; height:100%;}
+body,input,textarea,select,table,button{line-height:15px;font-family:"돋움",Dotum,"굴림",Gulim,AppleGothic,Sans-serif;font-size:12px;}
+body{position:relative;color:#000;}
+caption, legend, #accessibility, .hidden{font-size: 0;line-height: 0;text-indent: -5000px;}
+img, fieldset, iframe{border:0 none;vertical-align:top;}
+fieldset{font-size:0;}
+ul,ol{list-style:none;}
+a{color:#000;text-decoration:none;cursor:pointer;}
+em,address{font-style:normal;}
+table {border-collapse:collapse; table-layout:fixed;}
+hr{display:none;}
+.hidden {clear: both;font-size: 0;height: 0;line-height: 0;visibility: hidden;width: 0;}
+.cl{/* *zoom:1; */}
+.cl:after{content:'';display:block;clear:both;}
+
+.b {font-weight:bold;}
+
+body {overflow-y:hidden;background-color:#d2d2d2;}
+#header {position:relative;padding:5px 15px;height:30px;background-color:#127CCB;border-bottom:1px solid #0E609C;}
+#container {position:relative;}
+#footer {position:relative;width:100%;height:25px;line-height:25px;font-family:Tahoma,Geneva,sans-serif;font-size:9px;letter-spacing:1px;text-align:center;background-color:#062c46;color:#fff;z-index:1000;}
+
+#header .winLose {float:left;height:40px;line-height:40px;color:#f9ea60;margin-left:65px;font-weight:bold;}
+#header h2 {float:left; height:40px; line-height:40px; font-size:12px; color:#fff;margin-left:15px;}	/* margin-left:15px */
+#header .bar {float:left; margin:5px 10px 0 10px; width:1px; height:11px; background-color:#4d4542;}
+#header p {float:left; height:40px; line-height:40px; color:#bdbab9;}
+#header p strong {color:#ffe400;}
+#header .desc {float:left;margin-left:15px;font-weight:bold;text-align:center;font-size:11px;font-family:tahoma,dotum;}
+
+#header .profile {position:absolute;z-index:99;top:5px;left:5px;width:60px;height:60px;border:1px solid #fff;}
+#header .profile img {width:60px;height:60px;}
+
+/* left area */
+.leftArea {background-color:#d2d2d2;padding-right:316px;}
+
+.leftArea .category {position:relative;padding:0 15px;height:29px;border-top:1px solid #1b93eb;border-bottom:1px solid #0b4977;background-color:#127CCB;}
+.leftArea .category .cate {position:absolute;left:15px;margin-left:65px;}
+.leftArea .category .cate em {font-family:tahoma,dotum;}
+.leftArea .category .cate a {color:#fff;}
+.leftArea .category .cate .tooltip-btn {margin-left:5px;display:inline-block;border:1px solid #454545;width:14px;height:14px;line-height:15px;text-align:center;background-color:#d5d5d5;color:#0E578D;cursor:pointer;}
+.leftArea .category .order {float:right;}
+.leftArea .category li {float:left;height:29px;line-height:29px;font-size:11px;font-family:'돋움',Dotum;color:#fff;}
+.leftArea .category li .on {font-weight:bold;color:#F7E227;}
+.leftArea .category .bar {float:left;width:1px;height:15px;background-color:#0E609C;border-right:1px solid #1b93eb;margin:8px 10px;}
+
+.mainBanner {padding:8px 8px 6px 8px;text-align:center;}
+.mainBanner .pbg-chat-ad{width:728px;height:90px;margin:0 auto;border:1px solid #0e578d;background:linear-gradient(45deg,#0D568C,#4C4C4C);}
+
+.leftArea .roomList {padding:0 0 8px 8px;background-color:#d2d2d2;overflow-y:auto;}
+.leftArea .roomList li {position:relative;list-style:none;border:1px solid #434343;margin:2px 0;background-color:#626262;}
+.leftArea .roomList li .inner {border:1px solid #6E6E6E;height:40px;line-height:40px;padding:0 10px;color:#DBDBDB;}
+.leftArea .roomList li .inner .tit {font-weight:bold;color:#E3E3E3;}
+.leftArea .roomList li .inner .tit .desc {font-weight:normal;font-size:11px;font-family:tahoma,dotum;color:#b7b7b7;}
+.leftArea .roomList li .inner .tit .desc.hidden {display:none;}
+.leftArea .roomList li .line1 {width:0;height:42px;position:absolute;top:0px;right:320px;border-left:1px solid #474747;border-right:1px solid #6E6E6E;}
+.leftArea .roomList li .line2 {width:0;height:42px;position:absolute;top:0px;right:250px;border-left:1px solid #474747;border-right:1px solid #6E6E6E;}
+.leftArea .roomList li .line3 {width:0;height:42px;position:absolute;top:0px;right:150px;border-left:1px solid #474747;border-right:1px solid #6E6E6E;}
+.leftArea .roomList li .date {width:60px;height:40px;line-height:40px;position:absolute;top:1px;right:250px;text-align:right;font-size:11px;color:#B9B9B9;font-weight:bold;padding-right:10px;}
+.leftArea .roomList li .userCnt {width:90px;height:40px;line-height:40px;position:absolute;top:1px;right:150px;text-align:right;font-family:tahoma,dotum;color:#B9B9B9;font-weight:bold;padding-right:10px;}
+.leftArea .roomList li .userCnt .curCnt {color:#F7E227;}
+.leftArea .roomList li .userInfo {width:140px;height:40px;line-height:40px;position:absolute;top:1px;right:0;font-family:tahoma,dotum;color:#B9B9B9;padding-left:10px;}
+.leftArea .roomList li .userInfo img {vertical-align:middle;}
+.leftArea .roomList li .userInfo .uname {color:#DBDBDB;}
+.leftArea .roomList li:hover {border:1px solid #F7E246 !important;background-color:#4D4D4D !important;}
+
+/* msgBox */
+#msgBox {padding:10px;font-size:11px;word-wrap:break-word;overflow-y:scroll;white-space:-moz-pre-wrap;white-space:pre-wrap;background-color:#fff;margin:2px 0 0 8px;height:530px;border:1px solid #0e578d;}
+#msgBox .msg-system {background-color:#cb500e;border:1px solid #652807;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-guide {background-color:#2943a3;border:1px solid #18275c;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-auto {background-color:#1C701C;border:1px solid #155515;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-macro {background-color:#4c4c4c;border:1px solid #262626;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-notice {background-color:#cb500e;border:1px solid #652807;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-gift {background-color:#1C701C;border:1px solid #155515;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;text-align:center;}
+#msgBox .msg-autoGift {background-color:#1C701C;border:1px solid #155515;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;}
+#msgBox .msg-odd {background-color:#156AEA;border:1px solid #1156bd;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;text-align:center;}
+#msgBox .msg-even {background-color:#C11A20;border:1px solid #B01D1D;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;text-align:center;}
+#msgBox .msg-pick {background-color:#1C701C;border:1px solid #155515;min-height:22px;line-height:22px;color:#fff;padding:0 5px;margin:3px 0;text-align:center;}
+#msgBox .msg-system span {color:yellow;}
+#msgBox .msg-guide span, #msgBox .msg-guide a {color:yellow;}
+#msgBox .msg-auto span {color:yellow;}
+#msgBox .msg-macro span {color:yellow;}
+#msgBox .msg-notice span, #msgBox .msg-notice a {color:yellow;}
+#msgBox .msg-gift span {color:yellow;}
+#msgBox .msg-autoGift span {color:yellow;}
+#msgBox .msg-odd span,#msgBox .msg-even span {color:yellow;}
+#msgBox .msg-pick span {color:yellow;}
+
+#msgBox .recom {margin:10px 0;text-align:center;}
+#msgBox .recom .icon {position:absolute;top:0;}
+#msgBox .recom span {margin-left:18px;color:#1265CD;font-weight:bold;}
+
+/* userPick */
+#msgBox li div.pick {position:relative;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;margin:15px auto 10px auto;}
+/* odd, even, under, over, period */
+#msgBox li div.pick.nnnnn {background-position:0 0;}
+#msgBox li div.pick.nnnnb {background-position:-68px 0;}
+#msgBox li div.pick.nnnnm {background-position:-136px 0;}
+#msgBox li div.pick.nnnns {background-position:-204px 0;}
+#msgBox li div.pick.nnnun {background-position:-272px 0;}
+#msgBox li div.pick.nnnub {background-position:-340px 0;}
+#msgBox li div.pick.nnnum {background-position:-408px 0;}
+#msgBox li div.pick.nnnus {background-position:-476px 0;}
+#msgBox li div.pick.nnnon {background-position:-544px 0;}
+#msgBox li div.pick.nnnob {background-position:-612px 0;}
+#msgBox li div.pick.nnnom {background-position:-680px 0;}
+#msgBox li div.pick.nnnos {background-position:-748px 0;}
+#msgBox li div.pick.nnunn {background-position:-816px 0;}
+#msgBox li div.pick.nnunb {background-position:-884px 0;}
+#msgBox li div.pick.nnunm {background-position:-952px 0;}
+#msgBox li div.pick.nnuns {background-position:-1020px 0;}
+#msgBox li div.pick.nnuun {background-position:-1088px 0;}
+#msgBox li div.pick.nnuub {background-position:-1156px 0;}
+#msgBox li div.pick.ready {background-position:-1224px 0;}
+
+#msgBox li div.pick.nnuum {background-position:0 -60px;}
+#msgBox li div.pick.nnuus {background-position:-68px -60px;}
+#msgBox li div.pick.nnuon {background-position:-136px -60px;}
+#msgBox li div.pick.nnuob {background-position:-204px -60px;}
+#msgBox li div.pick.nnuom {background-position:-272px -60px;}
+#msgBox li div.pick.nnuos {background-position:-340px -60px;}
+#msgBox li div.pick.nnonn {background-position:-408px -60px;}
+#msgBox li div.pick.nnonb {background-position:-476px -60px;}
+#msgBox li div.pick.nnonm {background-position:-544px -60px;}
+#msgBox li div.pick.nnons {background-position:-612px -60px;}
+#msgBox li div.pick.nnoun {background-position:-680px -60px;}
+#msgBox li div.pick.nnoub {background-position:-748px -60px;}
+#msgBox li div.pick.nnoum {background-position:-816px -60px;}
+#msgBox li div.pick.nnous {background-position:-884px -60px;}
+#msgBox li div.pick.nnoon {background-position:-952px -60px;}
+#msgBox li div.pick.nnoob {background-position:-1020px -60px;}
+#msgBox li div.pick.nnoom {background-position:-1088px -60px;}
+#msgBox li div.pick.nnoos {background-position:-1156px -60px;}
+
+#msgBox li div.pick.nonnn {background-position:0 -120px;}
+#msgBox li div.pick.nonnb {background-position:-68px -120px;}
+#msgBox li div.pick.nonnm {background-position:-136px -120px;}
+#msgBox li div.pick.nonns {background-position:-204px -120px;}
+#msgBox li div.pick.nonun {background-position:-272px -120px;}
+#msgBox li div.pick.nonub {background-position:-340px -120px;}
+#msgBox li div.pick.nonum {background-position:-408px -120px;}
+#msgBox li div.pick.nonus {background-position:-476px -120px;}
+#msgBox li div.pick.nonon {background-position:-544px -120px;}
+#msgBox li div.pick.nonob {background-position:-612px -120px;}
+#msgBox li div.pick.nonom {background-position:-680px -120px;}
+#msgBox li div.pick.nonos {background-position:-748px -120px;}
+#msgBox li div.pick.nounn {background-position:-816px -120px;}
+#msgBox li div.pick.nounb {background-position:-884px -120px;}
+#msgBox li div.pick.nounm {background-position:-952px -120px;}
+#msgBox li div.pick.nouns {background-position:-1020px -120px;}
+#msgBox li div.pick.nouun {background-position:-1088px -120px;}
+#msgBox li div.pick.nouub {background-position:-1156px -120px;}
+
+#msgBox li div.pick.nouum {background-position:0 -180px;}
+#msgBox li div.pick.nouus {background-position:-68px -180px;}
+#msgBox li div.pick.nouon {background-position:-136px -180px;}
+#msgBox li div.pick.nouob {background-position:-204px -180px;}
+#msgBox li div.pick.nouom {background-position:-272px -180px;}
+#msgBox li div.pick.nouos {background-position:-340px -180px;}
+#msgBox li div.pick.noonn {background-position:-408px -180px;}
+#msgBox li div.pick.noonb {background-position:-476px -180px;}
+#msgBox li div.pick.noonm {background-position:-544px -180px;}
+#msgBox li div.pick.noons {background-position:-612px -180px;}
+#msgBox li div.pick.nooun {background-position:-680px -180px;}
+#msgBox li div.pick.nooub {background-position:-748px -180px;}
+#msgBox li div.pick.nooum {background-position:-816px -180px;}
+#msgBox li div.pick.noous {background-position:-884px -180px;}
+#msgBox li div.pick.nooon {background-position:-952px -180px;}
+#msgBox li div.pick.nooob {background-position:-1020px -180px;}
+#msgBox li div.pick.nooom {background-position:-1088px -180px;}
+#msgBox li div.pick.nooos {background-position:-1156px -180px;}
+
+#msgBox li div.pick.nennn {background-position:0 -240px;}
+#msgBox li div.pick.nennb {background-position:-68px -240px;}
+#msgBox li div.pick.nennm {background-position:-136px -240px;}
+#msgBox li div.pick.nenns {background-position:-204px -240px;}
+#msgBox li div.pick.nenun {background-position:-272px -240px;}
+#msgBox li div.pick.nenub {background-position:-340px -240px;}
+#msgBox li div.pick.nenum {background-position:-408px -240px;}
+#msgBox li div.pick.nenus {background-position:-476px -240px;}
+#msgBox li div.pick.nenon {background-position:-544px -240px;}
+#msgBox li div.pick.nenob {background-position:-612px -240px;}
+#msgBox li div.pick.nenom {background-position:-680px -240px;}
+#msgBox li div.pick.nenos {background-position:-748px -240px;}
+#msgBox li div.pick.neunn {background-position:-816px -240px;}
+#msgBox li div.pick.neunb {background-position:-884px -240px;}
+#msgBox li div.pick.neunm {background-position:-952px -240px;}
+#msgBox li div.pick.neuns {background-position:-1020px -240px;}
+#msgBox li div.pick.neuun {background-position:-1088px -240px;}
+#msgBox li div.pick.neuub {background-position:-1156px -240px;}
+
+#msgBox li div.pick.neuum {background-position:0 -300px;}
+#msgBox li div.pick.neuus {background-position:-68px -300px;}
+#msgBox li div.pick.neuon {background-position:-136px -300px;}
+#msgBox li div.pick.neuob {background-position:-204px -300px;}
+#msgBox li div.pick.neuom {background-position:-272px -300px;}
+#msgBox li div.pick.neuos {background-position:-340px -300px;}
+#msgBox li div.pick.neonn {background-position:-408px -300px;}
+#msgBox li div.pick.neonb {background-position:-476px -300px;}
+#msgBox li div.pick.neonm {background-position:-544px -300px;}
+#msgBox li div.pick.neons {background-position:-612px -300px;}
+#msgBox li div.pick.neoun {background-position:-680px -300px;}
+#msgBox li div.pick.neoub {background-position:-748px -300px;}
+#msgBox li div.pick.neoum {background-position:-816px -300px;}
+#msgBox li div.pick.neous {background-position:-884px -300px;}
+#msgBox li div.pick.neoon {background-position:-952px -300px;}
+#msgBox li div.pick.neoob {background-position:-1020px -300px;}
+#msgBox li div.pick.neoom {background-position:-1088px -300px;}
+#msgBox li div.pick.neoos {background-position:-1156px -300px;}
+
+#msgBox li div.pick.onnnn {background-position:0 -360px;}
+#msgBox li div.pick.onnnb {background-position:-68px -360px;}
+#msgBox li div.pick.onnnm {background-position:-136px -360px;}
+#msgBox li div.pick.onnns {background-position:-204px -360px;}
+#msgBox li div.pick.onnun {background-position:-272px -360px;}
+#msgBox li div.pick.onnub {background-position:-340px -360px;}
+#msgBox li div.pick.onnum {background-position:-408px -360px;}
+#msgBox li div.pick.onnus {background-position:-476px -360px;}
+#msgBox li div.pick.onnon {background-position:-544px -360px;}
+#msgBox li div.pick.onnob {background-position:-612px -360px;}
+#msgBox li div.pick.onnom {background-position:-680px -360px;}
+#msgBox li div.pick.onnos {background-position:-748px -360px;}
+#msgBox li div.pick.onunn {background-position:-816px -360px;}
+#msgBox li div.pick.onunb {background-position:-884px -360px;}
+#msgBox li div.pick.onunm {background-position:-952px -360px;}
+#msgBox li div.pick.onuns {background-position:-1020px -360px;}
+#msgBox li div.pick.onuun {background-position:-1088px -360px;}
+#msgBox li div.pick.onuub {background-position:-1156px -360px;}
+
+#msgBox li div.pick.onuum {background-position:0 -420px;}
+#msgBox li div.pick.onuus {background-position:-68px -420px;}
+#msgBox li div.pick.onuon {background-position:-136px -420px;}
+#msgBox li div.pick.onuob {background-position:-204px -420px;}
+#msgBox li div.pick.onuom {background-position:-272px -420px;}
+#msgBox li div.pick.onuos {background-position:-340px -420px;}
+#msgBox li div.pick.ononn {background-position:-408px -420px;}
+#msgBox li div.pick.ononb {background-position:-476px -420px;}
+#msgBox li div.pick.ononm {background-position:-544px -420px;}
+#msgBox li div.pick.onons {background-position:-612px -420px;}
+#msgBox li div.pick.onoun {background-position:-680px -420px;}
+#msgBox li div.pick.onoub {background-position:-748px -420px;}
+#msgBox li div.pick.onoum {background-position:-816px -420px;}
+#msgBox li div.pick.onous {background-position:-884px -420px;}
+#msgBox li div.pick.onoon {background-position:-952px -420px;}
+#msgBox li div.pick.onoob {background-position:-1020px -420px;}
+#msgBox li div.pick.onoom {background-position:-1088px -420px;}
+#msgBox li div.pick.onoos {background-position:-1156px -420px;}
+
+#msgBox li div.pick.oonnn {background-position:0 -480px;}
+#msgBox li div.pick.oonnb {background-position:-68px -480px;}
+#msgBox li div.pick.oonnm {background-position:-136px -480px;}
+#msgBox li div.pick.oonns {background-position:-204px -480px;}
+#msgBox li div.pick.oonun {background-position:-272px -480px;}
+#msgBox li div.pick.oonub {background-position:-340px -480px;}
+#msgBox li div.pick.oonum {background-position:-408px -480px;}
+#msgBox li div.pick.oonus {background-position:-476px -480px;}
+#msgBox li div.pick.oonon {background-position:-544px -480px;}
+#msgBox li div.pick.oonob {background-position:-612px -480px;}
+#msgBox li div.pick.oonom {background-position:-680px -480px;}
+#msgBox li div.pick.oonos {background-position:-748px -480px;}
+#msgBox li div.pick.oounn {background-position:-816px -480px;}
+#msgBox li div.pick.oounb {background-position:-884px -480px;}
+#msgBox li div.pick.oounm {background-position:-952px -480px;}
+#msgBox li div.pick.oouns {background-position:-1020px -480px;}
+#msgBox li div.pick.oouun {background-position:-1088px -480px;}
+#msgBox li div.pick.oouub {background-position:-1156px -480px;}
+
+#msgBox li div.pick.oouum {background-position:0 -540px;}
+#msgBox li div.pick.oouus {background-position:-68px -540px;}
+#msgBox li div.pick.oouon {background-position:-136px -540px;}
+#msgBox li div.pick.oouob {background-position:-204px -540px;}
+#msgBox li div.pick.oouom {background-position:-272px -540px;}
+#msgBox li div.pick.oouos {background-position:-340px -540px;}
+#msgBox li div.pick.ooonn {background-position:-408px -540px;}
+#msgBox li div.pick.ooonb {background-position:-476px -540px;}
+#msgBox li div.pick.ooonm {background-position:-544px -540px;}
+#msgBox li div.pick.ooons {background-position:-612px -540px;}
+#msgBox li div.pick.oooun {background-position:-680px -540px;}
+#msgBox li div.pick.oooub {background-position:-748px -540px;}
+#msgBox li div.pick.oooum {background-position:-816px -540px;}
+#msgBox li div.pick.ooous {background-position:-884px -540px;}
+#msgBox li div.pick.oooon {background-position:-952px -540px;}
+#msgBox li div.pick.oooob {background-position:-1020px -540px;}
+#msgBox li div.pick.oooom {background-position:-1088px -540px;}
+#msgBox li div.pick.oooos {background-position:-1156px -540px;}
+
+#msgBox li div.pick.oennn {background-position:0 -600px;}
+#msgBox li div.pick.oennb {background-position:-68px -600px;}
+#msgBox li div.pick.oennm {background-position:-136px -600px;}
+#msgBox li div.pick.oenns {background-position:-204px -600px;}
+#msgBox li div.pick.oenun {background-position:-272px -600px;}
+#msgBox li div.pick.oenub {background-position:-340px -600px;}
+#msgBox li div.pick.oenum {background-position:-408px -600px;}
+#msgBox li div.pick.oenus {background-position:-476px -600px;}
+#msgBox li div.pick.oenon {background-position:-544px -600px;}
+#msgBox li div.pick.oenob {background-position:-612px -600px;}
+#msgBox li div.pick.oenom {background-position:-680px -600px;}
+#msgBox li div.pick.oenos {background-position:-748px -600px;}
+#msgBox li div.pick.oeunn {background-position:-816px -600px;}
+#msgBox li div.pick.oeunb {background-position:-884px -600px;}
+#msgBox li div.pick.oeunm {background-position:-952px -600px;}
+#msgBox li div.pick.oeuns {background-position:-1020px -600px;}
+#msgBox li div.pick.oeuun {background-position:-1088px -600px;}
+#msgBox li div.pick.oeuub {background-position:-1156px -600px;}
+
+#msgBox li div.pick.oeuum {background-position:0 -660px;}
+#msgBox li div.pick.oeuus {background-position:-68px -660px;}
+#msgBox li div.pick.oeuon {background-position:-136px -660px;}
+#msgBox li div.pick.oeuob {background-position:-204px -660px;}
+#msgBox li div.pick.oeuom {background-position:-272px -660px;}
+#msgBox li div.pick.oeuos {background-position:-340px -660px;}
+#msgBox li div.pick.oeonn {background-position:-408px -660px;}
+#msgBox li div.pick.oeonb {background-position:-476px -660px;}
+#msgBox li div.pick.oeonm {background-position:-544px -660px;}
+#msgBox li div.pick.oeons {background-position:-612px -660px;}
+#msgBox li div.pick.oeoun {background-position:-680px -660px;}
+#msgBox li div.pick.oeoub {background-position:-748px -660px;}
+#msgBox li div.pick.oeoum {background-position:-816px -660px;}
+#msgBox li div.pick.oeous {background-position:-884px -660px;}
+#msgBox li div.pick.oeoon {background-position:-952px -660px;}
+#msgBox li div.pick.oeoob {background-position:-1020px -660px;}
+#msgBox li div.pick.oeoom {background-position:-1088px -660px;}
+#msgBox li div.pick.oeoos {background-position:-1156px -660px;}
+
+#msgBox li div.pick.ennnn {background-position:0 -720px;}
+#msgBox li div.pick.ennnb {background-position:-68px -720px;}
+#msgBox li div.pick.ennnm {background-position:-136px -720px;}
+#msgBox li div.pick.ennns {background-position:-204px -720px;}
+#msgBox li div.pick.ennun {background-position:-272px -720px;}
+#msgBox li div.pick.ennub {background-position:-340px -720px;}
+#msgBox li div.pick.ennum {background-position:-408px -720px;}
+#msgBox li div.pick.ennus {background-position:-476px -720px;}
+#msgBox li div.pick.ennon {background-position:-544px -720px;}
+#msgBox li div.pick.ennob {background-position:-612px -720px;}
+#msgBox li div.pick.ennom {background-position:-680px -720px;}
+#msgBox li div.pick.ennos {background-position:-748px -720px;}
+#msgBox li div.pick.enunn {background-position:-816px -720px;}
+#msgBox li div.pick.enunb {background-position:-884px -720px;}
+#msgBox li div.pick.enunm {background-position:-952px -720px;}
+#msgBox li div.pick.enuns {background-position:-1020px -720px;}
+#msgBox li div.pick.enuun {background-position:-1088px -720px;}
+#msgBox li div.pick.enuub {background-position:-1156px -720px;}
+
+#msgBox li div.pick.enuum {background-position:0 -780px;}
+#msgBox li div.pick.enuus {background-position:-68px -780px;}
+#msgBox li div.pick.enuon {background-position:-136px -780px;}
+#msgBox li div.pick.enuob {background-position:-204px -780px;}
+#msgBox li div.pick.enuom {background-position:-272px -780px;}
+#msgBox li div.pick.enuos {background-position:-340px -780px;}
+#msgBox li div.pick.enonn {background-position:-408px -780px;}
+#msgBox li div.pick.enonb {background-position:-476px -780px;}
+#msgBox li div.pick.enonm {background-position:-544px -780px;}
+#msgBox li div.pick.enons {background-position:-612px -780px;}
+#msgBox li div.pick.enoun {background-position:-680px -780px;}
+#msgBox li div.pick.enoub {background-position:-748px -780px;}
+#msgBox li div.pick.enoum {background-position:-816px -780px;}
+#msgBox li div.pick.enous {background-position:-884px -780px;}
+#msgBox li div.pick.enoon {background-position:-952px -780px;}
+#msgBox li div.pick.enoob {background-position:-1020px -780px;}
+#msgBox li div.pick.enoom {background-position:-1088px -780px;}
+#msgBox li div.pick.enoos {background-position:-1156px -780px;}
+
+#msgBox li div.pick.eonnn {background-position:0 -840px;}
+#msgBox li div.pick.eonnb {background-position:-68px -840px;}
+#msgBox li div.pick.eonnm {background-position:-136px -840px;}
+#msgBox li div.pick.eonns {background-position:-204px -840px;}
+#msgBox li div.pick.eonun {background-position:-272px -840px;}
+#msgBox li div.pick.eonub {background-position:-340px -840px;}
+#msgBox li div.pick.eonum {background-position:-408px -840px;}
+#msgBox li div.pick.eonus {background-position:-476px -840px;}
+#msgBox li div.pick.eonon {background-position:-544px -840px;}
+#msgBox li div.pick.eonob {background-position:-612px -840px;}
+#msgBox li div.pick.eonom {background-position:-680px -840px;}
+#msgBox li div.pick.eonos {background-position:-748px -840px;}
+#msgBox li div.pick.eounn {background-position:-816px -840px;}
+#msgBox li div.pick.eounb {background-position:-884px -840px;}
+#msgBox li div.pick.eounm {background-position:-952px -840px;}
+#msgBox li div.pick.eouns {background-position:-1020px -840px;}
+#msgBox li div.pick.eouun {background-position:-1088px -840px;}
+#msgBox li div.pick.eouub {background-position:-1156px -840px;}
+
+#msgBox li div.pick.eouum {background-position:0 -900px;}
+#msgBox li div.pick.eouus {background-position:-68px -900px;}
+#msgBox li div.pick.eouon {background-position:-136px -900px;}
+#msgBox li div.pick.eouob {background-position:-204px -900px;}
+#msgBox li div.pick.eouom {background-position:-272px -900px;}
+#msgBox li div.pick.eouos {background-position:-340px -900px;}
+#msgBox li div.pick.eoonn {background-position:-408px -900px;}
+#msgBox li div.pick.eoonb {background-position:-476px -900px;}
+#msgBox li div.pick.eoonm {background-position:-544px -900px;}
+#msgBox li div.pick.eoons {background-position:-612px -900px;}
+#msgBox li div.pick.eooun {background-position:-680px -900px;}
+#msgBox li div.pick.eooub {background-position:-748px -900px;}
+#msgBox li div.pick.eooum {background-position:-816px -900px;}
+#msgBox li div.pick.eoous {background-position:-884px -900px;}
+#msgBox li div.pick.eooon {background-position:-952px -900px;}
+#msgBox li div.pick.eooob {background-position:-1020px -900px;}
+#msgBox li div.pick.eooom {background-position:-1088px -900px;}
+#msgBox li div.pick.eooos {background-position:-1156px -900px;}
+
+#msgBox li div.pick.eennn {background-position:0 -960px;}
+#msgBox li div.pick.eennb {background-position:-68px -960px;}
+#msgBox li div.pick.eennm {background-position:-136px -960px;}
+#msgBox li div.pick.eenns {background-position:-204px -960px;}
+#msgBox li div.pick.eenun {background-position:-272px -960px;}
+#msgBox li div.pick.eenub {background-position:-340px -960px;}
+#msgBox li div.pick.eenum {background-position:-408px -960px;}
+#msgBox li div.pick.eenus {background-position:-476px -960px;}
+#msgBox li div.pick.eenon {background-position:-544px -960px;}
+#msgBox li div.pick.eenob {background-position:-612px -960px;}
+#msgBox li div.pick.eenom {background-position:-680px -960px;}
+#msgBox li div.pick.eenos {background-position:-748px -960px;}
+#msgBox li div.pick.eeunn {background-position:-816px -960px;}
+#msgBox li div.pick.eeunb {background-position:-884px -960px;}
+#msgBox li div.pick.eeunm {background-position:-952px -960px;}
+#msgBox li div.pick.eeuns {background-position:-1020px -960px;}
+#msgBox li div.pick.eeuun {background-position:-1088px -960px;}
+#msgBox li div.pick.eeuub {background-position:-1156px -960px;}
+
+#msgBox li div.pick.eeuum {background-position:0 -1020px;}
+#msgBox li div.pick.eeuus {background-position:-68px -1020px;}
+#msgBox li div.pick.eeuon {background-position:-136px -1020px;}
+#msgBox li div.pick.eeuob {background-position:-204px -1020px;}
+#msgBox li div.pick.eeuom {background-position:-272px -1020px;}
+#msgBox li div.pick.eeuos {background-position:-340px -1020px;}
+#msgBox li div.pick.eeonn {background-position:-408px -1020px;}
+#msgBox li div.pick.eeonb {background-position:-476px -1020px;}
+#msgBox li div.pick.eeonm {background-position:-544px -1020px;}
+#msgBox li div.pick.eeons {background-position:-612px -1020px;}
+#msgBox li div.pick.eeoun {background-position:-680px -1020px;}
+#msgBox li div.pick.eeoub {background-position:-748px -1020px;}
+#msgBox li div.pick.eeoum {background-position:-816px -1020px;}
+#msgBox li div.pick.eeous {background-position:-884px -1020px;}
+#msgBox li div.pick.eeoon {background-position:-952px -1020px;}
+#msgBox li div.pick.eeoob {background-position:-1020px -1020px;}
+#msgBox li div.pick.eeoom {background-position:-1088px -1020px;}
+#msgBox li div.pick.eeoos {background-position:-1156px -1020px;}
+
+#msgBox li img {vertical-align:middle;}
+#msgBox li {position:relative;margin:2px 0;color:#5E5E5E;min-height:23px;}
+#msgBox li.admin {color:#A22B2B;font-weight:bold;}
+#msgBox li.devadmin {color:#2c55a0;font-weight:bold;}
+#msgBox li.opener {color:#A22B2B;font-weight:bold;}
+#msgBox li.manager {color:#2c55a0;font-weight:bold;}
+#msgBox li.fixMember {color:#cb500e;font-weight:bold;}
+#msgBox li.supporter {color:#1c6f00;}
+#msgBox li.superchat {color:#9545b4;}
+#msgBox li .nick .familyNick {color:#d95904;}
+#msgBox li.superchat .nick .familyNick {color:#d95904;}
+#msgBox li .pick_odd {background:url(/simg.powerballgame.co.kr/images/bg_odd.png) center center no-repeat;width:62px;height:42px;border-radius:30px;color:#fff;font-size:16px;font-weight:bold;text-align:center;margin:10px auto;padding-top:20px;}
+#msgBox li .pick_even {background:url(/simg.powerballgame.co.kr/images/bg_even.png) center center no-repeat;width:62px;height:42px;border-radius:30px;color:#fff;font-size:16px;font-weight:bold;text-align:center;margin:10px auto;padding-top:20px;}
+
+#msgBox .msg-whisper {color:#2962D9;}
+#msgBox .msg-whisper .whisperNick {color:#2962D9;font-weight:bold;}
+
+#msgBox li.present {margin:5px 0;background-color:#e6f8ff;border:1px solid #85c8fe;text-align:center;padding:10px 0;}
+#msgBox li.present div {margin-top:10px;}
+#msgBox li.present div a {font-weight:bold;color:#A22B2B;}
+#msgBox li.present div strong {color:#A22B2B;}
+
+/* emoticon msg */
+#msgBox li span.emoticon {display:inline-block;position:relative;width:65px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_emoticon.png?2) no-repeat;vertical-align:middle;}
+#msgBox li span.emoticon.e1_1 {background-position:0 0;}
+#msgBox li span.emoticon.e1_2 {background-position:-65px 0;}
+#msgBox li span.emoticon.e1_3 {background-position:-130px 0;}
+#msgBox li span.emoticon.e1_4 {background-position:-195px 0;}
+#msgBox li span.emoticon.e1_5 {background-position:-260px 0;}
+#msgBox li span.emoticon.e1_6 {background-position:-325px 0;}
+#msgBox li span.emoticon.e1_7 {background-position:-390px 0;}
+#msgBox li span.emoticon.e1_8 {background-position:-455px 0;}
+#msgBox li span.emoticon.e1_9 {background-position:-520px 0;}
+#msgBox li span.emoticon.e1_10 {background-position:-585px 0;}
+#msgBox li span.emoticon.e1_11 {background-position:-650px 0;}
+#msgBox li span.emoticon.e1_12 {background-position:-715px 0;}
+#msgBox li span.emoticon.e1_13 {background-position:-780px 0;}
+#msgBox li span.emoticon.e1_14 {background-position:-845px 0;}
+#msgBox li span.emoticon.e1_15 {background-position:-910px 0;}
+#msgBox li span.emoticon.e1_16 {background-position:-975px 0;}
+#msgBox li span.emoticon.e1_17 {background-position:-1040px 0;}
+
+#msgBox li span.emoticon.e2_1 {background-position:0 -65px;}
+#msgBox li span.emoticon.e2_2 {background-position:-65px -65px;}
+#msgBox li span.emoticon.e2_3 {background-position:-130px -65px;}
+#msgBox li span.emoticon.e2_4 {background-position:-195px -65px;}
+#msgBox li span.emoticon.e2_5 {background-position:-260px -65px;}
+#msgBox li span.emoticon.e2_6 {background-position:-325px -65px;}
+#msgBox li span.emoticon.e2_7 {background-position:-390px -65px;}
+#msgBox li span.emoticon.e2_8 {background-position:-455px -65px;}
+#msgBox li span.emoticon.e2_9 {background-position:-520px -65px;}
+#msgBox li span.emoticon.e2_10 {background-position:-585px -65px;}
+#msgBox li span.emoticon.e2_11 {background-position:-650px -65px;}
+#msgBox li span.emoticon.e2_12 {background-position:-715px -65px;}
+#msgBox li span.emoticon.e2_13 {background-position:-780px -65px;}
+#msgBox li span.emoticon.e2_14 {background-position:-845px -65px;}
+#msgBox li span.emoticon.e2_15 {background-position:-910px -65px;}
+#msgBox li span.emoticon.e2_16 {background-position:-975px -65px;}
+#msgBox li span.emoticon.e2_17 {background-position:-1040px -65px;}
+
+#msgBox li span.emoticon.e3_1 {background-position:0 -130px;}
+#msgBox li span.emoticon.e3_2 {background-position:-65px -130px;}
+#msgBox li span.emoticon.e3_3 {background-position:-130px -130px;}
+#msgBox li span.emoticon.e3_4 {background-position:-195px -130px;}
+#msgBox li span.emoticon.e3_5 {background-position:-260px -130px;}
+#msgBox li span.emoticon.e3_6 {background-position:-325px -130px;}
+#msgBox li span.emoticon.e3_7 {background-position:-390px -130px;}
+#msgBox li span.emoticon.e3_8 {background-position:-455px -130px;}
+#msgBox li span.emoticon.e3_9 {background-position:-520px -130px;}
+#msgBox li span.emoticon.e3_10 {background-position:-585px -130px;}
+#msgBox li span.emoticon.e3_11 {background-position:-650px -130px;}
+#msgBox li span.emoticon.e3_12 {background-position:-715px -130px;}
+#msgBox li span.emoticon.e3_13 {background-position:-780px -130px;}
+#msgBox li span.emoticon.e3_14 {background-position:-845px -130px;}
+#msgBox li span.emoticon.e3_15 {background-position:-910px -130px;}
+#msgBox li span.emoticon.e3_16 {background-position:-975px -130px;}
+#msgBox li span.emoticon.e3_17 {background-position:-1040px -130px;}
+
+#msgBox li span.emoticon.e4_1 {background-position:0 -195px;}
+#msgBox li span.emoticon.e4_2 {background-position:-65px -195px;}
+#msgBox li span.emoticon.e4_3 {background-position:-130px -195px;}
+#msgBox li span.emoticon.e4_4 {background-position:-195px -195px;}
+#msgBox li span.emoticon.e4_5 {background-position:-260px -195px;}
+#msgBox li span.emoticon.e4_6 {background-position:-325px -195px;}
+#msgBox li span.emoticon.e4_7 {background-position:-390px -195px;}
+#msgBox li span.emoticon.e4_8 {background-position:-455px -195px;}
+#msgBox li span.emoticon.e4_9 {background-position:-520px -195px;}
+#msgBox li span.emoticon.e4_10 {background-position:-585px -195px;}
+#msgBox li span.emoticon.e4_11 {background-position:-650px -195px;}
+#msgBox li span.emoticon.e4_12 {background-position:-715px -195px;}
+#msgBox li span.emoticon.e4_13 {background-position:-780px -195px;}
+#msgBox li span.emoticon.e4_14 {background-position:-845px -195px;}
+#msgBox li span.emoticon.e4_15 {background-position:-910px -195px;}
+#msgBox li span.emoticon.e4_16 {background-position:-975px -195px;}
+
+#msgBox li span.emoticon.e5_1 {background-position:0 -260px;}
+#msgBox li span.emoticon.e5_2 {background-position:-65px -260px;}
+#msgBox li span.emoticon.e5_3 {background-position:-130px -260px;}
+#msgBox li span.emoticon.e5_4 {background-position:-195px -260px;}
+#msgBox li span.emoticon.e5_5 {background-position:-260px -260px;}
+#msgBox li span.emoticon.e5_6 {background-position:-325px -260px;}
+#msgBox li span.emoticon.e5_7 {background-position:-390px -260px;}
+#msgBox li span.emoticon.e5_8 {background-position:-455px -260px;}
+#msgBox li span.emoticon.e5_9 {background-position:-520px -260px;}
+#msgBox li span.emoticon.e5_10 {background-position:-585px -260px;}
+#msgBox li span.emoticon.e5_11 {background-position:-650px -260px;}
+#msgBox li span.emoticon.e5_12 {background-position:-715px -260px;}
+#msgBox li span.emoticon.e5_13 {background-position:-780px -260px;}
+#msgBox li span.emoticon.e5_14 {background-position:-845px -260px;}
+#msgBox li span.emoticon.e5_15 {background-position:-910px -260px;}
+#msgBox li span.emoticon.e5_16 {background-position:-975px -260px;}
+
+/* menu box */
+.leftArea .menuBox {position:relative;height:25px;background-color:#127CCB;border:1px solid #0e578d;border-top:none;border-bottom:1px dotted #0b4230;margin-left:8px;}
+.leftArea .menuBox ul {margin-left:10px;}
+.leftArea .menuBox ul li {float:left;margin-right:30px;text-align:center;}
+.leftArea .menuBox ul li.right {float:right;}
+.leftArea .menuBox ul li a {font-size:11px;font-family:dotum;color:#efefef;line-height:25px;}
+
+.leftArea .menuBox #helpBox {position:absolute;bottom:25px;background-color:#fff;border:1px solid #0e578d;display:none;}
+.leftArea .menuBox #helpBox ul {margin:0;}
+.leftArea .menuBox #helpBox ul li {float:none;width:150px;text-align:left;font-size:11px;font-family:dotum;color:#5E5E5E;height:25px;line-height:25px;padding:0 10px;border-bottom:1px dotted #d2d2d2;margin:0;}
+.leftArea .menuBox #helpBox ul li.tit {background-color:#127CCB;color:#fff;border-bottom:none;font-weight:bold;}
+.leftArea .menuBox #helpBox ul li.none {border-bottom:none;}
+
+/* recomLog */
+.leftArea #recomLogBox {position:absolute;top:32px;left:290px;background-color:#fff;border:1px solid #0e578d;display:none;z-index:99;}
+.leftArea #recomLogBox .tit {height:25px;line-height:25px;background-color:#127CCB;color:#fff;border-bottom:none;font-weight:bold;padding-left:10px;}
+.leftArea #recomLogBox ul {height:292px;margin:0;padding:5px;overflow-y:scroll;}
+.leftArea #recomLogBox ul li {float:none;width:180px;text-align:left;font-size:12px;font-family:dotum;color:#5E5E5E;padding:5px;margin:0;border-top:1px dotted #d2d2d2;}
+.leftArea #recomLogBox ul li .box {margin-left:56px;}
+.leftArea #recomLogBox ul li.first {border-top:none;}
+.leftArea #recomLogBox ul li.none {height:30px;line-height:30px;text-align:center;}
+.leftArea #recomLogBox ul li span.nick {font-weight:bold;color:#127CCB;}
+.leftArea #recomLogBox ul li span.num {font-weight:bold;color:#CD1212;font-family:tahoma;}
+
+/* bulletLog */
+.leftArea #bulletLogBox {position:absolute;top:32px;left:356px;background-color:#fff;border:1px solid #0e578d;display:none;z-index:99;}
+.leftArea #bulletLogBox .tit {height:25px;line-height:25px;background-color:#127CCB;color:#fff;border-bottom:none;font-weight:bold;padding-left:10px;}
+.leftArea #bulletLogBox ul {height:292px;margin:0;padding:5px;overflow-y:scroll;}
+.leftArea #bulletLogBox ul li {float:none;width:180px;text-align:left;font-size:12px;font-family:dotum;color:#5E5E5E;padding:5px;margin:0;border-top:1px dotted #d2d2d2;}
+.leftArea #bulletLogBox ul li .box {margin-left:56px;}
+.leftArea #bulletLogBox ul li.first {border-top:none;}
+.leftArea #bulletLogBox ul li.none {height:30px;line-height:30px;text-align:center;}
+.leftArea #bulletLogBox ul li span.nick {font-weight:bold;color:#127CCB;}
+.leftArea #bulletLogBox ul li span.num {font-weight:bold;color:#CD1212;font-family:tahoma;}
+
+/* managerLog */
+.leftArea #managerLogBox {position:absolute;top:32px;left:456px;background-color:#fff;border:1px solid #0e578d;display:none;z-index:99;}
+.leftArea #managerLogBox .tit {height:25px;line-height:25px;background-color:#127CCB;color:#fff;border-bottom:none;font-weight:bold;padding-left:10px;}
+.leftArea #managerLogBox ul {height:292px;margin:0;padding:5px;overflow-y:scroll;}
+.leftArea #managerLogBox ul li {position:relative;float:none;width:260px;text-align:left;font-size:12px;font-family:dotum;color:#5E5E5E;padding:5px;margin:0;border-top:1px dotted #d2d2d2;}
+.leftArea #managerLogBox ul li .box {margin-left:56px;}
+.leftArea #managerLogBox ul li.first {border-top:none;}
+.leftArea #managerLogBox ul li.none {height:30px;line-height:30px;text-align:center;}
+.leftArea #managerLogBox ul li span.nick {font-weight:bold;color:#127CCB;}
+.leftArea #managerLogBox ul li span.type {font-weight:bold;color:#CD1212;}
+.leftArea #managerLogBox ul li a.del {position:absolute;top:3px;right:5px;display:inline-block;width:18px;height:18px;background:url('/simg.powerballgame.co.kr/chat/images/btn_s_del.png');}
+.leftArea #managerLogBox ul li a.del:hover {background:url('/simg.powerballgame.co.kr/chat/images/btn_s_del_on.png');}
+
+
+/* msg input */
+.leftArea .inputBox {position:relative;padding:5px 32px 0 5px;height:32px;background-color:#f2f2f2;margin:0 0 8px 8px;border:1px solid #0e578d;border-top:none;background-color:#127CCB;}
+.leftArea .inputBox .input {border:1px solid #39302D;border-right:none;height:25px;}
+.leftArea .inputBox .input input {border:none; width:100%; height:25px;line-height:25px;background-color:#f9f9f9;color:#949494;padding:0 5px;}
+.leftArea .inputBox .btn {position:absolute;top:5px;right:5px;width:27px;height:27px;background:url('/simg.powerballgame.co.kr/images/btn_send.png') no-repeat;}
+
+/* right area */
+.rightArea {position:absolute;top:0;right:0;width:316px;background-color:#d2d2d2;}
+
+.rightArea .btn {height:29px;background-color:#127CCB;border-top:1px solid #1b93eb;border-bottom:1px solid #0b4977;}
+.rightArea .btn .exit {color:#fff;height:29px;line-height:29px;font-weight:bold;float:right;margin-right:15px;}
+.rightArea .btn .refresh {color:yellow;height:29px;line-height:29px;font-weight:bold;float:left;margin-left:15px;}
+.rightArea .btn .adminDel {color:yellow;height:29px;line-height:29px;font-weight:bold;float:left;margin-left:15px;}
+
+.rightArea .myInfo {margin:8px;border:1px solid #0e578d;background-color:#fff;}
+.rightArea .myInfo .tit {background-color:#127CCB;height:25px;line-height:25px;font-weight:bold;color:#fff;padding-left:10px;border-bottom:1px solid #000;}
+.rightArea .myInfo .inner {position:relative;height:40px;line-height:40px;padding-left:5px;}
+.rightArea .myInfo .inner img {vertical-align:middle;}
+.rightArea .myInfo .inner .uname {color:#5E5E5E;}
+
+/*
+.rightArea .userList {margin:0 8px;background-color:#fff;border:1px solid #0e578d;height:380px;}
+.rightArea .userList .tit {background-color:#127CCB;height:25px;line-height:25px;font-weight:bold;color:#fff;padding-left:10px;border-bottom:1px solid #000;}
+.rightArea .userList .tit span {color:#F7E227;font-family:tahoma,dotum;}
+.rightArea .userList ul {overflow-y:auto;height:350px;}
+.rightArea .userList ul li {position:relative;height:35px;line-height:35px;border-bottom:1px dotted #bfbfbf;padding-left:5px;}
+.rightArea .userList ul li img.profile {width:30px;height:30px;border:1px solid #e0e0e0;border-radius:3px;margin-right:5px;}
+.rightArea .userList ul li img {vertical-align:middle;}
+.rightArea .userList ul li .uname {color:#5E5E5E;}
+*/
+
+.rightArea .resultBox .tab {position:relative;height:25px;margin:0 8px;border:1px solid #0e578d;}
+.rightArea .resultBox .tab li {float:left;width:50%;background-color:#F1F1F1;text-align:center;}
+.rightArea .resultBox .tab li a {display:block;height:25px;line-height:25px;font-weight:bold;border-bottom:1px solid #0e578d;}
+.rightArea .resultBox .tab li a span {color:#CD1212;font-family:tahoma,dotum;}
+.rightArea .resultBox .tab li a.left {border-right:1px solid #0e578d;}
+.rightArea .resultBox .tab li a.on {background-color:#127CCB;border-bottom:1px solid #127CCB;color:#fff;}
+.rightArea .resultBox .tab li a.on span {color:#F7E227;font-family:tahoma,dotum;}
+
+.rightArea .resultBox .content {position:relative;margin:0 8px;border:1px solid #0e578d;border-top:none;}
+.rightArea .resultBox .content .userListBox {overflow-y:auto;width:100%;height:350px;background-color:#fff;}
+.rightArea .resultBox .content .userListBox ul.userList li {position:relative;height:47px;line-height:47px;border-bottom:1px dotted #bfbfbf;padding-left:5px;}
+.rightArea .resultBox .content .userListBox ul.userList img.profile {width:30px;height:30px;border:1px solid #e0e0e0;border-radius:3px;margin-right:5px;}
+.rightArea .resultBox .content .userListBox ul.userList img.mark {margin-top:-12px;}
+.rightArea .resultBox .content .userListBox ul.userList img {vertical-align:middle;}
+.rightArea .resultBox .content .userListBox ul.userList .uname {color:#5E5E5E;}
+.rightArea .resultBox .content .userListBox ul.userList li .icon_opener {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 0;text-indent:-9999px;}
+.rightArea .resultBox .content .userListBox ul.userList li .icon_manager {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -26px;text-indent:-9999px;}
+.rightArea .resultBox .content .userListBox ul.userList li .icon_fixMember {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+.rightArea .resultBox .content .userListBox ul.userList li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -39px;text-indent:-9999px;}
+.rightArea .resultBox .content .userListBox ul.userList li .icon_managerFixMember {position:absolute;top:19px;left:5px;width:32px;height:26px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+.rightArea .resultBox .content .userListBox ul.userList li .todayMsg {float:right;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
+.rightArea .resultBox .content .userListBox ul.userList li .todayMsg .inn {max-width:121px;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
+.rightArea .resultBox .content .userListBox ul.userList li .todayMsg .inn p {height:25px;overflow:hidden;}
+.rightArea .resultBox .content .userListBox ul.userList li .todayMsg .inn p span {display:table-cell;height:25px;line-height:13px;color:#3e3e3e;font-size:11px;vertical-align:middle;}
+
+.rightArea .resultBox .content ul.resultList {overflow-y:auto;width:100%;height:350px;background-color:#fff;}
+.rightArea .resultBox .content ul.resultList li {height:60px;border-bottom:1px dotted #bfbfbf;padding:5px 5px 5px 10px;background-color:none;}
+
+.rightArea .resultBox .content ul.resultList li.win_all {background-color:#FFFFD9;}
+.rightArea .resultBox .content ul.resultList li.win {background-color:#F0FDFF;}
+
+.rightArea .resultBox .content ul.resultList li .pickResult .win {font-weight:bold;background:url(/simg.powerballgame.co.kr/chat/images/bl_win.png) no-repeat 5px 0px;padding-left:10px;}
+.rightArea .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
+.rightArea .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
+.rightArea .resultBox .content ul.resultList li .rs {display:table-cell;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+.rightArea .resultBox .content ul.resultList li .blank {display:table-cell;width:5px;}
+/* odd, even, under, over, period */
+.rightArea .resultBox .content ul.resultList li .rs.nnnnn {background-position:0 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnnb {background-position:-68px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnnm {background-position:-136px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnns {background-position:-204px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnun {background-position:-272px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnub {background-position:-340px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnum {background-position:-408px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnus {background-position:-476px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnon {background-position:-544px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnob {background-position:-612px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnom {background-position:-680px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnnos {background-position:-748px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnunn {background-position:-816px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnunb {background-position:-884px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnunm {background-position:-952px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuns {background-position:-1020px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuun {background-position:-1088px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuub {background-position:-1156px 0;}
+.rightArea .resultBox .content ul.resultList li .rs.ready {background-position:-1224px 0;}
+
+.rightArea .resultBox .content ul.resultList li .rs.nnuum {background-position:0 -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuus {background-position:-68px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuon {background-position:-136px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuob {background-position:-204px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuom {background-position:-272px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnuos {background-position:-340px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnonn {background-position:-408px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnonb {background-position:-476px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnonm {background-position:-544px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnons {background-position:-612px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoun {background-position:-680px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoub {background-position:-748px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoum {background-position:-816px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnous {background-position:-884px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoon {background-position:-952px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoob {background-position:-1020px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoom {background-position:-1088px -60px;}
+.rightArea .resultBox .content ul.resultList li .rs.nnoos {background-position:-1156px -60px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.nonnn {background-position:0 -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonnb {background-position:-68px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonnm {background-position:-136px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonns {background-position:-204px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonun {background-position:-272px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonub {background-position:-340px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonum {background-position:-408px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonus {background-position:-476px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonon {background-position:-544px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonob {background-position:-612px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonom {background-position:-680px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nonos {background-position:-748px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nounn {background-position:-816px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nounb {background-position:-884px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nounm {background-position:-952px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouns {background-position:-1020px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouun {background-position:-1088px -120px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouub {background-position:-1156px -120px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.nouum {background-position:0 -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouus {background-position:-68px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouon {background-position:-136px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouob {background-position:-204px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouom {background-position:-272px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nouos {background-position:-340px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.noonn {background-position:-408px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.noonb {background-position:-476px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.noonm {background-position:-544px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.noons {background-position:-612px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooun {background-position:-680px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooub {background-position:-748px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooum {background-position:-816px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.noous {background-position:-884px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooon {background-position:-952px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooob {background-position:-1020px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooom {background-position:-1088px -180px;}
+.rightArea .resultBox .content ul.resultList li .rs.nooos {background-position:-1156px -180px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.nennn {background-position:0 -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nennb {background-position:-68px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nennm {background-position:-136px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenns {background-position:-204px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenun {background-position:-272px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenub {background-position:-340px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenum {background-position:-408px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenus {background-position:-476px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenon {background-position:-544px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenob {background-position:-612px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenom {background-position:-680px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.nenos {background-position:-748px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neunn {background-position:-816px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neunb {background-position:-884px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neunm {background-position:-952px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuns {background-position:-1020px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuun {background-position:-1088px -240px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuub {background-position:-1156px -240px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.neuum {background-position:0 -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuus {background-position:-68px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuon {background-position:-136px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuob {background-position:-204px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuom {background-position:-272px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neuos {background-position:-340px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neonn {background-position:-408px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neonb {background-position:-476px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neonm {background-position:-544px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neons {background-position:-612px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoun {background-position:-680px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoub {background-position:-748px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoum {background-position:-816px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neous {background-position:-884px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoon {background-position:-952px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoob {background-position:-1020px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoom {background-position:-1088px -300px;}
+.rightArea .resultBox .content ul.resultList li .rs.neoos {background-position:-1156px -300px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.onnnn {background-position:0 -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnnb {background-position:-68px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnnm {background-position:-136px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnns {background-position:-204px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnun {background-position:-272px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnub {background-position:-340px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnum {background-position:-408px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnus {background-position:-476px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnon {background-position:-544px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnob {background-position:-612px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnom {background-position:-680px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onnos {background-position:-748px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onunn {background-position:-816px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onunb {background-position:-884px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onunm {background-position:-952px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuns {background-position:-1020px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuun {background-position:-1088px -360px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuub {background-position:-1156px -360px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.onuum {background-position:0 -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuus {background-position:-68px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuon {background-position:-136px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuob {background-position:-204px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuom {background-position:-272px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onuos {background-position:-340px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.ononn {background-position:-408px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.ononb {background-position:-476px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.ononm {background-position:-544px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onons {background-position:-612px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoun {background-position:-680px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoub {background-position:-748px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoum {background-position:-816px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onous {background-position:-884px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoon {background-position:-952px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoob {background-position:-1020px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoom {background-position:-1088px -420px;}
+.rightArea .resultBox .content ul.resultList li .rs.onoos {background-position:-1156px -420px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.oonnn {background-position:0 -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonnb {background-position:-68px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonnm {background-position:-136px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonns {background-position:-204px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonun {background-position:-272px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonub {background-position:-340px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonum {background-position:-408px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonus {background-position:-476px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonon {background-position:-544px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonob {background-position:-612px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonom {background-position:-680px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oonos {background-position:-748px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oounn {background-position:-816px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oounb {background-position:-884px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oounm {background-position:-952px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouns {background-position:-1020px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouun {background-position:-1088px -480px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouub {background-position:-1156px -480px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.oouum {background-position:0 -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouus {background-position:-68px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouon {background-position:-136px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouob {background-position:-204px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouom {background-position:-272px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oouos {background-position:-340px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.ooonn {background-position:-408px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.ooonb {background-position:-476px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.ooonm {background-position:-544px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.ooons {background-position:-612px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooun {background-position:-680px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooub {background-position:-748px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooum {background-position:-816px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.ooous {background-position:-884px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooon {background-position:-952px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooob {background-position:-1020px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooom {background-position:-1088px -540px;}
+.rightArea .resultBox .content ul.resultList li .rs.oooos {background-position:-1156px -540px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.oennn {background-position:0 -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oennb {background-position:-68px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oennm {background-position:-136px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenns {background-position:-204px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenun {background-position:-272px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenub {background-position:-340px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenum {background-position:-408px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenus {background-position:-476px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenon {background-position:-544px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenob {background-position:-612px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenom {background-position:-680px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oenos {background-position:-748px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeunn {background-position:-816px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeunb {background-position:-884px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeunm {background-position:-952px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuns {background-position:-1020px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuun {background-position:-1088px -600px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuub {background-position:-1156px -600px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.oeuum {background-position:0 -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuus {background-position:-68px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuon {background-position:-136px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuob {background-position:-204px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuom {background-position:-272px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeuos {background-position:-340px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeonn {background-position:-408px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeonb {background-position:-476px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeonm {background-position:-544px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeons {background-position:-612px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoun {background-position:-680px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoub {background-position:-748px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoum {background-position:-816px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeous {background-position:-884px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoon {background-position:-952px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoob {background-position:-1020px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoom {background-position:-1088px -660px;}
+.rightArea .resultBox .content ul.resultList li .rs.oeoos {background-position:-1156px -660px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.ennnn {background-position:0 -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennnb {background-position:-68px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennnm {background-position:-136px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennns {background-position:-204px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennun {background-position:-272px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennub {background-position:-340px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennum {background-position:-408px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennus {background-position:-476px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennon {background-position:-544px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennob {background-position:-612px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennom {background-position:-680px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.ennos {background-position:-748px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enunn {background-position:-816px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enunb {background-position:-884px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enunm {background-position:-952px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuns {background-position:-1020px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuun {background-position:-1088px -720px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuub {background-position:-1156px -720px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.enuum {background-position:0 -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuus {background-position:-68px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuon {background-position:-136px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuob {background-position:-204px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuom {background-position:-272px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enuos {background-position:-340px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enonn {background-position:-408px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enonb {background-position:-476px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enonm {background-position:-544px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enons {background-position:-612px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoun {background-position:-680px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoub {background-position:-748px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoum {background-position:-816px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enous {background-position:-884px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoon {background-position:-952px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoob {background-position:-1020px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoom {background-position:-1088px -780px;}
+.rightArea .resultBox .content ul.resultList li .rs.enoos {background-position:-1156px -780px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.eonnn {background-position:0 -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonnb {background-position:-68px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonnm {background-position:-136px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonns {background-position:-204px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonun {background-position:-272px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonub {background-position:-340px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonum {background-position:-408px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonus {background-position:-476px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonon {background-position:-544px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonob {background-position:-612px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonom {background-position:-680px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eonos {background-position:-748px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eounn {background-position:-816px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eounb {background-position:-884px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eounm {background-position:-952px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouns {background-position:-1020px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouun {background-position:-1088px -840px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouub {background-position:-1156px -840px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.eouum {background-position:0 -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouus {background-position:-68px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouon {background-position:-136px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouob {background-position:-204px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouom {background-position:-272px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eouos {background-position:-340px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eoonn {background-position:-408px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eoonb {background-position:-476px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eoonm {background-position:-544px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eoons {background-position:-612px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooun {background-position:-680px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooub {background-position:-748px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooum {background-position:-816px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eoous {background-position:-884px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooon {background-position:-952px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooob {background-position:-1020px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooom {background-position:-1088px -900px;}
+.rightArea .resultBox .content ul.resultList li .rs.eooos {background-position:-1156px -900px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.eennn {background-position:0 -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eennb {background-position:-68px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eennm {background-position:-136px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenns {background-position:-204px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenun {background-position:-272px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenub {background-position:-340px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenum {background-position:-408px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenus {background-position:-476px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenon {background-position:-544px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenob {background-position:-612px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenom {background-position:-680px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eenos {background-position:-748px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeunn {background-position:-816px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeunb {background-position:-884px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeunm {background-position:-952px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuns {background-position:-1020px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuun {background-position:-1088px -960px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuub {background-position:-1156px -960px;}
+
+.rightArea .resultBox .content ul.resultList li .rs.eeuum {background-position:0 -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuus {background-position:-68px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuon {background-position:-136px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuob {background-position:-204px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuom {background-position:-272px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeuos {background-position:-340px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeonn {background-position:-408px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeonb {background-position:-476px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeonm {background-position:-544px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeons {background-position:-612px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoun {background-position:-680px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoub {background-position:-748px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoum {background-position:-816px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeous {background-position:-884px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoon {background-position:-952px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoob {background-position:-1020px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoom {background-position:-1088px -1020px;}
+.rightArea .resultBox .content ul.resultList li .rs.eeoos {background-position:-1156px -1020px;}
+
+.rightArea .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+.rightArea .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+/* odd, even, under, over, period */
+.rightArea .resultBox .content ul.resultList li .pick.nnnnn {background-position:0 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnnb {background-position:-68px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnnm {background-position:-136px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnns {background-position:-204px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnun {background-position:-272px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnub {background-position:-340px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnum {background-position:-408px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnus {background-position:-476px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnon {background-position:-544px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnob {background-position:-612px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnom {background-position:-680px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnnos {background-position:-748px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnunn {background-position:-816px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnunb {background-position:-884px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnunm {background-position:-952px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuns {background-position:-1020px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuun {background-position:-1088px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuub {background-position:-1156px 0;}
+.rightArea .resultBox .content ul.resultList li .pick.ready {background-position:-1224px 0;}
+
+.rightArea .resultBox .content ul.resultList li .pick.nnuum {background-position:0 -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuus {background-position:-68px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuon {background-position:-136px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuob {background-position:-204px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuom {background-position:-272px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnuos {background-position:-340px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnonn {background-position:-408px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnonb {background-position:-476px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnonm {background-position:-544px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnons {background-position:-612px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoun {background-position:-680px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoub {background-position:-748px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoum {background-position:-816px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnous {background-position:-884px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoon {background-position:-952px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoob {background-position:-1020px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoom {background-position:-1088px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick.nnoos {background-position:-1156px -60px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.nonnn {background-position:0 -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonnb {background-position:-68px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonnm {background-position:-136px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonns {background-position:-204px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonun {background-position:-272px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonub {background-position:-340px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonum {background-position:-408px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonus {background-position:-476px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonon {background-position:-544px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonob {background-position:-612px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonom {background-position:-680px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nonos {background-position:-748px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nounn {background-position:-816px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nounb {background-position:-884px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nounm {background-position:-952px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouns {background-position:-1020px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouun {background-position:-1088px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouub {background-position:-1156px -120px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.nouum {background-position:0 -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouus {background-position:-68px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouon {background-position:-136px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouob {background-position:-204px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouom {background-position:-272px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nouos {background-position:-340px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.noonn {background-position:-408px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.noonb {background-position:-476px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.noonm {background-position:-544px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.noons {background-position:-612px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooun {background-position:-680px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooub {background-position:-748px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooum {background-position:-816px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.noous {background-position:-884px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooon {background-position:-952px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooob {background-position:-1020px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooom {background-position:-1088px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick.nooos {background-position:-1156px -180px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.nennn {background-position:0 -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nennb {background-position:-68px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nennm {background-position:-136px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenns {background-position:-204px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenun {background-position:-272px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenub {background-position:-340px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenum {background-position:-408px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenus {background-position:-476px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenon {background-position:-544px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenob {background-position:-612px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenom {background-position:-680px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.nenos {background-position:-748px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neunn {background-position:-816px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neunb {background-position:-884px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neunm {background-position:-952px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuns {background-position:-1020px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuun {background-position:-1088px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuub {background-position:-1156px -240px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.neuum {background-position:0 -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuus {background-position:-68px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuon {background-position:-136px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuob {background-position:-204px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuom {background-position:-272px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neuos {background-position:-340px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neonn {background-position:-408px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neonb {background-position:-476px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neonm {background-position:-544px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neons {background-position:-612px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoun {background-position:-680px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoub {background-position:-748px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoum {background-position:-816px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neous {background-position:-884px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoon {background-position:-952px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoob {background-position:-1020px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoom {background-position:-1088px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick.neoos {background-position:-1156px -300px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.onnnn {background-position:0 -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnnb {background-position:-68px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnnm {background-position:-136px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnns {background-position:-204px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnun {background-position:-272px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnub {background-position:-340px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnum {background-position:-408px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnus {background-position:-476px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnon {background-position:-544px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnob {background-position:-612px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnom {background-position:-680px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onnos {background-position:-748px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onunn {background-position:-816px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onunb {background-position:-884px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onunm {background-position:-952px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuns {background-position:-1020px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuun {background-position:-1088px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuub {background-position:-1156px -360px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.onuum {background-position:0 -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuus {background-position:-68px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuon {background-position:-136px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuob {background-position:-204px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuom {background-position:-272px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onuos {background-position:-340px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.ononn {background-position:-408px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.ononb {background-position:-476px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.ononm {background-position:-544px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onons {background-position:-612px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoun {background-position:-680px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoub {background-position:-748px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoum {background-position:-816px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onous {background-position:-884px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoon {background-position:-952px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoob {background-position:-1020px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoom {background-position:-1088px -420px;}
+.rightArea .resultBox .content ul.resultList li .pick.onoos {background-position:-1156px -420px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.oonnn {background-position:0 -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonnb {background-position:-68px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonnm {background-position:-136px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonns {background-position:-204px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonun {background-position:-272px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonub {background-position:-340px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonum {background-position:-408px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonus {background-position:-476px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonon {background-position:-544px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonob {background-position:-612px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonom {background-position:-680px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oonos {background-position:-748px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oounn {background-position:-816px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oounb {background-position:-884px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oounm {background-position:-952px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouns {background-position:-1020px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouun {background-position:-1088px -480px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouub {background-position:-1156px -480px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.oouum {background-position:0 -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouus {background-position:-68px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouon {background-position:-136px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouob {background-position:-204px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouom {background-position:-272px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oouos {background-position:-340px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.ooonn {background-position:-408px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.ooonb {background-position:-476px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.ooonm {background-position:-544px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.ooons {background-position:-612px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooun {background-position:-680px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooub {background-position:-748px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooum {background-position:-816px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.ooous {background-position:-884px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooon {background-position:-952px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooob {background-position:-1020px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooom {background-position:-1088px -540px;}
+.rightArea .resultBox .content ul.resultList li .pick.oooos {background-position:-1156px -540px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.oennn {background-position:0 -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oennb {background-position:-68px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oennm {background-position:-136px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenns {background-position:-204px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenun {background-position:-272px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenub {background-position:-340px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenum {background-position:-408px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenus {background-position:-476px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenon {background-position:-544px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenob {background-position:-612px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenom {background-position:-680px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oenos {background-position:-748px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeunn {background-position:-816px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeunb {background-position:-884px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeunm {background-position:-952px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuns {background-position:-1020px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuun {background-position:-1088px -600px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuub {background-position:-1156px -600px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.oeuum {background-position:0 -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuus {background-position:-68px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuon {background-position:-136px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuob {background-position:-204px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuom {background-position:-272px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeuos {background-position:-340px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeonn {background-position:-408px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeonb {background-position:-476px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeonm {background-position:-544px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeons {background-position:-612px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoun {background-position:-680px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoub {background-position:-748px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoum {background-position:-816px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeous {background-position:-884px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoon {background-position:-952px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoob {background-position:-1020px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoom {background-position:-1088px -660px;}
+.rightArea .resultBox .content ul.resultList li .pick.oeoos {background-position:-1156px -660px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.ennnn {background-position:0 -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennnb {background-position:-68px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennnm {background-position:-136px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennns {background-position:-204px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennun {background-position:-272px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennub {background-position:-340px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennum {background-position:-408px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennus {background-position:-476px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennon {background-position:-544px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennob {background-position:-612px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennom {background-position:-680px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.ennos {background-position:-748px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enunn {background-position:-816px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enunb {background-position:-884px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enunm {background-position:-952px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuns {background-position:-1020px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuun {background-position:-1088px -720px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuub {background-position:-1156px -720px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.enuum {background-position:0 -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuus {background-position:-68px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuon {background-position:-136px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuob {background-position:-204px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuom {background-position:-272px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enuos {background-position:-340px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enonn {background-position:-408px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enonb {background-position:-476px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enonm {background-position:-544px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enons {background-position:-612px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoun {background-position:-680px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoub {background-position:-748px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoum {background-position:-816px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enous {background-position:-884px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoon {background-position:-952px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoob {background-position:-1020px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoom {background-position:-1088px -780px;}
+.rightArea .resultBox .content ul.resultList li .pick.enoos {background-position:-1156px -780px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.eonnn {background-position:0 -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonnb {background-position:-68px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonnm {background-position:-136px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonns {background-position:-204px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonun {background-position:-272px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonub {background-position:-340px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonum {background-position:-408px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonus {background-position:-476px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonon {background-position:-544px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonob {background-position:-612px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonom {background-position:-680px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eonos {background-position:-748px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eounn {background-position:-816px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eounb {background-position:-884px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eounm {background-position:-952px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouns {background-position:-1020px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouun {background-position:-1088px -840px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouub {background-position:-1156px -840px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.eouum {background-position:0 -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouus {background-position:-68px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouon {background-position:-136px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouob {background-position:-204px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouom {background-position:-272px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eouos {background-position:-340px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eoonn {background-position:-408px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eoonb {background-position:-476px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eoonm {background-position:-544px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eoons {background-position:-612px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooun {background-position:-680px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooub {background-position:-748px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooum {background-position:-816px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eoous {background-position:-884px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooon {background-position:-952px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooob {background-position:-1020px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooom {background-position:-1088px -900px;}
+.rightArea .resultBox .content ul.resultList li .pick.eooos {background-position:-1156px -900px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.eennn {background-position:0 -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eennb {background-position:-68px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eennm {background-position:-136px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenns {background-position:-204px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenun {background-position:-272px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenub {background-position:-340px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenum {background-position:-408px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenus {background-position:-476px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenon {background-position:-544px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenob {background-position:-612px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenom {background-position:-680px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eenos {background-position:-748px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeunn {background-position:-816px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeunb {background-position:-884px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeunm {background-position:-952px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuns {background-position:-1020px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuun {background-position:-1088px -960px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuub {background-position:-1156px -960px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.eeuum {background-position:0 -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuus {background-position:-68px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuon {background-position:-136px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuob {background-position:-204px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuom {background-position:-272px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeuos {background-position:-340px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeonn {background-position:-408px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeonb {background-position:-476px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeonm {background-position:-544px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeons {background-position:-612px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoun {background-position:-680px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoub {background-position:-748px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoum {background-position:-816px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeous {background-position:-884px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoon {background-position:-952px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoob {background-position:-1020px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoom {background-position:-1088px -1020px;}
+.rightArea .resultBox .content ul.resultList li .pick.eeoos {background-position:-1156px -1020px;}
+
+.rightArea .resultBox .content ul.resultList li .pick.pass {background-position:0 0;}
+
+/* pick result */
+.rightArea .resultBox .content ul.resultList li .pick span {position:absolute;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_tl {background-position:-1224px -60px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_tr {background-position:-1224px -120px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_bl {background-position:-1224px -180px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_br {background-position:-1224px -240px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_b {background-position:-1224px -300px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_m {background-position:-1224px -360px;}
+.rightArea .resultBox .content ul.resultList li .pick span.lose_s {background-position:-1224px -420px;}
+
+.rightArea .resultBox .content ul.resultList li .pickResultText {display:table-cell;font-family:tahoma,dotum;line-height:27px;vertical-align:middle;height:60px;width:65px;text-align:right;}
+.rightArea .resultBox .content ul.resultList li .pickResultText {display:table-cell;font-family:tahoma,dotum;line-height:27px;vertical-align:middle;height:60px;width:65px;text-align:right;}
+.rightArea .resultBox .content ul.resultList li .pickResultText span.win {font-size:20px;font-weight:bold;font-family:DINWeb-Bold;margin-right:1px;color:#C11A20;}
+.rightArea .resultBox .content ul.resultList li .pickResultText span.lose {font-size:20px;font-weight:bold;font-family:DINWeb-Bold;margin-right:1px;color:#1265CD;}
+
+/*.rightArea .resultBox .content ul.resultList li .pickResult {position:absolute;top:3px;left:190px;width:70px;height:70px;background-color:none;color:#505050;text-align:center;padding-left:20px;}*/
+/*.rightArea .resultBox .content ul.resultList li .pickResult span {display:block;height:22px;line-height:22px;text-align:center;}*/
+
+.rightBanner {padding:8px 0;text-align:center;}
+
+/* modal layer */
+.modalLayer {position:absolute;top:0;left:0;width:100%;height:100%;background:url(/simg.powerballgame.co.kr/images/bg_mask.png);z-index:9999;display:none;}
+.modalLayer .notice {position:relative;width:250px;border:1px solid #0E578D;background-color:#fafafa;display:none;}
+.modalLayer .notice .tit {position:relative;height:35px;border-bottom:1px solid #0E578D;background-color:#127CCB;}
+.modalLayer .notice .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'굴림',Gulim;color:#fff;}
+.modalLayer .notice .tit .close {position:absolute;top:9px;right:9px;background:url(/simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+.modalLayer .notice .content {padding:5px 30px;border-bottom:1px dotted #e1e1e1;}
+.modalLayer .notice .content input {margin:20px auto 5px auto;display:block;padding:0 5px;width:120px;height:30px;line-height:30px;font-size:20px;border:1px solid #d4d4d4;text-align:center;}
+.modalLayer .notice .content p {text-align:center;color:#666;padding:10px 0;font-size:11px;}
+.modalLayer .notice .btn {height:50px;text-align:center;}
+.modalLayer .notice .btn .btn_confirm {margin-top:9px;border:1px solid #151515;background-color:#4C4C4C;color:#fff;padding:7px;text-align:center;display:inline-block;}
+.modalLayer .notice .btn .btn_confirm:hover {background-color:#151515;}
+
+.modalLayer .chatRoomSetting {position:relative;width:400px;height:350px;border:1px solid #0E578D;background-color:#fafafa;display:none;}
+.modalLayer .chatRoomSetting .tit {position:relative;height:35px;border-bottom:1px solid #0E578D;background-color:#127CCB;}
+.modalLayer .chatRoomSetting .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'굴림',Gulim;color:#fff;}
+.modalLayer .chatRoomSetting .tit .close {position:absolute;top:9px;right:9px;background:url(/simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+
+.modalLayer .chatRoomSetting dl {margin:30px auto;width:340px;border-top:1px dotted #e1e1e1;}
+.modalLayer .chatRoomSetting dt {float:left;padding:8px 0 0 10px;width:80px;height:23px;border-right:1px dotted #e1e1e1;border-bottom:1px dotted #e1e1e1;background-color:#fcfcfc;color:#666;}
+.modalLayer .chatRoomSetting dt span {display:block;height:15px;line-height:15px;}
+.modalLayer .chatRoomSetting dd {float:left;padding:5px 0 0 5px;width:240px;height:26px;line-height:23px;border-bottom:1px dotted #e1e1e1;color:#666;}
+.modalLayer .chatRoomSetting dd input {padding:0 5px;width:230px;height:20px;line-height:20px;border:1px solid #d4d4d4;}
+.modalLayer .chatRoomSetting dd input[type=checkbox] {padding:0 5px;width:15px;height:15px;line-height:20px;border:1px solid #d4d4d4;vertical-align:middle;}
+.modalLayer .chatRoomSetting dd select {padding:0;border:1px solid #d4d4d4;}
+
+.modalLayer .chatRoomSetting .btn {height:50px;text-align:center;}
+.modalLayer .chatRoomSetting .btn .btn_modify {margin-top:15px;border:1px solid #151515;background-color:#4C4C4C;color:#fff;padding:7px;text-align:center;display:inline-block;}
+.modalLayer .chatRoomSetting .btn .btn_modify:hover {background-color:#151515;}
+
+/* user layer */
+#userLayer {display:block;position:absolute;min-width:180px;border:1px solid #0E578D;z-index:10000;}
+#userLayer .lutop {padding:0 20px 0 10px;height:26px;line-height:25px;font-weight:bold;color:#fff;background:#127CCB;}
+#userLayer .ubody {padding:4px;background-color:#f8f8f8;}
+/*#userLayer .ubody ul {}*/
+/*#userLayer .ubody li {}*/
+#userLayer .ubody a {display:block;margin-bottom:-1px;padding-left:5px;height:21px;border:1px solid #f8f8f8;font-size:11px;font-family:tahoma,dotum;overflow:hidden;color:#535353;}
+#userLayer .ubody a:hover {position:relative;border:1px solid #dad9d8;background-color:#f0f0f0;color:#000;z-index:10;}
+
+/*#userLayer .ubody a .ico {float:left; margin:3px 5px 0 0; width:15px; height:16px;}*/
+#userLayer .ubody a .ico {float:left; margin:3px 3px 0 0; width:0; height:0;}
+#userLayer .ubody a .txt {float:left;margin-top:4px;height:14px;line-height:14px;}
+
+#userLayer .game {background-color:#e4fce4;padding:3px 5px;border-bottom:1px dotted #d5d5d5;}
+#userLayer .game ul li {height:22px;line-height:22px;font-size:11px;font-family:tahoma,dotum;color:#535353;}
+#userLayer .game ul li .win {color:red;}
+#userLayer .game ul li .lose {color:blue;}
+
+/* bullet */
+.bulletBox {position:relative;height:100px;background:url(/simg.powerballgame.co.kr/images/target.png) center 10px no-repeat;text-align:center;padding-top:60px;}
+.bulletBox .cnt {margin-top:-18px;color:#fff;font-size:15px;font-weight:bold;}
+
+.autoGiftBox {position:relative;height:100px;text-align:center;}
+
+/* powerballPointBetGraph */
+#powerballPointBetGraph {position:relative;width:100%;height:40px;}
+#powerballPointBetGraph .oddChart{position:relative;float:left;width:145px;height:40px;}
+#powerballPointBetGraph .oddBar{position:absolute;background:url(/simg.powerballgame.co.kr/images/blue_bar.png) repeat-x 0 0;display:block;width:0;height:20px;top:10px;right:-10px;}
+#powerballPointBetGraph .oddPer{position:absolute;top:15px;right:113px;width:35px;text-align:right;display:block;color:#1265cd;font-family:DINWeb-Bold;}
+
+#powerballPointBetGraph .vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(/simg.powerballgame.co.kr/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:99;}
+
+#powerballPointBetGraph .evenChart{position:relative;float:right;width:145px;height:40px;}
+#powerballPointBetGraph .evenBar{position:absolute;background:url(/simg.powerballgame.co.kr/images/red_bar.png) repeat-x right 0;display:block;width:0;height:20px;top:10px;left:-10px;}
+#powerballPointBetGraph .evenPer{position:absolute;top:15px;left:113px;width:35px;text-align:left;display:block;color:#cd1212;font-family:DINWeb-Bold;}
+
+/* gift bullet */
+#layer-bulletBox {position:absolute;width:100%;height:82px;bottom:26px;left:0px;border-top:1px solid #0e578d;background:#F7F7F7;display:none;}
+#layer-bulletBox .title {border:1px solid #127CCB;background-color:#fcfefd;height:30px;line-height:30px;margin:6px 6px 4px 6px;font-size:11px;color:#737373;padding:0 10px;font-weight:bold;}
+#layer-bulletBox .title .bullet {font-family:tahoma;font-weight:bold;font-size:12px;color:#127CCB;}
+#layer-bulletBox .title .bar {color:#d0d0d0;margin:0 5px;}
+#layer-bulletBox .title .txt {font-weight:normal;}
+#layer-bulletBox .title .txt .important {text-decoration:underline;color:#127CCB;}
+
+#layer-bulletBox .content {background-color:#fff;margin:6px 6px 0 4px;}
+
+#layer-bulletBox .content ul {width:100%;margin:0;text-align:center;}
+#layer-bulletBox .content ul li {float:left;text-align:center;width:12%;margin:0;}
+#layer-bulletBox .content ul li span {margin:0 2px;display:block;height:30px;line-height:30px;border:1px solid #B2B2B2;text-align:center;font-weight:bold;background-color:#fff;color:#828282;cursor:pointer;}
+#layer-bulletBox .content ul li span:hover {border:1px solid #127CCB;color:#127CCB;background-color:#FCFEFD;}
+#layer-bulletBox .content ul li span.on {border:1px solid #127CCB;color:#127CCB;background-color:#FCFEFD;}
+#layer-bulletBox .content ul li.input {width:22%;}
+#layer-bulletBox .content ul li.input input {width:90%;height:28px;line-height:28px;text-align:right;font-weight:bold;padding:0 5px 0 0;}
+#layer-bulletBox .content ul li.input input:hover {border:1px solid #127CCB;height:30px;}
+#layer-bulletBox .content ul li.input input.on {border:1px solid #127CCB;height:30px;color:#127CCB;background-color:#FCFEFD;}
+
+#layer-bulletBox .content div.btnBox {float:right;width:30%;font-weight:normal;text-align:center;}
+#layer-bulletBox .content div.btnBox .gift {float:left;width:50%;}
+#layer-bulletBox .content div.btnBox .gift span {display:block;height:30px;line-height:30px;background-color:#CC3300;border:1px solid #9c1818;color:#fff;margin-right:4px;cursor:pointer;}
+#layer-bulletBox .content div.btnBox .gift span:hover {background-color:#b72e00;}
+#layer-bulletBox .content div.btnBox .gift span.stop{background-color:#b72e00 !important;}
+#layer-bulletBox .content div.btnBox .reset {float:right;width:50%;}
+#layer-bulletBox .content div.btnBox .reset span {display:block;height:30px;line-height:30px;background-color:#8a8a8a;border:1px solid #696969;color:#fff;cursor:pointer;}
+#layer-bulletBox .content div.btnBox .reset span:hover {background-color:#808080;}
+
+/* emoticon */
+#layer-emoticonBox {position:absolute;width:100%;height:185px;bottom:26px;left:0px;border-top:1px solid #0D513A;background:#F7F7F7;display:none;}
+#layer-emoticonBox .title {border:1px solid #14805E;background-color:#fcfefd;height:30px;line-height:30px;margin:6px 6px 4px 6px;font-size:11px;color:#737373;padding:0 10px;font-weight:bold;}
+#layer-emoticonBox .title .bar {color:#d0d0d0;margin:0 5px;}
+#layer-emoticonBox .title .txt {font-weight:normal;}
+#layer-emoticonBox .title .txt .important {text-decoration:underline;color:#14805E;}
+
+#layer-emoticonBox .content {background-color:#fff;margin:6px 6px 0 6px;}
+
+#layer-emoticonBox .content ul {height:130px;margin:0;text-align:center;overflow-y:scroll;border:1px solid #B2B2B2;border-bottom:none;padding:5px;}
+#layer-emoticonBox .content ul li {float:left;text-align:center;margin:2px;}
+
+/* emoticon list */
+#layer-emoticonBox .content ul li {position:relative;width:65px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_emoticon.png?2) no-repeat;cursor:pointer;border:1px solid #fff;}
+#layer-emoticonBox .content ul li:hover {background-color:#FFFFD9;border:1px solid #B2B2B2;}
+#layer-emoticonBox .content ul li.dog1 {background-position:0 0;}
+#layer-emoticonBox .content ul li.dog2 {background-position:-65px 0;}
+#layer-emoticonBox .content ul li.dog3 {background-position:-130px 0;}
+#layer-emoticonBox .content ul li.dog4 {background-position:-195px 0;}
+#layer-emoticonBox .content ul li.dog5 {background-position:-260px 0;}
+#layer-emoticonBox .content ul li.dog6 {background-position:-325px 0;}
+#layer-emoticonBox .content ul li.dog7 {background-position:-390px 0;}
+#layer-emoticonBox .content ul li.dog8 {background-position:-455px 0;}
+#layer-emoticonBox .content ul li.dog9 {background-position:-520px 0;}
+#layer-emoticonBox .content ul li.dog10 {background-position:-585px 0;}
+#layer-emoticonBox .content ul li.dog11 {background-position:-650px 0;}
+#layer-emoticonBox .content ul li.dog12 {background-position:-715px 0;}
+#layer-emoticonBox .content ul li.dog13 {background-position:-780px 0;}
+#layer-emoticonBox .content ul li.dog14 {background-position:-845px 0;}
+#layer-emoticonBox .content ul li.dog15 {background-position:-910px 0;}
+#layer-emoticonBox .content ul li.dog16 {background-position:-975px 0;}
+#layer-emoticonBox .content ul li.dog17 {background-position:-1040px 0;}
+
+#layer-emoticonBox .content ul li.cat1 {background-position:0 -65px;}
+#layer-emoticonBox .content ul li.cat2 {background-position:-65px -65px;}
+#layer-emoticonBox .content ul li.cat3 {background-position:-130px -65px;}
+#layer-emoticonBox .content ul li.cat4 {background-position:-195px -65px;}
+#layer-emoticonBox .content ul li.cat5 {background-position:-260px -65px;}
+#layer-emoticonBox .content ul li.cat6 {background-position:-325px -65px;}
+#layer-emoticonBox .content ul li.cat7 {background-position:-390px -65px;}
+#layer-emoticonBox .content ul li.cat8 {background-position:-455px -65px;}
+#layer-emoticonBox .content ul li.cat9 {background-position:-520px -65px;}
+#layer-emoticonBox .content ul li.cat10 {background-position:-585px -65px;}
+#layer-emoticonBox .content ul li.cat11 {background-position:-650px -65px;}
+#layer-emoticonBox .content ul li.cat12 {background-position:-715px -65px;}
+#layer-emoticonBox .content ul li.cat13 {background-position:-780px -65px;}
+#layer-emoticonBox .content ul li.cat14 {background-position:-845px -65px;}
+#layer-emoticonBox .content ul li.cat15 {background-position:-910px -65px;}
+#layer-emoticonBox .content ul li.cat16 {background-position:-975px -65px;}
+#layer-emoticonBox .content ul li.cat17 {background-position:-1040px -65px;}
+
+#layer-emoticonBox .content ul li.lion1 {background-position:0 -130px;}
+#layer-emoticonBox .content ul li.lion2 {background-position:-65px -130px;}
+#layer-emoticonBox .content ul li.lion3 {background-position:-130px -130px;}
+#layer-emoticonBox .content ul li.lion4 {background-position:-195px -130px;}
+#layer-emoticonBox .content ul li.lion5 {background-position:-260px -130px;}
+#layer-emoticonBox .content ul li.lion6 {background-position:-325px -130px;}
+#layer-emoticonBox .content ul li.lion7 {background-position:-390px -130px;}
+#layer-emoticonBox .content ul li.lion8 {background-position:-455px -130px;}
+#layer-emoticonBox .content ul li.lion9 {background-position:-520px -130px;}
+#layer-emoticonBox .content ul li.lion10 {background-position:-585px -130px;}
+#layer-emoticonBox .content ul li.lion11 {background-position:-650px -130px;}
+#layer-emoticonBox .content ul li.lion12 {background-position:-715px -130px;}
+#layer-emoticonBox .content ul li.lion13 {background-position:-780px -130px;}
+#layer-emoticonBox .content ul li.lion14 {background-position:-845px -130px;}
+#layer-emoticonBox .content ul li.lion15 {background-position:-910px -130px;}
+#layer-emoticonBox .content ul li.lion16 {background-position:-975px -130px;}
+#layer-emoticonBox .content ul li.lion17 {background-position:-1040px -130px;}
+
+#layer-emoticonBox .content ul li.panda1 {background-position:0 -195px;}
+#layer-emoticonBox .content ul li.panda2 {background-position:-65px -195px;}
+#layer-emoticonBox .content ul li.panda3 {background-position:-130px -195px;}
+#layer-emoticonBox .content ul li.panda4 {background-position:-195px -195px;}
+#layer-emoticonBox .content ul li.panda5 {background-position:-260px -195px;}
+#layer-emoticonBox .content ul li.panda6 {background-position:-325px -195px;}
+#layer-emoticonBox .content ul li.panda7 {background-position:-390px -195px;}
+#layer-emoticonBox .content ul li.panda8 {background-position:-455px -195px;}
+#layer-emoticonBox .content ul li.panda9 {background-position:-520px -195px;}
+#layer-emoticonBox .content ul li.panda10 {background-position:-585px -195px;}
+#layer-emoticonBox .content ul li.panda11 {background-position:-650px -195px;}
+#layer-emoticonBox .content ul li.panda12 {background-position:-715px -195px;}
+#layer-emoticonBox .content ul li.panda13 {background-position:-780px -195px;}
+#layer-emoticonBox .content ul li.panda14 {background-position:-845px -195px;}
+#layer-emoticonBox .content ul li.panda15 {background-position:-910px -195px;}
+#layer-emoticonBox .content ul li.panda16 {background-position:-975px -195px;}
+
+#layer-emoticonBox .content ul li.fox1 {background-position:0 -260px;}
+#layer-emoticonBox .content ul li.fox2 {background-position:-65px -260px;}
+#layer-emoticonBox .content ul li.fox3 {background-position:-130px -260px;}
+#layer-emoticonBox .content ul li.fox4 {background-position:-195px -260px;}
+#layer-emoticonBox .content ul li.fox5 {background-position:-260px -260px;}
+#layer-emoticonBox .content ul li.fox6 {background-position:-325px -260px;}
+#layer-emoticonBox .content ul li.fox7 {background-position:-390px -260px;}
+#layer-emoticonBox .content ul li.fox8 {background-position:-455px -260px;}
+#layer-emoticonBox .content ul li.fox9 {background-position:-520px -260px;}
+#layer-emoticonBox .content ul li.fox10 {background-position:-585px -260px;}
+#layer-emoticonBox .content ul li.fox11 {background-position:-650px -260px;}
+#layer-emoticonBox .content ul li.fox12 {background-position:-715px -260px;}
+#layer-emoticonBox .content ul li.fox13 {background-position:-780px -260px;}
+#layer-emoticonBox .content ul li.fox14 {background-position:-845px -260px;}
+#layer-emoticonBox .content ul li.fox15 {background-position:-910px -260px;}
+#layer-emoticonBox .content ul li.fox16 {background-position:-975px -260px;}
+
+/* === M8 chat alignment: top tabs + side panels === */
+.chatTopTabs{
+  display:flex;
+  gap:6px;
+  padding:6px 8px;
+  background:#f2f2f2;
+  border-bottom:1px solid #c9c9c9;
+}
+.chatTopTab{
+  font-size:12px;
+  padding:4px 10px;
+  border:1px solid #bdbdbd;
+  background:#ffffff;
+  cursor:pointer;
+}
+.chatTopTab.active{
+  background:#127CCB;
+  border-color:#0e578d;
+  color:#fff;
+  font-weight:bold;
+}
+.chatSidePanel{display:none; margin:8px; border:1px solid #0e578d; background:#fff;}
+.chatSidePanel.isActive{display:block;}
+.chatSidePanel .panelTitle{
+  height:25px; line-height:25px;
+  background:#127CCB; color:#fff;
+  text-align:center; font-weight:bold;
+  border-bottom:1px solid #0e578d;
+}
+.chatSidePanel .panelBody{padding:8px; font-size:12px; color:#222; line-height:1.4;}
+.chatSidePanel .panelLine{margin:0 0 6px 0;}
+.chatSidePanel .panelLine.sub{color:#666; font-size:11px;}
+.chatSidePanel .panelRules{margin:0; padding-left:16px;}

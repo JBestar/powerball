@@ -22,6 +22,8 @@ $staticChatRooms = [
     ['li' => '', 'thumbRed' => false, 'rel' => '22df87faa906e8fc2f6a24cf3a839cec', 'winFix' => null, 'win' => 35, 'lose' => 26, 'tit' => '★엔젤드리븐★프젝3...', 'titFull' => '★엔젤드리븐★프젝3배목표문의방', 'date' => '22시간전', 'cur' => 0, 'max' => 100, 'cid' => 'M19', 'nick' => '엔젤드리븐', 'urel' => 'e4f9647d88c6a7a3f0078008dddc89bd', 'utitle' => '엔젤드리븐'],
     ['li' => 'bgEven', 'thumbRed' => false, 'rel' => '556add3fc75f39d5b0b2f2bc0cf9f807', 'winFix' => null, 'win' => 0, 'lose' => 0, 'tit' => 'ㅇㄱㅇ', 'titFull' => 'ㅇㄱㅇ', 'date' => '방금', 'cur' => 0, 'max' => 100, 'cid' => 'M13', 'nick' => '이강인S', 'urel' => '711b3f09a1678d923238568631ebc36c', 'utitle' => '이강인S'],
 ];
+$chat_popup_mode = !empty($chat_popup_mode);
+$room_list_height = $chat_popup_mode ? '460px' : '548px';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -33,6 +35,9 @@ $staticChatRooms = [
     <meta name="robots" content="index,follow">
     <link rel="stylesheet" href="<?= esc($local) ?>/css/index.css" type="text/css">
     <link rel="stylesheet" href="<?= esc($local) ?>/css/chat.css" type="text/css">
+    <?php if ($chat_popup_mode) : ?>
+    <link rel="stylesheet" href="<?= esc($local) ?>/css/chat_owner_pick.css" type="text/css">
+    <?php endif; ?>
     <link rel="shortcut icon" href="<?= esc($local) ?>/favicon.ico">
     <script src="https://static.powerballgame.co.kr/chat/js/jquery-1.11.2.min.js"></script>
     <script src="<?= esc($local) ?>/js/jquery.simpleTicker.js"></script>
@@ -43,7 +48,7 @@ $staticChatRooms = [
         #connectList li { line-height: 23px; min-height: 23px; }
     </style>
 </head>
-<body onload="">
+<body onload="" class="<?= $chat_popup_mode ? 'chat-popup-window' : 'chat-embed-window' ?>">
     <div style="width:100%;margin-bottom:5px;">
         <div style="height:25px;line-height:25px;background-color:#4C4C4C;color:#fff;text-align:center;border:1px solid #151515;" id="chatTimer"><b class="minute"><?= sprintf('%02d', (int) floor(((int)($remain_time ?? 300)) / 60)) ?></b>분 <b class="second"><?= sprintf('%02d', ((int)($remain_time ?? 300)) % 60) ?></b>초 후 <b><span id="timeRound"><?= (int)($time_round ?? 1) ?></span>회차</b> 결과 발표</div>
         <div style="position:relative;height:40px;border-left:1px solid #CECECE;border-right:1px solid #CECECE;border-bottom:1px solid #676767;">
@@ -74,14 +79,34 @@ $staticChatRooms = [
                 <li><a href="#" onclick="return false;" id="soundBtn" title="소리끄기" class="sp-btn_chat_sound on"></a></li>
             </ul>
         </div>
+        <?php if ($chat_popup_mode) : ?>
+        <div class="chat-popup-shell">
+            <div class="chat-popup-tabs-left table-type-1">
+                <ul class="ul-1" id="channelList">
+                    <li class="channel1"><a href="#channel1" type="channel1" class="on">연병장</a></li>
+                    <li class="roomList"><a href="#roomList" type="roomList">방채팅</a></li>
+                    <li class="connectList"><a href="#connectList" type="connectList">접속자</a></li>
+                    <li class="rule"><a href="#rule" type="rule">채팅규정</a></li>
+                </ul>
+            </div>
+            <div class="ownerPickStyleRoot chat-popup-owner-head">
+                <div class="resultBox">
+                    <ul class="tab">
+                        <li><a href="#" onclick="return false;" class="result on">방장픽 정보</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chat-popup-left">
+        <?php else : ?>
         <div class="table-type-1">
-            <ul class="ul-1" id="channelList">
-                <li class="channel1"><a href="#channel1" type="channel1" class="on">연병장</a></li>
-                <li class="roomList"><a href="#roomList" type="roomList">방채팅</a></li>
-                <li class="connectList"><a href="#connectList" type="connectList">접속자</a></li>
-                <li class="rule" style="border-right:none;"><a href="#rule" type="rule">채팅규정</a></li>
-            </ul>
-        </div>
+                <ul class="ul-1" id="channelList">
+                    <li class="channel1"><a href="#channel1" type="channel1" class="on">연병장</a></li>
+                    <li class="roomList"><a href="#roomList" type="roomList">방채팅</a></li>
+                    <li class="connectList"><a href="#connectList" type="connectList">접속자</a></li>
+                    <li class="rule" style="border-right:none;"><a href="#rule" type="rule">채팅규정</a></li>
+                </ul>
+            </div>
+        <?php endif; ?>
         <div id="chatListBox" style="position:relative;">
             <div id="news-ticker-slide" class="ticker" style="height:15px;">
                 <ul>
@@ -94,7 +119,7 @@ $staticChatRooms = [
                     <?php endif; ?>
                 </ul>
             </div>
-            <ul class="list-chatting" id="msgBox" style="height:419px;"></ul>
+            <ul class="list-chatting" id="msgBox"<?= $chat_popup_mode ? '' : ' style="height:419px;"' ?>></ul>
             <p class="input-chatting">
                 <label for="msg" class="label">내용을 입력해 주세요.</label>
                 <input type="text" name="msg" id="msg" class="input-1" autocomplete="off">
@@ -103,11 +128,11 @@ $staticChatRooms = [
             </p>
         </div>
         <div id="connectListBox" style="display:none;">
-            <ul class="list-connect" id="connectList" style="height:446px;"></ul>
+            <ul class="list-connect" id="connectList"<?= $chat_popup_mode ? '' : ' style="height:446px;"' ?>></ul>
         </div>
         <div id="roomListBox" style="display:none;">
             <div style="background-color:#F5F5F5;height:25px;line-height:25px;border:1px solid #CECECE;border-top:none;text-align:right;padding-right:5px;font-weight:bold;font-size:12px;"><a href="#" onclick="openChatRoom();return false;">채팅대기실</a></div>
-            <ul class="list-room" id="roomList" style="height:548px;">
+            <ul class="list-room" id="roomList"<?= $chat_popup_mode ? '' : ' style="height:' . esc($room_list_height, 'attr') . ';"' ?>>
                 <?php foreach ($staticChatRooms as $rm) :
                     $liClass = trim((string) ($rm['li'] ?? ''));
                     $thumbClass = 'thumb' . (!empty($rm['thumbRed']) ? ' red' : '');
@@ -138,7 +163,7 @@ $staticChatRooms = [
                 <?php endforeach; ?>
             </ul>
         </div>
-        <div id="ruleBox" style="height:445px;display:none;">
+        <div id="ruleBox" style="<?= $chat_popup_mode ? 'display:none;' : 'height:445px;display:none;' ?>">
             <div class="borderBox">
                 <div class="tit">벙어리 사유</div>
                 <ul>
@@ -169,6 +194,22 @@ $staticChatRooms = [
                 </ul>
             </div>
         </div>
+        <?php if ($chat_popup_mode) : ?>
+            </div>
+            <div class="ownerPickStyleRoot chat-popup-owner-body">
+                <div class="resultBox">
+                    <div class="content">
+                        <div class="userListBox" id="userList" style="display:none;">
+                            <ul class="userList" id="connectOpenerList"></ul>
+                            <ul class="userList" id="connectManagerList"></ul>
+                            <ul class="userList" id="connectUserList"></ul>
+                        </div>
+                        <ul class="resultList" id="resultList"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <div class="modalLayer">
@@ -215,13 +256,28 @@ $staticChatRooms = [
         var classGif = <?= json_encode($local . '/images/class/' . $classGifId . '.gif', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var me = <?= json_encode((string) ($objMember->mb_uid ?? ''), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var fontSize = 12;
+        var isChatPopup = document.body.classList.contains("chat-popup-window");
+        function showChatPanel($el) {
+            if (isChatPopup) {
+                $el.css({ display: "flex" });
+            } else {
+                $el.show();
+            }
+        }
 
         function escHtml(s) { return $("<div>").text(s || "").html(); }
 
         window.chatManager = function(type) {
             if (type === "clearChat") { $("#msgBox").empty(); return; }
             if (type === "refresh") { loadChatList(); return; }
-            if (type === "popupChat") { window.open(location.href, "chatPopup", "width=840,height=700"); return; }
+            if (type === "popupChat") {
+                var u = String(location.href || "");
+                if (u.indexOf("view=chatRoom") === -1) {
+                    u += (u.indexOf("?") >= 0 ? "&" : "?") + "view=chatRoom";
+                }
+                window.open(u, "chatPopup", "width=980,height=680,scrollbars=yes");
+                return;
+            }
         };
         window.fontZoom = function(delta) {
             fontSize = Math.max(10, Math.min(16, fontSize + (delta > 0 ? 1 : -1)));
@@ -230,7 +286,7 @@ $staticChatRooms = [
         window.openChatRoom = function() {
             $("#channelList a").removeClass("on");
             $("#channelList a[type='channel1']").addClass("on");
-            $("#chatListBox").show();
+            showChatPanel($("#chatListBox"));
             $("#connectListBox,#roomListBox,#ruleBox").hide();
         };
         window.onlyNumber = function() { return true; };
@@ -438,10 +494,10 @@ $staticChatRooms = [
             $("#channelList a").removeClass("on");
             $(this).addClass("on");
             $("#chatListBox,#connectListBox,#roomListBox,#ruleBox").hide();
-            if (type === "channel1") $("#chatListBox").show();
-            if (type === "connectList") $("#connectListBox").show();
-            if (type === "roomList") $("#roomListBox").show();
-            if (type === "rule") $("#ruleBox").show();
+            if (type === "channel1") showChatPanel($("#chatListBox"));
+            if (type === "connectList") showChatPanel($("#connectListBox"));
+            if (type === "roomList") showChatPanel($("#roomListBox"));
+            if (type === "rule") showChatPanel($("#ruleBox"));
         });
 
         $("#news-ticker-slide").simpleTicker({ speed : 600, delay : 4000, easing : 'swing', effectType : 'slide' });

@@ -1,0 +1,885 @@
+@charset "utf-8";
+/* 방장픽(resultBox) 전용 — chat.php 팝업(body.chat-popup-window)에서만 로드. chatRoom.css 전역 리셋은 사용하지 않음. */
+
+/* ---- 팝업: #chatListBox ↔ .chat-popup-left ↔ #resultList 동일 높이 (flex 체인) ---- */
+body.chat-popup-window {
+	margin: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+}
+body.chat-popup-window > div:first-child {
+	flex-shrink: 0;
+}
+body.chat-popup-window .box-chatting {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+body.chat-popup-window .box-chatting .btn-etc {
+	flex-shrink: 0;
+}
+body.chat-popup-window .chat-popup-shell {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+body.chat-popup-window .chat-popup-left {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	align-self: stretch;
+}
+body.chat-popup-window #chatListBox {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+body.chat-popup-window #connectListBox,
+body.chat-popup-window #roomListBox,
+body.chat-popup-window #ruleBox {
+	flex: 1 1 auto;
+	min-height: 0;
+	flex-direction: column;
+}
+body.chat-popup-window #news-ticker-slide {
+	flex-shrink: 0;
+}
+body.chat-popup-window #msgBox {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+}
+body.chat-popup-window #chatListBox .input-chatting {
+	flex-shrink: 0;
+}
+body.chat-popup-window #connectList {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+}
+body.chat-popup-window #roomListBox .list-room {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+}
+body.chat-popup-window #roomListBox > div:first-child {
+	flex-shrink: 0;
+}
+body.chat-popup-window #ruleBox {
+	overflow-y: auto;
+	min-height: 0;
+}
+
+/* ---- 팝업: 4탭(좌) + 방장픽 헤더(우) 한 줄 / 본문 2열 그리드 ---- */
+body.chat-popup-window .ownerPickStyleRoot {
+	position: relative;
+	top: auto;
+	right: auto;
+	width: 316px;
+	background-color: #d2d2d2;
+	box-sizing: border-box;
+}
+body.chat-popup-window .chat-popup-shell {
+	display: grid;
+	grid-template-columns: 1fr 316px;
+	grid-template-rows: auto 1fr;
+	width: 100%;
+	align-items: stretch;
+	min-height: 0;
+}
+body.chat-popup-window .chat-popup-shell > .chat-popup-tabs-left {
+	grid-column: 1;
+	grid-row: 1;
+	min-width: 0;
+}
+body.chat-popup-window .chat-popup-shell > .chat-popup-owner-head.ownerPickStyleRoot {
+	grid-column: 2;
+	grid-row: 1;
+	align-self: stretch;
+	border-left: 1px solid #9a9a9a;
+}
+body.chat-popup-window .chat-popup-shell > .chat-popup-left {
+	grid-column: 1;
+	grid-row: 2;
+	min-width: 0;
+	position: relative;
+}
+body.chat-popup-window .chat-popup-shell > .chat-popup-owner-body.ownerPickStyleRoot {
+	grid-column: 2;
+	grid-row: 2;
+	align-self: stretch;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	border-left: 1px solid #9a9a9a;
+	z-index: 100;
+}
+body.chat-popup-window .chat-popup-tabs-left .table-type-1 .ul-1 li { width: 25%; }
+body.chat-popup-window .chat-popup-owner-head .resultBox { margin: 0; }
+body.chat-popup-window .chat-popup-owner-head .resultBox .tab { margin: 0; }
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab {position:relative;height:25px;margin:0 0px;border:1px solid #0e578d;}
+body.chat-popup-window .chat-popup-owner-head.ownerPickStyleRoot .resultBox .tab li { float: none; width: 100%; background-color:#F1F1F1; text-align:center; }
+body.chat-popup-window .chat-popup-owner-head.ownerPickStyleRoot .resultBox .tab li a { border-right: none; }
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab li a {display:block;height:25px;line-height:25px;font-weight:bold;border-bottom:1px solid #0e578d;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab li a span {color:#CD1212;font-family:tahoma,dotum;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab li a.left {border-right:1px solid #0e578d;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab li a.on {    color: #e2e2e2;
+    background: #696969;
+    font-weight: bold;
+    border: 1px solid #464646;
+    margin: -1px 0 -1px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .tab li a.on span {color:#F7E227;font-family:tahoma,dotum;}
+
+body.chat-popup-window .chat-popup-owner-body .resultBox {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+body.chat-popup-window .chat-popup-owner-body .resultBox .content {
+	position: relative;
+	margin: 0 0px;
+	border: 1px solid #0e578d;
+	border-top: 1px solid #0e578d;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox {overflow-y:auto;width:100%;flex:1 1 auto;min-height:0;background-color:#fff;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li {position:relative;height:47px;line-height:47px;border-bottom:1px dotted #bfbfbf;padding-left:5px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList img.profile {width:30px;height:30px;border:1px solid #e0e0e0;border-radius:3px;margin-right:5px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList img.mark {margin-top:-12px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList img {vertical-align:middle;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList .uname {color:#5E5E5E;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_opener {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 0;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_manager {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -26px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_fixMember {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_me {position:absolute;top:32px;left:5px;width:32px;height:13px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -39px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .icon_managerFixMember {position:absolute;top:19px;left:5px;width:32px;height:26px;background:url(/simg.powerballgame.co.kr/images/sp_chatRoomMark2.png) no-repeat 0 -13px;text-indent:-9999px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg {float:right;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) right -31px no-repeat;margin-top:8px;margin-right:5px;padding-right:11px;height:31px;overflow:hidden;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn {max-width:121px;background:url(/simg.powerballgame.co.kr/images/sp_todayMsg.png) 0 0 no-repeat;height:28px;padding-top:3px;padding-left:11px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn p {height:25px;overflow:hidden;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content .userListBox ul.userList li .todayMsg .inn p span {display:table-cell;height:25px;line-height:13px;color:#3e3e3e;font-size:11px;vertical-align:middle;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList {overflow-y:auto;width:100%;flex:1 1 auto;min-height:0;height:auto !important;background-color:#fff;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li {height:60px;border-bottom:1px dotted #bfbfbf;padding:5px 5px 5px 10px;background-color:none;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li.win_all {background-color:#FFFFD9;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li.win {background-color:#F0FDFF;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResult .win {font-weight:bold;background:url(/simg.powerballgame.co.kr/chat/images/bl_win.png) no-repeat 5px 0px;padding-left:10px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .num {display:table-cell;width:60px;height:60px;vertical-align:middle;line-height:27px;font-family:tahoma,dotum;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs {display:table-cell;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .blank {display:table-cell;width:5px;}
+/* odd, even, under, over, period */
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnnn {background-position:0 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnnb {background-position:-68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnnm {background-position:-136px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnns {background-position:-204px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnun {background-position:-272px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnub {background-position:-340px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnum {background-position:-408px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnus {background-position:-476px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnon {background-position:-544px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnob {background-position:-612px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnom {background-position:-680px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnnos {background-position:-748px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnunn {background-position:-816px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnunb {background-position:-884px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnunm {background-position:-952px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuns {background-position:-1020px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuun {background-position:-1088px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuub {background-position:-1156px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ready {background-position:-1224px 0;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuum {background-position:0 -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuus {background-position:-68px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuon {background-position:-136px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuob {background-position:-204px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuom {background-position:-272px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnuos {background-position:-340px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnonn {background-position:-408px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnonb {background-position:-476px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnonm {background-position:-544px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnons {background-position:-612px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoun {background-position:-680px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoub {background-position:-748px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoum {background-position:-816px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnous {background-position:-884px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoon {background-position:-952px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoob {background-position:-1020px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoom {background-position:-1088px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nnoos {background-position:-1156px -60px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonnn {background-position:0 -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonnb {background-position:-68px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonnm {background-position:-136px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonns {background-position:-204px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonun {background-position:-272px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonub {background-position:-340px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonum {background-position:-408px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonus {background-position:-476px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonon {background-position:-544px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonob {background-position:-612px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonom {background-position:-680px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nonos {background-position:-748px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nounn {background-position:-816px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nounb {background-position:-884px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nounm {background-position:-952px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouns {background-position:-1020px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouun {background-position:-1088px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouub {background-position:-1156px -120px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouum {background-position:0 -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouus {background-position:-68px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouon {background-position:-136px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouob {background-position:-204px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouom {background-position:-272px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nouos {background-position:-340px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.noonn {background-position:-408px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.noonb {background-position:-476px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.noonm {background-position:-544px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.noons {background-position:-612px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooun {background-position:-680px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooub {background-position:-748px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooum {background-position:-816px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.noous {background-position:-884px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooon {background-position:-952px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooob {background-position:-1020px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooom {background-position:-1088px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nooos {background-position:-1156px -180px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nennn {background-position:0 -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nennb {background-position:-68px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nennm {background-position:-136px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenns {background-position:-204px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenun {background-position:-272px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenub {background-position:-340px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenum {background-position:-408px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenus {background-position:-476px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenon {background-position:-544px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenob {background-position:-612px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenom {background-position:-680px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.nenos {background-position:-748px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neunn {background-position:-816px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neunb {background-position:-884px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neunm {background-position:-952px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuns {background-position:-1020px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuun {background-position:-1088px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuub {background-position:-1156px -240px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuum {background-position:0 -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuus {background-position:-68px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuon {background-position:-136px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuob {background-position:-204px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuom {background-position:-272px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neuos {background-position:-340px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neonn {background-position:-408px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neonb {background-position:-476px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neonm {background-position:-544px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neons {background-position:-612px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoun {background-position:-680px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoub {background-position:-748px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoum {background-position:-816px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neous {background-position:-884px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoon {background-position:-952px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoob {background-position:-1020px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoom {background-position:-1088px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.neoos {background-position:-1156px -300px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnnn {background-position:0 -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnnb {background-position:-68px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnnm {background-position:-136px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnns {background-position:-204px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnun {background-position:-272px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnub {background-position:-340px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnum {background-position:-408px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnus {background-position:-476px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnon {background-position:-544px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnob {background-position:-612px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnom {background-position:-680px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onnos {background-position:-748px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onunn {background-position:-816px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onunb {background-position:-884px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onunm {background-position:-952px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuns {background-position:-1020px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuun {background-position:-1088px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuub {background-position:-1156px -360px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuum {background-position:0 -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuus {background-position:-68px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuon {background-position:-136px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuob {background-position:-204px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuom {background-position:-272px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onuos {background-position:-340px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ononn {background-position:-408px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ononb {background-position:-476px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ononm {background-position:-544px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onons {background-position:-612px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoun {background-position:-680px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoub {background-position:-748px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoum {background-position:-816px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onous {background-position:-884px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoon {background-position:-952px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoob {background-position:-1020px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoom {background-position:-1088px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.onoos {background-position:-1156px -420px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonnn {background-position:0 -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonnb {background-position:-68px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonnm {background-position:-136px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonns {background-position:-204px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonun {background-position:-272px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonub {background-position:-340px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonum {background-position:-408px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonus {background-position:-476px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonon {background-position:-544px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonob {background-position:-612px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonom {background-position:-680px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oonos {background-position:-748px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oounn {background-position:-816px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oounb {background-position:-884px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oounm {background-position:-952px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouns {background-position:-1020px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouun {background-position:-1088px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouub {background-position:-1156px -480px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouum {background-position:0 -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouus {background-position:-68px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouon {background-position:-136px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouob {background-position:-204px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouom {background-position:-272px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oouos {background-position:-340px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ooonn {background-position:-408px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ooonb {background-position:-476px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ooonm {background-position:-544px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ooons {background-position:-612px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooun {background-position:-680px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooub {background-position:-748px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooum {background-position:-816px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ooous {background-position:-884px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooon {background-position:-952px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooob {background-position:-1020px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooom {background-position:-1088px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oooos {background-position:-1156px -540px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oennn {background-position:0 -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oennb {background-position:-68px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oennm {background-position:-136px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenns {background-position:-204px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenun {background-position:-272px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenub {background-position:-340px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenum {background-position:-408px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenus {background-position:-476px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenon {background-position:-544px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenob {background-position:-612px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenom {background-position:-680px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oenos {background-position:-748px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeunn {background-position:-816px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeunb {background-position:-884px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeunm {background-position:-952px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuns {background-position:-1020px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuun {background-position:-1088px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuub {background-position:-1156px -600px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuum {background-position:0 -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuus {background-position:-68px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuon {background-position:-136px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuob {background-position:-204px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuom {background-position:-272px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeuos {background-position:-340px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeonn {background-position:-408px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeonb {background-position:-476px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeonm {background-position:-544px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeons {background-position:-612px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoun {background-position:-680px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoub {background-position:-748px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoum {background-position:-816px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeous {background-position:-884px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoon {background-position:-952px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoob {background-position:-1020px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoom {background-position:-1088px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.oeoos {background-position:-1156px -660px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennnn {background-position:0 -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennnb {background-position:-68px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennnm {background-position:-136px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennns {background-position:-204px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennun {background-position:-272px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennub {background-position:-340px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennum {background-position:-408px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennus {background-position:-476px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennon {background-position:-544px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennob {background-position:-612px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennom {background-position:-680px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.ennos {background-position:-748px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enunn {background-position:-816px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enunb {background-position:-884px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enunm {background-position:-952px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuns {background-position:-1020px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuun {background-position:-1088px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuub {background-position:-1156px -720px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuum {background-position:0 -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuus {background-position:-68px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuon {background-position:-136px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuob {background-position:-204px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuom {background-position:-272px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enuos {background-position:-340px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enonn {background-position:-408px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enonb {background-position:-476px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enonm {background-position:-544px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enons {background-position:-612px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoun {background-position:-680px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoub {background-position:-748px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoum {background-position:-816px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enous {background-position:-884px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoon {background-position:-952px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoob {background-position:-1020px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoom {background-position:-1088px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.enoos {background-position:-1156px -780px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonnn {background-position:0 -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonnb {background-position:-68px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonnm {background-position:-136px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonns {background-position:-204px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonun {background-position:-272px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonub {background-position:-340px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonum {background-position:-408px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonus {background-position:-476px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonon {background-position:-544px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonob {background-position:-612px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonom {background-position:-680px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eonos {background-position:-748px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eounn {background-position:-816px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eounb {background-position:-884px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eounm {background-position:-952px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouns {background-position:-1020px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouun {background-position:-1088px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouub {background-position:-1156px -840px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouum {background-position:0 -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouus {background-position:-68px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouon {background-position:-136px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouob {background-position:-204px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouom {background-position:-272px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eouos {background-position:-340px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eoonn {background-position:-408px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eoonb {background-position:-476px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eoonm {background-position:-544px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eoons {background-position:-612px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooun {background-position:-680px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooub {background-position:-748px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooum {background-position:-816px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eoous {background-position:-884px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooon {background-position:-952px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooob {background-position:-1020px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooom {background-position:-1088px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eooos {background-position:-1156px -900px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eennn {background-position:0 -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eennb {background-position:-68px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eennm {background-position:-136px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenns {background-position:-204px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenun {background-position:-272px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenub {background-position:-340px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenum {background-position:-408px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenus {background-position:-476px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenon {background-position:-544px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenob {background-position:-612px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenom {background-position:-680px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eenos {background-position:-748px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeunn {background-position:-816px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeunb {background-position:-884px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeunm {background-position:-952px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuns {background-position:-1020px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuun {background-position:-1088px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuub {background-position:-1156px -960px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuum {background-position:0 -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuus {background-position:-68px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuon {background-position:-136px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuob {background-position:-204px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuom {background-position:-272px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeuos {background-position:-340px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeonn {background-position:-408px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeonb {background-position:-476px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeonm {background-position:-544px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeons {background-position:-612px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoun {background-position:-680px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoub {background-position:-748px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoum {background-position:-816px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeous {background-position:-884px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoon {background-position:-952px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoob {background-position:-1020px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoom {background-position:-1088px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .rs.eeoos {background-position:-1156px -1020px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick {position:relative;display:table-cell;margin-left:143px;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;background-position:68px 0;}
+/* odd, even, under, over, period */
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnnn {background-position:0 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnnb {background-position:-68px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnnm {background-position:-136px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnns {background-position:-204px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnun {background-position:-272px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnub {background-position:-340px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnum {background-position:-408px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnus {background-position:-476px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnon {background-position:-544px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnob {background-position:-612px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnom {background-position:-680px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnnos {background-position:-748px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnunn {background-position:-816px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnunb {background-position:-884px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnunm {background-position:-952px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuns {background-position:-1020px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuun {background-position:-1088px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuub {background-position:-1156px 0;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ready {background-position:-1224px 0;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuum {background-position:0 -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuus {background-position:-68px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuon {background-position:-136px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuob {background-position:-204px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuom {background-position:-272px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnuos {background-position:-340px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnonn {background-position:-408px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnonb {background-position:-476px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnonm {background-position:-544px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnons {background-position:-612px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoun {background-position:-680px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoub {background-position:-748px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoum {background-position:-816px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnous {background-position:-884px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoon {background-position:-952px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoob {background-position:-1020px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoom {background-position:-1088px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nnoos {background-position:-1156px -60px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonnn {background-position:0 -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonnb {background-position:-68px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonnm {background-position:-136px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonns {background-position:-204px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonun {background-position:-272px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonub {background-position:-340px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonum {background-position:-408px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonus {background-position:-476px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonon {background-position:-544px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonob {background-position:-612px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonom {background-position:-680px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nonos {background-position:-748px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nounn {background-position:-816px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nounb {background-position:-884px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nounm {background-position:-952px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouns {background-position:-1020px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouun {background-position:-1088px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouub {background-position:-1156px -120px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouum {background-position:0 -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouus {background-position:-68px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouon {background-position:-136px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouob {background-position:-204px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouom {background-position:-272px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nouos {background-position:-340px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.noonn {background-position:-408px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.noonb {background-position:-476px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.noonm {background-position:-544px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.noons {background-position:-612px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooun {background-position:-680px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooub {background-position:-748px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooum {background-position:-816px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.noous {background-position:-884px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooon {background-position:-952px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooob {background-position:-1020px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooom {background-position:-1088px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nooos {background-position:-1156px -180px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nennn {background-position:0 -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nennb {background-position:-68px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nennm {background-position:-136px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenns {background-position:-204px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenun {background-position:-272px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenub {background-position:-340px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenum {background-position:-408px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenus {background-position:-476px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenon {background-position:-544px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenob {background-position:-612px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenom {background-position:-680px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.nenos {background-position:-748px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neunn {background-position:-816px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neunb {background-position:-884px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neunm {background-position:-952px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuns {background-position:-1020px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuun {background-position:-1088px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuub {background-position:-1156px -240px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuum {background-position:0 -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuus {background-position:-68px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuon {background-position:-136px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuob {background-position:-204px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuom {background-position:-272px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neuos {background-position:-340px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neonn {background-position:-408px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neonb {background-position:-476px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neonm {background-position:-544px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neons {background-position:-612px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoun {background-position:-680px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoub {background-position:-748px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoum {background-position:-816px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neous {background-position:-884px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoon {background-position:-952px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoob {background-position:-1020px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoom {background-position:-1088px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.neoos {background-position:-1156px -300px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnnn {background-position:0 -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnnb {background-position:-68px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnnm {background-position:-136px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnns {background-position:-204px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnun {background-position:-272px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnub {background-position:-340px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnum {background-position:-408px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnus {background-position:-476px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnon {background-position:-544px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnob {background-position:-612px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnom {background-position:-680px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onnos {background-position:-748px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onunn {background-position:-816px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onunb {background-position:-884px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onunm {background-position:-952px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuns {background-position:-1020px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuun {background-position:-1088px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuub {background-position:-1156px -360px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuum {background-position:0 -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuus {background-position:-68px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuon {background-position:-136px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuob {background-position:-204px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuom {background-position:-272px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onuos {background-position:-340px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ononn {background-position:-408px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ononb {background-position:-476px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ononm {background-position:-544px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onons {background-position:-612px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoun {background-position:-680px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoub {background-position:-748px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoum {background-position:-816px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onous {background-position:-884px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoon {background-position:-952px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoob {background-position:-1020px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoom {background-position:-1088px -420px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.onoos {background-position:-1156px -420px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonnn {background-position:0 -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonnb {background-position:-68px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonnm {background-position:-136px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonns {background-position:-204px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonun {background-position:-272px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonub {background-position:-340px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonum {background-position:-408px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonus {background-position:-476px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonon {background-position:-544px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonob {background-position:-612px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonom {background-position:-680px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oonos {background-position:-748px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oounn {background-position:-816px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oounb {background-position:-884px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oounm {background-position:-952px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouns {background-position:-1020px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouun {background-position:-1088px -480px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouub {background-position:-1156px -480px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouum {background-position:0 -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouus {background-position:-68px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouon {background-position:-136px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouob {background-position:-204px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouom {background-position:-272px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oouos {background-position:-340px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ooonn {background-position:-408px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ooonb {background-position:-476px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ooonm {background-position:-544px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ooons {background-position:-612px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooun {background-position:-680px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooub {background-position:-748px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooum {background-position:-816px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ooous {background-position:-884px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooon {background-position:-952px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooob {background-position:-1020px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooom {background-position:-1088px -540px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oooos {background-position:-1156px -540px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oennn {background-position:0 -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oennb {background-position:-68px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oennm {background-position:-136px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenns {background-position:-204px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenun {background-position:-272px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenub {background-position:-340px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenum {background-position:-408px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenus {background-position:-476px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenon {background-position:-544px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenob {background-position:-612px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenom {background-position:-680px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oenos {background-position:-748px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeunn {background-position:-816px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeunb {background-position:-884px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeunm {background-position:-952px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuns {background-position:-1020px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuun {background-position:-1088px -600px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuub {background-position:-1156px -600px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuum {background-position:0 -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuus {background-position:-68px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuon {background-position:-136px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuob {background-position:-204px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuom {background-position:-272px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeuos {background-position:-340px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeonn {background-position:-408px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeonb {background-position:-476px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeonm {background-position:-544px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeons {background-position:-612px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoun {background-position:-680px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoub {background-position:-748px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoum {background-position:-816px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeous {background-position:-884px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoon {background-position:-952px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoob {background-position:-1020px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoom {background-position:-1088px -660px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.oeoos {background-position:-1156px -660px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennnn {background-position:0 -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennnb {background-position:-68px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennnm {background-position:-136px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennns {background-position:-204px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennun {background-position:-272px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennub {background-position:-340px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennum {background-position:-408px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennus {background-position:-476px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennon {background-position:-544px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennob {background-position:-612px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennom {background-position:-680px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.ennos {background-position:-748px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enunn {background-position:-816px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enunb {background-position:-884px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enunm {background-position:-952px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuns {background-position:-1020px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuun {background-position:-1088px -720px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuub {background-position:-1156px -720px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuum {background-position:0 -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuus {background-position:-68px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuon {background-position:-136px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuob {background-position:-204px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuom {background-position:-272px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enuos {background-position:-340px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enonn {background-position:-408px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enonb {background-position:-476px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enonm {background-position:-544px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enons {background-position:-612px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoun {background-position:-680px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoub {background-position:-748px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoum {background-position:-816px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enous {background-position:-884px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoon {background-position:-952px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoob {background-position:-1020px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoom {background-position:-1088px -780px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.enoos {background-position:-1156px -780px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonnn {background-position:0 -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonnb {background-position:-68px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonnm {background-position:-136px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonns {background-position:-204px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonun {background-position:-272px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonub {background-position:-340px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonum {background-position:-408px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonus {background-position:-476px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonon {background-position:-544px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonob {background-position:-612px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonom {background-position:-680px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eonos {background-position:-748px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eounn {background-position:-816px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eounb {background-position:-884px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eounm {background-position:-952px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouns {background-position:-1020px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouun {background-position:-1088px -840px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouub {background-position:-1156px -840px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouum {background-position:0 -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouus {background-position:-68px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouon {background-position:-136px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouob {background-position:-204px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouom {background-position:-272px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eouos {background-position:-340px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eoonn {background-position:-408px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eoonb {background-position:-476px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eoonm {background-position:-544px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eoons {background-position:-612px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooun {background-position:-680px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooub {background-position:-748px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooum {background-position:-816px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eoous {background-position:-884px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooon {background-position:-952px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooob {background-position:-1020px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooom {background-position:-1088px -900px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eooos {background-position:-1156px -900px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eennn {background-position:0 -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eennb {background-position:-68px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eennm {background-position:-136px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenns {background-position:-204px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenun {background-position:-272px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenub {background-position:-340px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenum {background-position:-408px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenus {background-position:-476px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenon {background-position:-544px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenob {background-position:-612px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenom {background-position:-680px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eenos {background-position:-748px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeunn {background-position:-816px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeunb {background-position:-884px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeunm {background-position:-952px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuns {background-position:-1020px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuun {background-position:-1088px -960px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuub {background-position:-1156px -960px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuum {background-position:0 -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuus {background-position:-68px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuon {background-position:-136px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuob {background-position:-204px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuom {background-position:-272px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeuos {background-position:-340px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeonn {background-position:-408px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeonb {background-position:-476px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeonm {background-position:-544px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeons {background-position:-612px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoun {background-position:-680px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoub {background-position:-748px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoum {background-position:-816px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeous {background-position:-884px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoon {background-position:-952px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoob {background-position:-1020px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoom {background-position:-1088px -1020px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.eeoos {background-position:-1156px -1020px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick.pass {background-position:0 0;}
+
+/* pick result */
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span {position:absolute;width:68px;height:60px;background:url(/simg.powerballgame.co.kr/chat/images/sprite_pick.png) no-repeat;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_tl {background-position:-1224px -60px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_tr {background-position:-1224px -120px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_bl {background-position:-1224px -180px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_br {background-position:-1224px -240px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_b {background-position:-1224px -300px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_m {background-position:-1224px -360px;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pick span.lose_s {background-position:-1224px -420px;}
+
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResultText {display:table-cell;font-family:tahoma,dotum;line-height:27px;vertical-align:middle;height:60px;width:65px;text-align:right;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResultText {display:table-cell;font-family:tahoma,dotum;line-height:27px;vertical-align:middle;height:60px;width:65px;text-align:right;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResultText span.win {font-size:20px;font-weight:bold;font-family:DINWeb-Bold;margin-right:1px;color:#C11A20;}
+body.chat-popup-window .ownerPickStyleRoot .resultBox .content ul.resultList li .pickResultText span.lose {font-size:20px;font-weight:bold;font-family:DINWeb-Bold;margin-right:1px;color:#1265CD;}
