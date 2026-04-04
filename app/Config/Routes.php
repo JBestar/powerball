@@ -89,6 +89,10 @@ $routes->get('loginip', 'Home::loginip');
 
 $routes->get('lottery/getDrawResult', 'Lottery::getDrawResult');
 
+// reground_LT(bpk/bpk2) 호환 — bepick URL과 동일 경로
+$routes->get('live/result/pbgpowerball', 'RegroundCompat::bpkLive');
+$routes->get('api/get_pattern/pbgpowerball/daily/fd1/20/(:segment)', 'RegroundCompat::bpk2Pattern/$1');
+
 // 전체 분석 데이터 (dayLog용) GET /json/powerballAnalyse/20260316.json
 $routes->get('json/powerballAnalyse/(:segment)', 'Home::powerballAnalyse/$1');
 

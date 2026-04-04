@@ -380,6 +380,48 @@ class PowerballDraw_Model extends Model
     }
 
     /**
+     * 숫자합 대/중/소 → bepick `btype` 한 글자 (formatForDayLogRow 의 numberPeriod·ajax 집계와 동일)
+     * 소(15~64)=B, 중(65~80)=M, 대(81~130)=F
+     */
+    public static function bpkBtypeFromBallSum(int $sum): string
+    {
+        if ($sum <= 64) {
+            return 'B';
+        }
+        if ($sum <= 80) {
+            return 'M';
+        }
+
+        return 'F';
+    }
+
+    /**
+     * 파워볼 구간 A~D → bepick `ptype` (formatForDayLogRow 의 powerballPeriod 와 동일)
+     */
+    public static function bpkPtypeFromPowerball(int $pb): string
+    {
+        if ($pb <= 2) {
+            return 'A';
+        }
+        if ($pb <= 4) {
+            return 'B';
+        }
+        if ($pb <= 6) {
+            return 'C';
+        }
+
+        return 'D';
+    }
+
+    /**
+     * bepick fd 슬롯용: 일반볼 하나의 홀짝 → "1"|"2" (회차별표는 합 단위만 보여 주지만 reground 해시용으로 각 볼 홀짝 사용)
+     */
+    public static function bpkFdDigitFromBall(int $ball): string
+    {
+        return ($ball % 2 === 1) ? '1' : '2';
+    }
+
+    /**
      * 회차별 분석 데이터 한 행 포맷 (dayLog tmpl_dayLog용)
      * 파워볼 구간 A(0~2) B(3~4) C(5~6) D(7~9), 숫자합 구간 A~F, 대/중/소
      *
