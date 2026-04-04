@@ -188,6 +188,7 @@
     </div>
 </div>
 
+<?php /* 타이머/허브 진단: 이 페이지에 &mvdbg=1 붙이거나 콘솔에서 localStorage.setItem('MINIVIEW_DEBUG','1') 후 새로고침 → 콘솔 필터 [miniview-debug] */ ?>
 <script>
 window.POWERBALL_AJAX_URL = '<?php echo site_furl(''); ?>';
 window.POWERBALL_BASE_URL = '<?php echo site_furl(''); ?>';

@@ -1,24 +1,86 @@
 /**
+ * 진단 로그: URL에 mvdbg=1 또는 localStorage MINIVIEW_DEBUG=1 또는 window.MINIVIEW_DEBUG===true
+ * 콘솔 필터: [miniview-debug]
+ */
+function miniviewDebugEnabled() {
+	try {
+		if (window.MINIVIEW_DEBUG === true) {
+			return true;
+		}
+		if (typeof localStorage !== 'undefined' && localStorage.getItem('MINIVIEW_DEBUG') === '1') {
+			return true;
+		}
+		var q = window.location && window.location.search ? window.location.search : '';
+		if (/\bmvdbg=1(?:&|$)/.test(q)) {
+			return true;
+		}
+	} catch (e) {}
+	return false;
+}
+
+function miniviewDebugLog() {
+	if (!miniviewDebugEnabled() || typeof console === 'undefined' || !console.log) {
+		return;
+	}
+	var args = Array.prototype.slice.call(arguments);
+	args.unshift('[miniview-debug]');
+	try {
+		console.log.apply(console, args);
+	} catch (e) {}
+}
+
+/**
  * dayLog 메인과 같은 출처일 때만 부모 drawTimerHub(postMessage) 사용.
  * void parent.location.href 로 판별하면 환경에 따라 오판할 수 있어 origin 비교(교차 출처는 접근 시 예외)로 고정.
  */
 var miniViewUsesParentHub = false;
+var _miniviewHubDetectError = null;
 try {
 	if (window.parent && window.parent !== window) {
 		var childOrigin = window.location.origin || (window.location.protocol + '//' + window.location.host);
 		// 교차 출처면 parent.location.* 접근 시 예외 → hub 끔
 		var parentOrigin = window.parent.location.origin;
 		miniViewUsesParentHub = (String(childOrigin) === String(parentOrigin));
+		miniviewDebugLog('hub-detect ok', {
+			childOrigin: childOrigin,
+			parentOrigin: parentOrigin,
+			miniViewUsesParentHub: miniViewUsesParentHub
+		});
+	} else {
+		miniviewDebugLog('hub-detect', { note: 'parent missing or parent===self', miniViewUsesParentHub: false });
 	}
 } catch (e) {
+	_miniviewHubDetectError = e && e.message ? e.message : String(e);
 	miniViewUsesParentHub = false;
+	miniviewDebugLog('hub-detect exception (cross-origin parent expected)', {
+		message: _miniviewHubDetectError,
+		miniViewUsesParentHub: false
+	});
 }
+
+window.__miniviewDebugState = window.__miniviewDebugState || {};
+window.__miniviewDebugState.hub = miniViewUsesParentHub;
+window.__miniviewDebugState.hubDetectError = _miniviewHubDetectError;
+
+var _mvLadderTickCount = 0;
 
 function ladderResultTimer(divId)
 {
 	// 백그라운드 탭에서는 타이머가 분 단위로만 돌아가 remainTime이 크게 밀림 → 감춤일 땐 감소 생략, 복귀 시 서버 동기화로 맞춤
 	if (typeof document !== "undefined" && document.hidden) {
+		if (miniviewDebugEnabled()) {
+			miniviewDebugLog('ladderTimer skipped: document.hidden=true');
+		}
 		return;
+	}
+	_mvLadderTickCount++;
+	if (miniviewDebugEnabled() && (_mvLadderTickCount <= 15 || _mvLadderTickCount % 30 === 0)) {
+		miniviewDebugLog('ladderTimer tick', {
+			tick: _mvLadderTickCount,
+			remainTimeBefore: remainTime,
+			divId: divId,
+			timerNodes: $('#' + divId).length
+		});
 	}
 	if(remainTime == 0)
 	{
@@ -198,32 +260,80 @@ function rebuildBallsNoWhitespace(containerId, includeId) {
 /** 메인·일자별분석과 동일: ajaxChatTimer로 서버 시계 동기화 (iframe별 클라이언트 카운트다운 편차 방지) */
 function syncMiniViewDrawTimerFromServer() {
 	var base = (window.POWERBALL_BASE_URL || window.ACTION_BASE_URL || '').replace(/\/$/, '') + '/';
-	if (!base || base === '/') return;
-	$.post(base, { view: 'action', action: 'ajaxChatTimer' }, function(resp) {
-		if (!resp || resp.state !== 'success') return;
-		var sec = parseInt(resp.remain_seconds, 10);
-		if (isNaN(sec)) sec = 0;
-		remainTime = sec;
-		if (typeof resp.time_round !== 'undefined') {
-			$('#timeRound').text(resp.time_round);
-			$('.nextRound').text(resp.time_round);
+	if (!base || base === '/') {
+		miniviewDebugLog('syncMiniViewDrawTimerFromServer aborted: empty base', {
+			POWERBALL_BASE_URL: window.POWERBALL_BASE_URL,
+			ACTION_BASE_URL: window.ACTION_BASE_URL
+		});
+		return;
+	}
+	var syncTag = 'sync-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+	miniviewDebugLog('ajaxChatTimer request', { tag: syncTag, url: base });
+	$.ajax({
+		url: base,
+		type: 'POST',
+		data: { view: 'action', action: 'ajaxChatTimer' },
+		dataType: 'json',
+		success: function(resp) {
+			if (!resp || resp.state !== 'success') {
+				miniviewDebugLog('ajaxChatTimer response not success', { tag: syncTag, resp: resp });
+				if (window.__miniviewDebugState) {
+					window.__miniviewDebugState.lastAjaxChatTimer = { ok: false, tag: syncTag, resp: resp };
+				}
+				return;
+			}
+			var sec = parseInt(resp.remain_seconds, 10);
+			if (isNaN(sec)) {
+				sec = 0;
+			}
+			remainTime = sec;
+			if (typeof resp.time_round !== 'undefined') {
+				$('#timeRound').text(resp.time_round);
+				$('.nextRound').text(resp.time_round);
+			}
+			var remain_i = Math.floor(remainTime / 60);
+			var remain_s = remainTime % 60;
+			$('#ladderTimer').find('.minute').text(remain_i);
+			$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
+			miniviewDebugLog('ajaxChatTimer OK', { tag: syncTag, remain_seconds: sec, time_round: resp.time_round });
+			if (window.__miniviewDebugState) {
+				window.__miniviewDebugState.lastAjaxChatTimer = { ok: true, tag: syncTag, remain_seconds: sec };
+			}
+		},
+		error: function(xhr, status, err) {
+			var snippet = '';
+			try {
+				snippet = xhr && xhr.responseText ? String(xhr.responseText).substring(0, 300) : '';
+			} catch (e) {}
+			miniviewDebugLog('ajaxChatTimer HTTP error', {
+				tag: syncTag,
+				status: status,
+				http: xhr && xhr.status,
+				err: err,
+				responseSnippet: snippet
+			});
+			if (window.__miniviewDebugState) {
+				window.__miniviewDebugState.lastAjaxChatTimer = { ok: false, tag: syncTag, http: xhr && xhr.status, status: status, err: err };
+			}
 		}
-		var remain_i = Math.floor(remainTime / 60);
-		var remain_s = remainTime % 60;
-		$('#ladderTimer').find('.minute').text(remain_i);
-		$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
-	}, 'json');
+	});
 }
 
 /** 탭/창 복귀 직후 네트워크 지연·스로틀 보정용 연속 동기화 (부모에서도 호출 가능) */
 function scheduleMiniViewSyncBurst() {
 	if (miniViewUsesParentHub) {
+		miniviewDebugLog('scheduleMiniViewSyncBurst: hub mode → postMessage to parent only (no ajaxChatTimer)');
 		try {
 			window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, '*');
-		} catch (e) {}
+		} catch (e) {
+			miniviewDebugLog('scheduleMiniViewSyncBurst postMessage failed', e && e.message ? e.message : e);
+		}
 		return;
 	}
-	try { syncMiniViewDrawTimerFromServer(); } catch (e) {}
+	miniviewDebugLog('scheduleMiniViewSyncBurst: local mode → syncMiniViewDrawTimerFromServer burst');
+	try { syncMiniViewDrawTimerFromServer(); } catch (e) {
+		miniviewDebugLog('scheduleMiniViewSyncBurst sync throw', e && e.message ? e.message : e);
+	}
 	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 0);
 	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 150);
 	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 500);
@@ -265,14 +375,24 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 if (miniViewUsesParentHub) {
 	window.addEventListener('message', function(ev) {
 		var d = ev.data;
-		if (!d || d.type !== 'drawTimerHub') return;
+		if (!d || d.type !== 'drawTimerHub') {
+			return;
+		}
+		miniviewDebugLog('drawTimerHub message received', { remainSeconds: d.remainSeconds, timeRound: d.timeRound });
 		try {
-			if (ev.source !== window.parent) return;
-		} catch (e) { return; }
+			if (ev.source !== window.parent) {
+				miniviewDebugLog('drawTimerHub ignored: ev.source !== parent');
+				return;
+			}
+		} catch (e) {
+			miniviewDebugLog('drawTimerHub parent check exception', e && e.message ? e.message : e);
+			return;
+		}
 		if (document.hidden) {
 			if (window.CI_APP_DEBUG && console && console.log) {
 				console.log('[drawTimerHub:miniView] document.hidden → UI 갱신 생략');
 			}
+			miniviewDebugLog('drawTimerHub skipped: document.hidden');
 			return;
 		}
 		miniViewApplyDrawTimerFromHub(d.remainSeconds, d.timeRound);
@@ -283,17 +403,36 @@ $(document).ready(function(){
 	rebuildBallsNoWhitespace('lotteryResult', true);
 	rebuildBallsNoWhitespace('beforeResult', false);
 
+	if (window.__miniviewDebugState) {
+		window.__miniviewDebugState.remainTimeInitial = typeof remainTime !== 'undefined' ? remainTime : null;
+		window.__miniviewDebugState.POWERBALL_BASE_URL = window.POWERBALL_BASE_URL;
+	}
+	miniviewDebugLog('document.ready', {
+		miniViewUsesParentHub: miniViewUsesParentHub,
+		hubDetectError: _miniviewHubDetectError,
+		remainTime: typeof remainTime !== 'undefined' ? remainTime : 'undefined',
+		willRegisterIntervals: !miniViewUsesParentHub,
+		documentHidden: typeof document !== 'undefined' ? document.hidden : 'n/a'
+	});
+
 	if(remainTime <= 10 && remainTime >= 0){
 		$('#lotteryBox .play').css('display', 'block').show();
 		$('#ladderReady').hide();
 	}
 	if (!miniViewUsesParentHub) {
+		miniviewDebugLog('registering setInterval: sync 5s + ladderResultTimer 1s');
 		setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 300);
 		setInterval(function() {
 			try {
-				if (!document.hidden) syncMiniViewDrawTimerFromServer();
+				if (!document.hidden) {
+					syncMiniViewDrawTimerFromServer();
+				} else if (miniviewDebugEnabled()) {
+					miniviewDebugLog('5s sync skipped: document.hidden');
+				}
 			} catch (e) {}
 		}, 5000);
+	} else {
+		miniviewDebugLog('NOT registering local intervals (hub mode). drawTimerHub messages must update UI.');
 	}
 	$(document).on('visibilitychange.miniviewtimer', function() {
 		if (!document.hidden) {
@@ -312,6 +451,19 @@ $(document).ready(function(){
 		setInterval(function(){
 			ladderResultTimer('ladderTimer');
 		},1000);
+	}
+	if (miniviewDebugEnabled() && window.__miniviewDebugState) {
+		window.__miniviewDebugState.inspect = function() {
+			return {
+				hub: miniViewUsesParentHub,
+				hubDetectError: _miniviewHubDetectError,
+				ladderTicks: _mvLadderTickCount,
+				remainTime: typeof remainTime !== 'undefined' ? remainTime : null,
+				lastAjaxChatTimer: window.__miniviewDebugState.lastAjaxChatTimer,
+				documentHidden: document.hidden
+			};
+		};
+		miniviewDebugLog('debug: type __miniviewDebugState.inspect() in console for snapshot');
 	}
 });
 
