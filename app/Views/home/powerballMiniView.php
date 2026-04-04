@@ -216,17 +216,39 @@ $(function(){
     if(getCookie('MINIVIEWLAYER') == 'Y'){
         showLadderResultBox();
     }
+    /** 부모가 다른 도메인이면 접근 시 SecurityError → try/catch 로 null */
+    function getMiniViewControlHub() {
+        try {
+            if (window.parent && window.parent !== window) {
+                var p = window.parent.miniViewControl;
+                if (typeof p === 'function') {
+                    return { fn: p, ctx: window.parent };
+                }
+            }
+        } catch (e) {}
+        try {
+            if (window.top && window.top !== window) {
+                var t = window.top.miniViewControl;
+                if (typeof t === 'function') {
+                    return { fn: t, ctx: window.top };
+                }
+            }
+        } catch (e) {}
+        return null;
+    }
     $('.miniViewBtn a.miniView').on('click', function(e){
         e.preventDefault();
         var isVisible = $('#ladderResultBox').is(':visible');
-        var fn = (window.parent && window.parent.miniViewControl) || (window.top && window.top.miniViewControl);
-        console.log('[미니뷰] 버튼 클릭, ladderResultBox visible:', isVisible, '| parent.miniViewControl:', !!(window.parent && window.parent.miniViewControl), '| top.miniViewControl:', !!(window.top && window.top.miniViewControl), '| 호출할 fn:', !!fn);
+        var hub = getMiniViewControlHub();
+        if (window.CI_APP_DEBUG && console && console.log) {
+            console.log('[미니뷰] 버튼 클릭, ladderResultBox visible:', isVisible, '| same-origin miniViewControl:', !!hub);
+        }
         if (isVisible) {
             hideLadderResultBox();
-            try { if (fn) { fn('close'); console.log('[미니뷰] miniViewControl("close") 호출 완료'); } else { console.warn('[미니뷰] miniViewControl 없음 - close 스킵'); } } catch(err) { console.error('[미니뷰] miniViewControl(close) 에러:', err); }
+            try { if (hub) { hub.fn.call(hub.ctx, 'close'); } } catch (err) { if (window.CI_APP_DEBUG && console) { console.error('[미니뷰] miniViewControl(close)', err); } }
         } else {
             showLadderResultBox();
-            try { if (fn) { fn('open'); console.log('[미니뷰] miniViewControl("open") 호출 완료'); } else { console.warn('[미니뷰] miniViewControl 없음 - open 스킵'); } } catch(err) { console.error('[미니뷰] miniViewControl(open) 에러:', err); }
+            try { if (hub) { hub.fn.call(hub.ctx, 'open'); } } catch (err) { if (window.CI_APP_DEBUG && console) { console.error('[미니뷰] miniViewControl(open)', err); } }
         }
         return false;
     });

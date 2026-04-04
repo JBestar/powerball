@@ -1,5 +1,13 @@
+/** 부모가 같은 출처일 때만 dayLog 허브 연동(타이머 postMessage). 타 도메인(라이온 iframe 등)이면 false → 서버 동기화 타이머 사용 */
 var miniViewUsesParentHub = false;
-try { miniViewUsesParentHub = window.parent && window.parent !== window; } catch (e) {}
+try {
+	if (window.parent && window.parent !== window) {
+		void window.parent.location.href;
+		miniViewUsesParentHub = true;
+	}
+} catch (e) {
+	miniViewUsesParentHub = false;
+}
 
 function ladderResultTimer(divId)
 {
