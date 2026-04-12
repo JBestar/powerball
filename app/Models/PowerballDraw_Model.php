@@ -150,11 +150,20 @@ class PowerballDraw_Model extends Model
     }
 
     /**
-     * drawn_at(5분 슬롯)으로 1건 조회 — 동일 슬롯 중복 방지용
+     * drawn_at(5분 슬롯)으로 1건 조회 — 동일 슬롯 중복 방지용.
+     * 과거 중복 행이 남아 있으면 id가 가장 작은 행을 반환(고정).
      */
     public function getByDrawnAt(string $drawnAt): ?object
     {
-        return $this->where('drawn_at', $drawnAt)->first();
+        return $this->where('drawn_at', $drawnAt)->orderBy('id', 'ASC')->first();
+    }
+
+    /** MySQL GET_LOCK 이름(최대 64자) */
+    private static function lockNameForDrawnAt(string $drawnAt): string
+    {
+        $n = 'pb_' . md5($drawnAt);
+
+        return strlen($n) > 64 ? substr($n, 0, 64) : $n;
     }
 
     /**
@@ -239,7 +248,8 @@ class PowerballDraw_Model extends Model
     }
 
     /**
-     * drawn_at에 UNIQUE 인덱스(동일 5분 슬롯 이중 INSERT 방지). 기존 DB에 중복 행이 있으면 추가 실패 → 로그만 남김.
+     * drawn_at에 UNIQUE 인덱스(이상적). 기존에 같은 drawn_at이 여러 줄이면 ALTER 실패 → 로그만 남김.
+     * 중복 데이터를 그대로 둔 채로는 UNIQUE를 붙일 수 없고, getOrGenerate()의 GET_LOCK으로 신규 중복만 막는다.
      */
     public function ensureUniqueDrawnAtConstraint(): void
     {
@@ -299,43 +309,66 @@ class PowerballDraw_Model extends Model
             return $existing;
         }
 
-        $dailyRound = self::dailyRoundFromDrawnAtKst($drawnAt);
-        $nextRound  = $this->getNextRound();
-        $draw       = $this->performDraw();
-
+        $lockName = self::lockNameForDrawnAt($drawnAt);
+        $lockHeld = false;
         try {
-            $this->insert([
-                'round'       => $nextRound,
-                'daily_round' => $dailyRound,
-                'ball1'       => $draw['ball1'],
-                'ball2'       => $draw['ball2'],
-                'ball3'       => $draw['ball3'],
-                'ball4'       => $draw['ball4'],
-                'ball5'       => $draw['ball5'],
-                'powerball'   => $draw['powerball'],
-                'ball_sum'    => $draw['ball_sum'],
-                'drawn_at'    => $drawnAt,
-            ]);
-        } catch (\Throwable $e) {
-            $msg = $e->getMessage();
-            if (stripos($msg, 'Duplicate') !== false || stripos($msg, 'uk_drawn_at') !== false) {
-                $dup = $this->getByDrawnAt($drawnAt);
-                if ($dup !== null) {
-                    return $dup;
+            $g = $this->db->query('SELECT GET_LOCK(?, 30) AS g', [$lockName])->getRow();
+            $lockHeld = $g && (int) $g->g === 1;
+            if (! $lockHeld) {
+                $wait = $this->getByDrawnAt($drawnAt);
+                if ($wait !== null) {
+                    return $wait;
                 }
+                throw new \RuntimeException('PowerballDraw_Model: GET_LOCK 실패/타임아웃 drawn_at=' . $drawnAt);
             }
-            throw $e;
+
+            $existing = $this->getByDrawnAt($drawnAt);
+            if ($existing !== null) {
+                return $existing;
+            }
+
+            $dailyRound = self::dailyRoundFromDrawnAtKst($drawnAt);
+            $nextRound  = $this->getNextRound();
+            $draw       = $this->performDraw();
+
+            try {
+                $this->insert([
+                    'round'       => $nextRound,
+                    'daily_round' => $dailyRound,
+                    'ball1'       => $draw['ball1'],
+                    'ball2'       => $draw['ball2'],
+                    'ball3'       => $draw['ball3'],
+                    'ball4'       => $draw['ball4'],
+                    'ball5'       => $draw['ball5'],
+                    'powerball'   => $draw['powerball'],
+                    'ball_sum'    => $draw['ball_sum'],
+                    'drawn_at'    => $drawnAt,
+                ]);
+            } catch (\Throwable $e) {
+                $msg = $e->getMessage();
+                if (stripos($msg, 'Duplicate') !== false || stripos($msg, 'uk_drawn_at') !== false) {
+                    $dup = $this->getByDrawnAt($drawnAt);
+                    if ($dup !== null) {
+                        return $dup;
+                    }
+                }
+                throw $e;
+            }
+
+            $id = $this->getInsertID();
+
+            return (object) array_merge(
+                [
+                    'id' => $id, 'round' => $nextRound, 'drawn_at' => $drawnAt,
+                    'daily_round' => $dailyRound,
+                ],
+                $draw
+            );
+        } finally {
+            if ($lockHeld) {
+                $this->db->query('SELECT RELEASE_LOCK(?) AS r', [$lockName]);
+            }
         }
-
-        $id = $this->getInsertID();
-
-        return (object) array_merge(
-            [
-                'id' => $id, 'round' => $nextRound, 'drawn_at' => $drawnAt,
-                'daily_round' => $dailyRound,
-            ],
-            $draw
-        );
     }
 
     /**
