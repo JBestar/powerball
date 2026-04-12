@@ -12,7 +12,7 @@ use CodeIgniter\Model;
  * 컬럼 의미:
  * - drawn_at     : 추첨 시각. 해당 회차가 “몇 시 몇 분”에 진행된 추첨인지 나타내는 공식 시각.
  *                  반드시 5분 단위(XX:00, XX:05, XX:10, … XX:55)만 저장.
- * - daily_round  : KST 게임일 기준 일회차(1~). 게임일 = D 00:05 ~ (D+1) 00:00 (00:00 추첨은 전날 게임일 마지막).
+ * - daily_round  : KST 게임일 기준 일회차(1~288). drawn_at 시각으로만 결정(00:00=288, 00:05=1, … 23:55=287). 게임일 = D 00:05 ~ (D+1) 00:00.
  * - created_at   : 레코드가 DB에 실제로 INSERT된 시각(시스템 기록용). 테이블 기본값 CURRENT_TIMESTAMP.
  */
 class PowerballDraw_Model extends Model
@@ -72,6 +72,43 @@ class PowerballDraw_Model extends Model
     }
 
     /**
+     * Unix 시각을 KST로 변환한 뒤, 해당 시각이 속한 5분 슬롯 시작(XX:00, XX:05, …)을 drawn_at 문자열로 반환.
+     * (date() 기본 타임존에 의존하지 않음)
+     */
+    public static function kstDrawnAtFromUnixTimestamp(int $unixTs): string
+    {
+        $tz = new \DateTimeZone('Asia/Seoul');
+        $dt = (new \DateTimeImmutable('@' . $unixTs))->setTimezone($tz);
+        $totalMins = (int) $dt->format('H') * 60 + (int) $dt->format('i');
+        $slotMins  = (int) floor($totalMins / 5) * 5;
+
+        return $dt->setTime(intdiv($slotMins, 60), $slotMins % 60, 0)->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * KST drawn_at(5분 정렬)만으로 일회차를 결정. 게임일 규칙과 동일:
+     * - 00:00:00 은 전날 게임일의 마지막 회차(288).
+     * - 그 외에는 floor(자정부터 분)/5 → 00:05=1 … 23:55=287.
+     */
+    public static function dailyRoundFromDrawnAtKst(string $drawnAt): int
+    {
+        try {
+            $dt = new \DateTimeImmutable($drawnAt, new \DateTimeZone('Asia/Seoul'));
+        } catch (\Throwable $e) {
+            return 1;
+        }
+        $h = (int) $dt->format('H');
+        $i = (int) $dt->format('i');
+        $s = (int) $dt->format('s');
+        $nSumMinutes = $h * 60 + $i;
+        if ($nSumMinutes === 0 && $s === 0) {
+            return 288;
+        }
+
+        return (int) floor($nSumMinutes / 5);
+    }
+
+    /**
      * 기간 검색: 시작일 게임일 첫 추첨 ~ 종료일 게임일의 마지막(다음날 00:00)까지.
      *
      * @return array{0:string,1:string}
@@ -110,6 +147,14 @@ class PowerballDraw_Model extends Model
     public function getByRound(int $round): ?object
     {
         return $this->where('round', $round)->first();
+    }
+
+    /**
+     * drawn_at(5분 슬롯)으로 1건 조회 — 동일 슬롯 중복 방지용
+     */
+    public function getByDrawnAt(string $drawnAt): ?object
+    {
+        return $this->where('drawn_at', $drawnAt)->first();
     }
 
     /**
@@ -169,7 +214,8 @@ class PowerballDraw_Model extends Model
     }
 
     /**
-     * daily_round 컬럼이 없으면 추가하고, 기존 행은 게임일(KST)별 round 순으로 백필.
+     * daily_round 컬럼이 없으면 추가하고, daily_round=0 인 행은 drawn_at(KST) 기준으로 백필.
+     * 기존에 순번으로만 맞춰 둔 값을 시각 기준으로 다시 쓰려면 UPDATE로 daily_round=0 처리 후 호출.
      */
     public function ensureDailyRoundColumn(): void
     {
@@ -187,62 +233,52 @@ class PowerballDraw_Model extends Model
         } elseif ($this->where('daily_round', 0)->countAllResults() > 0) {
             $this->backfillDailyRound();
         }
+        $this->ensureUniqueDrawnAtConstraint();
         // 게임일(00:05 기준) 규칙 변경 후 기존 일회차를 다시 맞추려면 DB에서 한 번 실행:
         // UPDATE `draw_results` SET `daily_round`=0; (프리픽스 있으면 테이블명 조정) 이후 ensure 호출 시 백필.
     }
 
     /**
-     * daily_round=0 인 행에 대해 게임일(KST)별 round 오름차순 1..n 부여.
+     * drawn_at에 UNIQUE 인덱스(동일 5분 슬롯 이중 INSERT 방지). 기존 DB에 중복 행이 있으면 추가 실패 → 로그만 남김.
+     */
+    public function ensureUniqueDrawnAtConstraint(): void
+    {
+        $table = $this->db->prefixTable($this->table);
+        try {
+            $this->db->query("ALTER TABLE `{$table}` ADD UNIQUE KEY `uk_drawn_at` (`drawn_at`)");
+        } catch (\Throwable $e) {
+            $msg = $e->getMessage();
+            if (stripos($msg, 'Duplicate key name') !== false || stripos($msg, 'already exists') !== false) {
+                return;
+            }
+            log_message(
+                'warning',
+                'PowerballDraw_Model: uk_drawn_at 추가 실패(동일 drawn_at 중복 행 삭제·병합 후 재시도): ' . $msg
+            );
+        }
+    }
+
+    /**
+     * daily_round=0 인 행에 대해 drawn_at(KST) 시각 기준 일회차로 백필.
      */
     public function backfillDailyRound(): void
     {
         $all = $this->orderBy('round', 'ASC')->findAll();
-        $buckets = [];
         foreach ($all as $draw) {
             $at = $draw->drawn_at ?? '';
             if ($at === '') {
                 continue;
             }
-            $key = self::gameDayKeyKstFromDrawnAt((string) $at);
-            if ($key === '') {
+            $id = (int) ($draw->id ?? 0);
+            if ($id < 1) {
                 continue;
             }
-            $buckets[$key][] = $draw;
-        }
-        foreach ($buckets as $list) {
-            usort($list, static fn ($a, $b) => ((int) ($a->round ?? 0)) <=> ((int) ($b->round ?? 0)));
-            $rank = 0;
-            foreach ($list as $draw) {
-                $rank++;
-                $id = (int) ($draw->id ?? 0);
-                if ($id < 1) {
-                    continue;
-                }
-                $cur = (int) ($draw->daily_round ?? 0);
-                if ($cur !== $rank) {
-                    $this->update($id, ['daily_round' => $rank]);
-                }
+            $want = self::dailyRoundFromDrawnAtKst((string) $at);
+            $cur  = (int) ($draw->daily_round ?? 0);
+            if ($cur !== $want) {
+                $this->update($id, ['daily_round' => $want]);
             }
         }
-    }
-
-    /**
-     * 해당 drawn_at이 속한 게임일에서 다음 일회차(1회=00:05 그날 첫 추첨).
-     */
-    private function getNextDailyRoundForDrawnAt(string $drawnAt): int
-    {
-        $gameKey = self::gameDayKeyKstFromDrawnAt($drawnAt);
-        if ($gameKey === '' || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $gameKey)) {
-            return 1;
-        }
-        [$from, $to] = self::gameDayWindowFromPickerDate($gameKey);
-        $table = $this->db->prefixTable($this->table);
-        $row   = $this->db->query(
-            "SELECT COALESCE(MAX(`daily_round`), 0) AS m FROM `{$table}` WHERE `drawn_at` >= ? AND `drawn_at` <= ?",
-            [$from, $to]
-        )->getRow();
-
-        return (int) ($row->m ?? 0) + 1;
     }
 
     /**
@@ -256,37 +292,43 @@ class PowerballDraw_Model extends Model
         $this->ensureDailyRoundColumn();
 
         $currentTime = $currentTime ?? time();
-        $latest = $this->getLatest();
+        $drawnAt     = self::kstDrawnAtFromUnixTimestamp($currentTime);
 
-        $currentSlot = (int) floor($currentTime / self::DRAW_INTERVAL);
-        $lastDrawSlot = $latest ? (int) floor(strtotime($latest->drawn_at) / self::DRAW_INTERVAL) : -1;
-        $shouldDraw  = ! $latest || ($currentSlot > $lastDrawSlot);
-
-        if (! $shouldDraw) {
-            return $latest;
+        $existing = $this->getByDrawnAt($drawnAt);
+        if ($existing !== null) {
+            return $existing;
         }
 
-        $nextRound = $this->getNextRound();
-        $draw      = $this->performDraw();
-        // 추첨 시각은 반드시 5분 단위(XX:00, XX:05, XX:10, … XX:55)로 저장
-        $drawSlot  = (int) floor($currentTime / self::DRAW_INTERVAL);
-        $drawnAt   = date('Y-m-d H:i:s', $drawSlot * self::DRAW_INTERVAL);
-        $dailyRound = $this->getNextDailyRoundForDrawnAt($drawnAt);
+        $dailyRound = self::dailyRoundFromDrawnAtKst($drawnAt);
+        $nextRound  = $this->getNextRound();
+        $draw       = $this->performDraw();
 
-        $this->insert([
-            'round'       => $nextRound,
-            'daily_round' => $dailyRound,
-            'ball1'       => $draw['ball1'],
-            'ball2'       => $draw['ball2'],
-            'ball3'       => $draw['ball3'],
-            'ball4'       => $draw['ball4'],
-            'ball5'       => $draw['ball5'],
-            'powerball'   => $draw['powerball'],
-            'ball_sum'    => $draw['ball_sum'],
-            'drawn_at'    => $drawnAt,
-        ]);
+        try {
+            $this->insert([
+                'round'       => $nextRound,
+                'daily_round' => $dailyRound,
+                'ball1'       => $draw['ball1'],
+                'ball2'       => $draw['ball2'],
+                'ball3'       => $draw['ball3'],
+                'ball4'       => $draw['ball4'],
+                'ball5'       => $draw['ball5'],
+                'powerball'   => $draw['powerball'],
+                'ball_sum'    => $draw['ball_sum'],
+                'drawn_at'    => $drawnAt,
+            ]);
+        } catch (\Throwable $e) {
+            $msg = $e->getMessage();
+            if (stripos($msg, 'Duplicate') !== false || stripos($msg, 'uk_drawn_at') !== false) {
+                $dup = $this->getByDrawnAt($drawnAt);
+                if ($dup !== null) {
+                    return $dup;
+                }
+            }
+            throw $e;
+        }
 
         $id = $this->getInsertID();
+
         return (object) array_merge(
             [
                 'id' => $id, 'round' => $nextRound, 'drawn_at' => $drawnAt,

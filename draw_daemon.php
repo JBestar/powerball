@@ -50,9 +50,10 @@ function draw_daemon_log(string $msg): void
 function draw_daemon_run_slot(): void
 {
     $now = time();
-    $minute = (int) date('i', $now);
+    $dt  = (new \DateTimeImmutable('@' . $now))->setTimezone(new \DateTimeZone('Asia/Seoul'));
+    $minute = (int) $dt->format('i');
     if (($minute % 5) !== 0) {
-        draw_daemon_log('Not a 5-min slot; skip.');
+        draw_daemon_log('Not a 5-min slot (KST); skip.');
 
         return;
     }
