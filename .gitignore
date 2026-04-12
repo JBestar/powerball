@@ -24,3 +24,4 @@ node_modules/
 npm-debug.log
 *.sql
 logs/*
+/draw_daemon.bat
