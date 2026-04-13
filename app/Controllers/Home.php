@@ -1553,14 +1553,40 @@ class Home extends BaseController
                 $date = date('Y-m-d');
             }
             $afterRound = (int) $this->request->getPost('round');
+            $daylogSyncDebug = $this->request->getPost('daylog_sync_debug') === '1';
 
             [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
+
+            $latestRoundInWindow = 0;
+            if ($daylogSyncDebug) {
+                $latestRow = $drawModel
+                    ->where('drawn_at >=', $dateFrom)
+                    ->where('drawn_at <=', $dateTo)
+                    ->orderBy('round', 'DESC')
+                    ->first();
+                $latestRoundInWindow = $latestRow ? (int) $latestRow->round : 0;
+            }
+
             $draw = $drawModel
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
                 ->where('round >', $afterRound)
                 ->orderBy('round', 'ASC')
                 ->first();
+
+            if ($daylogSyncDebug) {
+                $logLine = sprintf(
+                    "[%s] daylog refreshLog date=%s window=[%s..%s] client_afterRound=%d latest_db_in_window=%d new_row=%s\n",
+                    date('c'),
+                    $date,
+                    $dateFrom,
+                    $dateTo,
+                    $afterRound,
+                    $latestRoundInWindow,
+                    $draw ? 'Y round=' . (int) $draw->round : 'N'
+                );
+                @file_put_contents(WRITEPATH . 'logs/daylog_sync_debug.log', $logLine, FILE_APPEND | LOCK_EX);
+            }
 
             if (!$draw) {
                 return $this->response->setJSON(['state' => 'success', 'round' => $afterRound, 'content' => []]);

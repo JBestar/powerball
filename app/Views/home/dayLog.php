@@ -63,7 +63,25 @@
 
 	// mainFrame 높이: 실제 문서 높이로 조절 (육매/패턴 영역·더보기 포함해 잘리지 않도록)
 	var DAYLOG_MIN_HEIGHT = 500;
-	var _dayLogDebug = false; // 디버그 로그 (원인 파악 후 false로)
+	/** 서버 갱신 이슈 추적: URL ?daylogdbg=1 또는 localStorage/sessionStorage DAYLOG_DBG=1 */
+	var _dayLogDebug = (function () {
+		try {
+			if (/[?&]daylogdbg=1(?:&|$)/.test(window.location.search || '')) {
+				try { sessionStorage.setItem('DAYLOG_DBG', '1'); } catch (e0) {}
+				return true;
+			}
+		} catch (e) {}
+		try { if (sessionStorage.getItem('DAYLOG_DBG') === '1') return true; } catch (e1) {}
+		try { if (localStorage.getItem('DAYLOG_DBG') === '1') return true; } catch (e2) {}
+		return false;
+	})();
+	function dayLogDbgLog() {
+		if (!_dayLogDebug) return;
+		var a = ['[dayLog][sync]'];
+		for (var i = 0; i < arguments.length; i++) a.push(arguments[i]);
+		try { console.log.apply(console, a); } catch (e) {}
+	}
+	var _dayLogSyncStats = { lastChatTimer: null, lastRefreshLog: null, refreshLogErrors: 0, analyseErrors: 0 };
 	function heightResize() {
 		function setFrameHeight(h) {
 			if (_dayLogDebug) console.log('[dayLog] heightResize setFrameHeight', h);
@@ -119,6 +137,30 @@
 	}
 
 	$(document).ready(function(){
+		if (_dayLogDebug) {
+			dayLogDbgLog('boot', {
+				actionBaseUrl: actionBaseUrl,
+				origin: (function () { try { return window.location.origin; } catch (e) { return ''; } })(),
+				dayLogUsesParentHub: dayLogUsesParentHub,
+				hubDetectError: _dayLogHubDetectError,
+				curDate: curDate,
+				today: today,
+				pageDivRound: (function () { try { return $('#pageDiv').attr('round'); } catch (e) { return null; } })()
+			});
+			setInterval(function () {
+				try {
+					dayLogDbgLog('heartbeat', {
+						hidden: document.hidden,
+						remainVar: remainTime,
+						timerUi: (function () { try { return $('#dayLogTimer .minute').text() + ':' + $('#dayLogTimer .second').text(); } catch (e) { return ''; } })(),
+						timeRoundUi: (function () { try { return $('#timeRound').text(); } catch (e) { return ''; } })(),
+						pageDivRound: (function () { try { return $('#pageDiv').attr('round'); } catch (e) { return null; } })(),
+						dataRefreshBusy: !!dataRefresh_process,
+						stats: _dayLogSyncStats
+					});
+				} catch (e) {}
+			}, 60000);
+		}
 		if (_dayLogDebug) console.log('[dayLog] document.ready, scheduling moreClick(50ms)');
 		// 회차별 분석 데이터: iframe 로드 직후에도 DOM/템플릿 준비되도록 약간 지연 후 요청
 		setTimeout(function(){ moreClick(); }, 50);
@@ -337,7 +379,7 @@
 
 	function dataRefresh()
 	{
-		if (_dayLogDebug) console.log('[dayLog] dataRefresh called', { dataRefresh_process: dataRefresh_process });
+		dayLogDbgLog('dataRefresh called', { dataRefresh_process: dataRefresh_process, curDate: curDate, today: today });
 		if(dataRefresh_process == false)
 		{
 			// auto refresh
@@ -355,6 +397,7 @@
 			dataRefresh_process = true;
 
 			var round = $('#pageDiv').attr('round');
+			dayLogDbgLog('dataRefresh POST refreshLog', { clientRoundAttr: round, date: curDate });
 			$.ajax({
 				type:'POST',
 				dataType:'json',
@@ -364,10 +407,12 @@
 					action:'ajaxPowerballLog',
 					actionType:'refreshLog',
 					date:curDate,
-					round:round
+					round:round,
+					daylog_sync_debug: _dayLogDebug ? '1' : '0'
 				},
 				success:function(data,textStatus){
-					if (_dayLogDebug) console.log('[dayLog] dataRefresh ajax success', { state: data && data.state, round: data && data.round, hasContent: !!(data && data.content) });
+					_dayLogSyncStats.lastRefreshLog = { t: Date.now(), state: data && data.state, respRound: data && data.round, contentLen: (data && data.content) ? data.content.length : -1 };
+					dayLogDbgLog('dataRefresh ajax success', _dayLogSyncStats.lastRefreshLog);
 
 					dataRefresh_process = false;
 
@@ -378,7 +423,7 @@
 
 						if(data && $('#pageDiv').attr('round') != data.round)
 						{
-							if (_dayLogDebug) console.log('[dayLog] dataRefresh prepend new round', data.round);
+							dayLogDbgLog('dataRefresh prepend new round', data.round);
 							$('#pageDiv').attr('round',data.round);
 
 							$('#powerballLogBox tbody.content tr.powerballLog-empty-placeholder').remove();
@@ -417,26 +462,42 @@
 
 							heightResize();
 						}
+						else
+						{
+							dayLogDbgLog('dataRefresh success but no new row (pageDiv.round === resp.round or empty)', {
+								pageDivRound: $('#pageDiv').attr('round'),
+								respRound: data && data.round,
+								contentLen: (data && data.content) ? data.content.length : -1
+							});
+						}
 					}
 					else
 					{
-						//dataRefresh();
+						dayLogDbgLog('dataRefresh unexpected state', { state: data && data.state, data: data });
 					}
 				},
 				error:function (xhr,textStatus,errorThrown){
-					//alert('error'+(errorThrown?errorThrown:xhr.status));
+					_dayLogSyncStats.refreshLogErrors++;
+					_dayLogSyncStats.lastRefreshLog = { t: Date.now(), error: true, status: xhr && xhr.status, textStatus: textStatus, errorThrown: String(errorThrown || '') };
+					dayLogDbgLog('dataRefresh ajax ERROR (dataRefresh_process cleared)', _dayLogSyncStats.lastRefreshLog);
+					dataRefresh_process = false;
 				}
 			});
+		}
+		else
+		{
+			dayLogDbgLog('dataRefresh skipped (already in flight)');
 		}
 	}
 
 	function refreshAnalyse()
 	{
 		var dateStr = curDate.replace(/-/g, '');
+		var _anUrl = actionBaseUrl + 'json/powerballAnalyse/'+dateStr+'.json?_='+(Date.now());
 		$.ajax({
 			type:'GET',
 			cache:false,
-			url: actionBaseUrl + 'json/powerballAnalyse/'+dateStr+'.json?_='+(Date.now()),
+			url: _anUrl,
 			dataType:'json',
 			timeout:1000,
 			success:function(data,textStatus){
@@ -478,9 +539,14 @@
 					$('#numberMiddleRow').text(data.numberMiddleRow);
 					$('#numberSmallRow').text(data.numberSmallRow);
 				}
+				else
+				{
+					dayLogDbgLog('refreshAnalyse non-success', { state: data && data.state });
+				}
 			},
 			error:function (xhr,textStatus,errorThrown){
-				//alert('error'+(errorThrown?errorThrown:xhr.status));
+				_dayLogSyncStats.analyseErrors++;
+				dayLogDbgLog('refreshAnalyse ERROR', { status: xhr && xhr.status, textStatus: textStatus, errorThrown: String(errorThrown || ''), url: _anUrl });
 			}
 		});
 	}
@@ -537,11 +603,21 @@
 		try {
 			if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate != today) return;
 		} catch (e) {}
-		$.post(actionBaseUrl, { view: 'action', action: 'ajaxChatTimer' }, function(resp) {
-			if (!resp || resp.state !== 'success') return;
+		$.ajax({
+			type: 'POST',
+			url: actionBaseUrl,
+			dataType: 'json',
+			data: { view: 'action', action: 'ajaxChatTimer' }
+		}).done(function (resp) {
+			if (!resp || resp.state !== 'success') {
+				_dayLogSyncStats.lastChatTimer = { t: Date.now(), bad: true, resp: resp };
+				dayLogDbgLog('ajaxChatTimer bad response', resp);
+				return;
+			}
 			var sec = parseInt(resp.remain_seconds, 10);
 			if (isNaN(sec)) sec = 0;
 			remainTime = sec;
+			_dayLogSyncStats.lastChatTimer = { t: Date.now(), remain_seconds: sec, time_round: resp.time_round };
 			var ri = Math.floor(remainTime / 60);
 			var rs = remainTime % 60;
 			$('#dayLogTimer .minute').text(ri);
@@ -552,12 +628,16 @@
 			try {
 				if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate == today) {
 					if (_prevAjaxChatRemainDayLog !== null && _prevAjaxChatRemainDayLog > 0 && sec === 0) {
+						dayLogDbgLog('ajaxChatTimer →0 → dataRefresh');
 						try { dataRefresh(); } catch (e3) {}
 					}
 					_prevAjaxChatRemainDayLog = sec;
 				}
 			} catch (e4) {}
-		}, 'json');
+		}).fail(function (xhr, textStatus, errorThrown) {
+			_dayLogSyncStats.lastChatTimer = { t: Date.now(), error: true, status: xhr && xhr.status, textStatus: textStatus, errorThrown: String(errorThrown || '') };
+			dayLogDbgLog('ajaxChatTimer HTTP ERROR', _dayLogSyncStats.lastChatTimer);
+		});
 	}
 
 	var _prevHubRemainDayLog = null;
@@ -579,6 +659,7 @@
 					$('#dayLogTimer .minute').text(ri);
 					$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
 					if (_prevHubRemainDayLog !== null && _prevHubRemainDayLog > 0 && sec === 0) {
+						dayLogDbgLog('drawTimerHub →0 → dataRefresh');
 						try { dataRefresh(); } catch (e3) {}
 					}
 					_prevHubRemainDayLog = sec;
