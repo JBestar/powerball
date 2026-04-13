@@ -443,13 +443,13 @@
 		{{each(i,item) content}}
 		{{if item.reasonType}}
 		<tr class="${trClass}">
-			<td height="40" align="center"><span class="numberText">누적 ${round}회</span> ( <span class="numberText">일 ${todayRound}회</span> )</td>
+			<td height="40" align="center"><span class="numberText">${round}회</span> ( <span class="numberText">${todayRound}회</span> )</td>
 			<td align="center" class="numberText">${time}</td>
 			<td align="center" class="numberText" colspan="10">${reasonMessage}</td>
 		</tr>
 		{{else}}
 		<tr class="${trClass}">
-			<td height="40" align="center"><span class="numberText">누적 ${round}회</span> ( <span class="numberText">일 ${todayRound}회</span> )<br/><a href="https://www.kaiascan.io/ko/block/${blockNumber}?tabId=blockTransactions" target="_blank" class="numberText">${blockNumber}</a> / <a href="#" onclick="windowOpen('/?view=pbgCheck&query=${blockNumber}/${blockHashKey}','memo',640,620,'no');return false;" target="_blank" class="numberText">${blockHashKey}</a></td>
+			<td height="40" align="center"><span class="numberText">${round}회</span> ( <span class="numberText">${todayRound}회</span> )<br/><a href="https://www.kaiascan.io/ko/block/${blockNumber}?tabId=blockTransactions" target="_blank" class="numberText">${blockNumber}</a> / <a href="#" onclick="windowOpen('/?view=pbgCheck&query=${blockNumber}/${blockHashKey}','memo',640,620,'no');return false;" target="_blank" class="numberText">${blockHashKey}</a></td>
 			<td align="center" class="numberText">${time}</td>
 			<td align="center" class="numberText"><div class="sp-ball_bg">${powerball}</div></td>
 			<td align="center" class="numberText">${powerballPeriod}</td>

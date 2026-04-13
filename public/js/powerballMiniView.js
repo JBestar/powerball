@@ -68,12 +68,35 @@ window.__miniviewDebugState = window.__miniviewDebugState || {};
 window.__miniviewDebugState.hub = miniViewUsesParentHub;
 window.__miniviewDebugState.hubDetectError = _miniviewHubDetectError;
 
+/**
+ * iframe 문서만 hidden 인데 부모 탭은 보이는 경우가 있어(로그에 hasFocus:false·visibility 깜빡임 등),
+ * 허브 모드에서는 부모 document.hidden 이 false 이면 타이머/허브 UI 를 진행한다.
+ */
+function miniViewShouldSkipDueToIframeHidden() {
+	if (typeof document === 'undefined' || !document.hidden) {
+		return false;
+	}
+	if (miniViewUsesParentHub && window.parent && window.parent !== window) {
+		try {
+			if (window.parent.document && !window.parent.document.hidden) {
+				return false;
+			}
+		} catch (e) {}
+	}
+	return true;
+}
+
 var _mvLadderTickCount = 0;
+
+/** 같은 회차의 updateResult(공 튀기 애니메이션) 중복 호출 방지 */
+var _lastMiniViewAnimatedRound = null;
+/** updateResult 내부 setTimeout·showNumber 연쇄 취소용 (새 추첨 시작 시 이전 애니메이션 무시) */
+var _updateResultAnimGen = 0;
 
 function ladderResultTimer(divId)
 {
 	// 백그라운드 탭에서는 타이머가 분 단위로만 돌아가 remainTime이 크게 밀림 → 감춤일 땐 감소 생략, 복귀 시 서버 동기화로 맞춤
-	if (typeof document !== "undefined" && document.hidden) {
+	if (typeof document !== 'undefined' && miniViewShouldSkipDueToIframeHidden()) {
 		if (miniviewDebugEnabled()) {
 			miniviewDebugLog('ladderTimer skipped: document.hidden=true');
 		}
@@ -119,13 +142,83 @@ function ladderResultTimer(divId)
 	$('#'+divId).find('.second').text(remain_s);
 }
 
+/** 최근 결과 DOM을 이전 회차로 옮김. lotteryBallSlot_* id를 그대로 복사하면 새 추첨에서 같은 id가 생겨 DOM이 깨지므로 id 제거 */
+function miniViewMoveCurrentResultToBefore() {
+	var $kids = $('#lotteryResult').children().clone();
+	if ($kids.length === 0) {
+		/* lotteryResult 가 비어 있으면(동기화 레이스·첫 갱신 등) beforeResult 를 비우지 않음 — PHP 이전 회차 공 유지 */
+		return;
+	}
+	$kids.removeAttr('id');
+	$kids.find('[id]').removeAttr('id');
+	$('#beforeResult').empty().append($kids);
+}
+
+/** 포커스 복귀 동기화용: 같은 회차는 공 애니 없이 즉시 패널만 정합 */
+function miniViewRenderResultInstant(data) {
+	if (!data) return;
+	var numStr = data.number;
+	if (!numStr && data.ball1 != null) {
+		numStr = [data.ball1, data.ball2, data.ball3, data.ball4, data.ball5].map(function(n){
+			var s = '' + n;
+			return s.length < 2 ? '0' + s : s;
+		}).join('');
+	}
+	numStr = numStr || '';
+	var round = parseInt(data.round, 10);
+	if (!isNaN(round)) {
+		$('#timeRound').text(round + 1);
+		$('.nextRound').text(round + 1);
+		$('#lastRound').text(round);
+		$('.lastRound').text(round);
+		$('#lastRoundTit').text(round);
+		_lastMiniViewAnimatedRound = round;
+	}
+	var html = '';
+	var list = '';
+	for (var i = 0; i < 5; i++) {
+		var two = numStr.substring(i * 2, i * 2 + 2) || ('0' + (data['ball' + (i + 1)] || '')).slice(-2);
+		var color = ballColorSel(two);
+		html += '<span class="ball_' + color + '"><span class="ballNumber">' + two + '</span></span>';
+		list += (i ? ', ' : '') + two;
+	}
+	var pb = parseInt(data.powerball, 10);
+	var pbStr = '' + pb;
+	html += '<span class="ball_' + ballColorSel(pbStr) + '"><span class="ballNumber">' + pbStr + '</span></span>';
+	$('#lotteryResult').html(html);
+	var sum = data.ball_sum != null ? data.ball_sum : data.numberSum;
+	list += ', <span style="color:#66ffff;" class="b">' + pbStr + '</span>, <span style="color:#fff;" class="b">' + sum + '</span>';
+	$('#lastResult').html(list);
+	$('#lotteryBox .play').hide();
+	$('#ladderReady').show();
+}
+
 // update result
 function updateResult(data)
 {
+	var r = data && data.round != null ? parseInt(data.round, 10) : NaN;
+	if (!isNaN(r) && _lastMiniViewAnimatedRound === r) {
+		miniviewDebugLog('updateResult skipped (duplicate round animation)', r);
+		return;
+	}
+	/* stale 즉시렌더 등으로 이미 최신 회차가 표시된 뒤 updateResult 가 오면
+	   moveCurrent→before 가 같은 공을 복사해 위·아래 동일하게 만듦 → 이동·애니 생략 */
+	var domLr = parseInt($('#lastRound').text(), 10);
+	if (!isNaN(r) && !isNaN(domLr) && domLr === r) {
+		miniviewDebugLog('updateResult: DOM already this round — instant only (no move/re-animate)', r);
+		miniViewRenderResultInstant(data);
+		return;
+	}
+	if (!isNaN(r)) {
+		_lastMiniViewAnimatedRound = r;
+	}
+
+	var animGen = ++_updateResultAnimGen;
+
 	$('#lotteryBox .play').show();
 	$('#ladderReady').hide();
 
-	$('#beforeResult').html($('#lotteryResult').html());
+	miniViewMoveCurrentResultToBefore();
 	$('#lotteryResult').empty();
 
 	var numStr = data.number;
@@ -156,18 +249,24 @@ function updateResult(data)
 	$('#lastRoundTit').text(data.round);
 
 	setTimeout(function(){
+		if (animGen !== _updateResultAnimGen) {
+			return;
+		}
 		var totalBalls = 6;
 		for(var idx = 0; idx < totalBalls; idx++){
-			showNumber(ballArr[idx], idx);
+			showNumber(ballArr[idx], idx, animGen);
 		}
 		setTimeout(function(){
+			if (animGen !== _updateResultAnimGen) {
+				return;
+			}
 			$('#lotteryBox .play').hide();
 			$('#ladderReady').show();
 		}, 2000 * totalBalls + 2000);
 	}, 2000);
 }
 
-function showNumber(num, index)
+function showNumber(num, index, animGen)
 {
 	index = index == null ? 0 : index;
 	/** index 5 = 파워볼(0~9): 0은 "0"으로 표시(00 방지), ballColorSel도 숫자 한 자리로 맞춤 */
@@ -176,20 +275,30 @@ function showNumber(num, index)
 	}
 	var delay = 2000 * index;
 	setTimeout(function(){
+		if (animGen !== undefined && animGen !== _updateResultAnimGen) {
+			return;
+		}
 		var ballColor = ballColorSel(num);
 		var $ball = $('#lotteryBall');
 		$ball.show();
 		$ball.html('<span class="ball_'+ballColor+'">'+num+'</span>');
 
-		var ballId = 'ballNumber_'+num;
+		/* 슬롯별 고유 ID (번호 문자열만 쓰면 동일 숫자/표기 충돌 시 jQuery가 첫 요소만 갱신) */
+		var ballId = 'lotteryBallSlot_' + index;
 		TweenMax.to(document.getElementById('lotteryBall'), 1, {
 			bezier: { type: 'cubic', values: [{x:175,y:-5},{x:-50,y:5},{x:-20,y:300},{x:345,y:210}], autoRotate: false },
 			ease: Power1.easeInOut,
 			onStart: function(){
+				if (animGen !== undefined && animGen !== _updateResultAnimGen) {
+					return;
+				}
 				$('#lotteryResult').append('<span id="'+ballId+'" class="ball_'+ballColor+'"><span class="ballNumber">'+num+'</span></span>');
 				$('#'+ballId).hide();
 			},
 			onComplete: function(){
+				if (animGen !== undefined && animGen !== _updateResultAnimGen) {
+					return;
+				}
 				$('#'+ballId).show();
 				$ball.html('').hide();
 			}
@@ -306,6 +415,7 @@ function syncMiniViewDrawTimerFromServer() {
 			var remain_s = remainTime % 60;
 			$('#ladderTimer').find('.minute').text(remain_i);
 			$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
+			miniViewSyncResultPanelsIfStale(typeof resp.time_round !== 'undefined' ? resp.time_round : undefined);
 			miniviewDebugLog('ajaxChatTimer OK', { tag: syncTag, remain_seconds: sec, time_round: resp.time_round });
 			if (window.__miniviewDebugState) {
 				window.__miniviewDebugState.lastAjaxChatTimer = { ok: true, tag: syncTag, remain_seconds: sec };
@@ -353,6 +463,57 @@ window.syncMiniViewDrawTimerFromServer = syncMiniViewDrawTimerFromServer;
 window.scheduleMiniViewSyncBurst = scheduleMiniViewSyncBurst;
 
 var _prevHubRemainMini = null;
+/** getDrawResult 호출 쿨다운(허브·로컬 타이머 공통, 탭 복귀 시 중복 요청 완화) */
+var _lastDrawResultFetchAt = 0;
+/** 탭 복귀 후 timeRound만 맞고 결과 패널이 남을 때 연속 요청 완화 */
+var _lastMiniViewStaleResultFetchAt = 0;
+var _miniViewDrawResultFetchInFlight = false;
+
+/**
+ * 서버/허브가 갱신한 timeRound(다음 회차)와 #lastRound(직전 발표 회차)가 어긋나면 최신 추첨을 가져와 패널·애니메이션을 맞춤.
+ * 백그라운드에서 허브만 받고 getDrawResult(sec=0) 전환을 놓친 경우에 필요.
+ */
+function miniViewSyncResultPanelsIfStale(optTimeRound) {
+	var trRaw = (typeof optTimeRound !== 'undefined' && optTimeRound !== null && optTimeRound !== '') ? optTimeRound : $('#timeRound').text();
+	var tr = parseInt(trRaw, 10);
+	var lr = parseInt($('#lastRound').text(), 10);
+	if (isNaN(tr)) {
+		return;
+	}
+	if (!isNaN(lr) && tr === lr + 1) {
+		return;
+	}
+	var nowMs = Date.now();
+	if (_miniViewDrawResultFetchInFlight) {
+		miniviewDebugLog('miniViewSyncResultPanelsIfStale: skip (in flight)', { tr: tr, lr: lr });
+		return;
+	}
+	if (nowMs - _lastMiniViewStaleResultFetchAt < 2000) {
+		miniviewDebugLog('miniViewSyncResultPanelsIfStale: skip (cooldown)', { tr: tr, lr: lr });
+		return;
+	}
+	_lastMiniViewStaleResultFetchAt = nowMs;
+	_miniViewDrawResultFetchInFlight = true;
+	var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
+	miniviewDebugLog('miniViewSyncResultPanelsIfStale: fetch', { tr: tr, lr: lr });
+	$.getJSON(drawUrl).done(function(data){
+		if (data && (data.round != null || data.ball1 != null)) {
+			/* 포커스/가시성 복귀 보정 경로에서는 시간을 무시하고 무애니 즉시 정합만 수행 */
+			var fetchedRound = parseInt(data.round, 10);
+			var currentRound = parseInt($('#lastRound').text(), 10);
+			miniviewDebugLog('miniViewSyncResultPanelsIfStale: instant render (forced no animation)', {
+				currentRound: currentRound,
+				fetchedRound: fetchedRound
+			});
+			miniViewRenderResultInstant(data);
+		}
+	}).fail(function(){
+		$('#lotteryBox .play').hide();
+		$('#ladderReady').show();
+	}).always(function(){
+		_miniViewDrawResultFetchInFlight = false;
+	});
+}
 
 function miniViewApplyDrawTimerFromHub(sec, tr) {
 	sec = Math.max(0, parseInt(sec, 10) || 0);
@@ -370,17 +531,29 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 		$('#ladderReady').hide();
 	}
 	if (_prevHubRemainMini !== null && _prevHubRemainMini > 0 && sec === 0) {
-		var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
-		$.getJSON(drawUrl).done(function(data){
-			if(data && (data.round != null || data.ball1 != null)){
-				updateResult(data);
-			}
-		}).fail(function(){
-			$('#lotteryBox .play').hide();
-			$('#ladderReady').show();
-		});
+		var nowMs = Date.now();
+		if (_miniViewDrawResultFetchInFlight) {
+			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip sec0 getDrawResult (in flight)');
+		} else if (nowMs - _lastDrawResultFetchAt < 8000) {
+			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip getDrawResult (cooldown)', { delta: nowMs - _lastDrawResultFetchAt });
+		} else {
+			_lastDrawResultFetchAt = nowMs;
+			_miniViewDrawResultFetchInFlight = true;
+			var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
+			$.getJSON(drawUrl).done(function(data){
+				if(data && (data.round != null || data.ball1 != null)){
+					updateResult(data);
+				}
+			}).fail(function(){
+				$('#lotteryBox .play').hide();
+				$('#ladderReady').show();
+			}).always(function(){
+				_miniViewDrawResultFetchInFlight = false;
+			});
+		}
 	}
 	_prevHubRemainMini = sec;
+	miniViewSyncResultPanelsIfStale(typeof tr !== 'undefined' ? tr : undefined);
 }
 
 if (miniViewUsesParentHub) {
@@ -399,11 +572,8 @@ if (miniViewUsesParentHub) {
 			miniviewDebugLog('drawTimerHub parent check exception', e && e.message ? e.message : e);
 			return;
 		}
-		if (document.hidden) {
-			if (window.CI_APP_DEBUG && console && console.log) {
-				console.log('[drawTimerHub:miniView] document.hidden → UI 갱신 생략');
-			}
-			miniviewDebugLog('drawTimerHub skipped: document.hidden');
+		if (miniViewShouldSkipDueToIframeHidden()) {
+			miniviewDebugLog('drawTimerHub skipped: document.hidden (iframe)');
 			return;
 		}
 		miniViewApplyDrawTimerFromHub(d.remainSeconds, d.timeRound);
@@ -413,6 +583,13 @@ if (miniViewUsesParentHub) {
 $(document).ready(function(){
 	rebuildBallsNoWhitespace('lotteryResult', true);
 	rebuildBallsNoWhitespace('beforeResult', false);
+
+	try {
+		var lrInit = parseInt($('#lastRound').text(), 10);
+		if (!isNaN(lrInit)) {
+			_lastMiniViewAnimatedRound = lrInit;
+		}
+	} catch (e) {}
 
 	if (window.__miniviewDebugState) {
 		window.__miniviewDebugState.remainTimeInitial = typeof remainTime !== 'undefined' ? remainTime : null;
@@ -435,7 +612,7 @@ $(document).ready(function(){
 		setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 300);
 		setInterval(function() {
 			try {
-				if (!document.hidden) {
+				if (!miniViewShouldSkipDueToIframeHidden()) {
 					syncMiniViewDrawTimerFromServer();
 				} else if (miniviewDebugEnabled()) {
 					miniviewDebugLog('5s sync skipped: document.hidden');
@@ -446,7 +623,7 @@ $(document).ready(function(){
 		miniviewDebugLog('NOT registering local intervals (hub mode). drawTimerHub messages must update UI.');
 	}
 	$(document).on('visibilitychange.miniviewtimer', function() {
-		if (!document.hidden) {
+		if (!miniViewShouldSkipDueToIframeHidden()) {
 			scheduleMiniViewSyncBurst();
 		}
 	});

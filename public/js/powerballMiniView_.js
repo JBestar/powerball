@@ -33,13 +33,23 @@ function ladderResultTimer(divId)
 	$('#'+divId).find('.second').text(remain_s);
 }
 
+function miniViewMoveCurrentResultToBefore() {
+	var $kids = $('#lotteryResult').children().clone();
+	if ($kids.length === 0) {
+		return;
+	}
+	$kids.removeAttr('id');
+	$kids.find('[id]').removeAttr('id');
+	$('#beforeResult').empty().append($kids);
+}
+
 // update result
 function updateResult(data)
 {
 	$('#lotteryBox .play').show();
 	$('#ladderReady').hide();
 
-	$('#beforeResult').html($('#lotteryResult').html());
+	miniViewMoveCurrentResultToBefore();
 	$('#lotteryResult').empty();
 
 	var numStr = data.number;
@@ -93,7 +103,7 @@ function showNumber(num, index)
 		$ball.show();
 		$ball.html('<span class="ball_'+ballColor+'">'+num+'</span>');
 
-		var ballId = 'ballNumber_'+num;
+		var ballId = 'lotteryBallSlot_' + index;
 		TweenMax.to(document.getElementById('lotteryBall'), 1, {
 			bezier: { type: 'cubic', values: [{x:175,y:-5},{x:-50,y:5},{x:-20,y:300},{x:345,y:210}], autoRotate: false },
 			ease: Power1.easeInOut,

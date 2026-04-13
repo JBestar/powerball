@@ -284,7 +284,7 @@
 						if(data.content.length)
 							$tbody.append($('#tmpl_dayLog').tmpl(data));
 						else
-							$tbody.append('<tr class="trOdd"><td colspan="12" height="50" align="center" style="color:#888;">당일 추첨 결과가 없습니다.</td></tr>');
+							$tbody.append('<tr class="trOdd powerballLog-empty-placeholder"><td colspan="12" height="50" align="center" style="color:#888;">당일 추첨 결과가 없습니다.</td></tr>');
 						var $content = $('#powerballLogBox tbody.content');
 						if($content.find('tr').length > 30)
 							$content.find('tr').slice(30).remove();
@@ -373,6 +373,7 @@
 							if (_dayLogDebug) console.log('[dayLog] dataRefresh prepend new round', data.round);
 							$('#pageDiv').attr('round',data.round);
 
+							$('#powerballLogBox tbody.content tr.powerballLog-empty-placeholder').remove();
 							$('#powerballLogBox tbody.content').prepend($('#tmpl_dayLog').tmpl(data));
 
 							var $content = $('#powerballLogBox tbody.content');

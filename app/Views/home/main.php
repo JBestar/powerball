@@ -407,7 +407,12 @@
         ?>
         window.DRAW_TIMER_HUB_BASE = <?= json_encode($drawTimerHubBase, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         window.CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        <?php
+        $pageFocusDbgJs = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'pageFocusDebug.js';
+        $pageFocusDbgVer = @filemtime($pageFocusDbgJs) ?: time();
+        ?>
     </script>
+    <script type="text/javascript" src="<?php echo $local; ?>/js/pageFocusDebug.js?v=<?= (int) $pageFocusDbgVer ?>"></script>
     <script type="text/javascript" src="<?php echo $local; ?>/js/drawTimerHub.js"></script>
     <script>
     (function(){
@@ -522,6 +527,11 @@
             $("#bestPicksterList .content").on("click", function(){ ajaxBestPickster(); });
             // 미니뷰 iframe: 백그라운드 복귀 시 추첨시각 즉시 동기화 (iframe 내부 visibility와 별도로 부모 탭 포커스 보강)
             function scheduleMiniViewIframeSyncBurst() {
+                try {
+                    if (typeof window.pageFocusDebugNotify === "function") {
+                        window.pageFocusDebugNotify("main:scheduleMiniViewIframeSyncBurst", "부모 탭 복귀 시 미니뷰 iframe에 postMessage/동기화 요청");
+                    }
+                } catch (e0) {}
                 try {
                     var f = document.getElementById("miniViewFrame");
                     if (f && f.contentWindow && typeof f.contentWindow.scheduleMiniViewSyncBurst === "function") {

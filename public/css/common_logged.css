@@ -1062,6 +1062,8 @@ div.time-box img.refresh {position:absolute;right:10px;top:2px;}
 #lotteryBox #lotteryBall {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
 #lotteryResultBox {position:relative;background:url(/images/lottery_bg.jpg) no-repeat;width:392px;height:265px;}
 #lotteryResultBox #lotteryResult {position:absolute;top:73px;left:55px;width:272px;height:45px;}
+#lotteryResultBox #lotteryResult > span[class^="ball_"],
+#lotteryResultBox #beforeResult > span[class^="ball_"] {position:relative;display:inline-block;vertical-align:top;}
 #lotteryResultBox #lotteryResult .ballNumber {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
 
 #lotteryResultBox #beforeResult {position:absolute;top:183px;left:55px;width:272px;height:45px;}

@@ -2,13 +2,40 @@
  * 메인(부모) 창 단일 모듈: ajaxChatTimer를 5초마다 1회 호출하고,
  * 그 사이 1초 간격으로 remainSeconds만 로컬 감소시킨 뒤
  * chatFrame / mainFrame 에 postMessage로 브로드캐스트한다.
- * 디버그 로그: window.CI_APP_DEBUG === true 일 때만 (CI_ENVIRONMENT=development).
+ *
+ * [drawTimerHub] 상세 로그는 기본 OFF — 분석 시 콘솔 스팸 방지.
+ * 켜기: URL ?hubdbg=1 또는 ?a=1&hubdbg=1 | localStorage/sessionStorage DRAW_TIMER_HUB_DEBUG=1 | window.DRAW_TIMER_HUB_VERBOSE=true
+ * 주의: 두 번째 파라미터는 반드시 & 로 구분 (?focusdbg=1&hubdbg=1). ?focusdbg=1?hubdbg=1 처럼 ? 두 개면 hubdbg 로 인정하지 않음.
  */
 (function () {
     'use strict';
 
+    /** hubdbg=1 은 &hubdbg=1 또는 단독 ?hubdbg=1 만 인정 (잘못된 ? 두 번 연속으로 켜지는 것 방지) */
+    function urlHasHubDbgFlag() {
+        var q = window.location && window.location.search ? window.location.search : '';
+        return /(?:^\?|&)hubdbg=1(?:&|$)/.test(q);
+    }
+
+    function hubVerbose() {
+        try {
+            if (window.DRAW_TIMER_HUB_VERBOSE === true) {
+                return true;
+            }
+            if (typeof localStorage !== 'undefined' && localStorage.getItem('DRAW_TIMER_HUB_DEBUG') === '1') {
+                return true;
+            }
+            if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('DRAW_TIMER_HUB_DEBUG') === '1') {
+                return true;
+            }
+            if (urlHasHubDbgFlag()) {
+                return true;
+            }
+        } catch (e) {}
+        return false;
+    }
+
     function dbg() {
-        if (!window.CI_APP_DEBUG) {
+        if (!hubVerbose()) {
             return;
         }
         if (typeof console !== 'undefined' && console.log) {
@@ -21,7 +48,7 @@
     }
 
     function dbgWarn() {
-        if (!window.CI_APP_DEBUG) {
+        if (!hubVerbose()) {
             return;
         }
         if (typeof console !== 'undefined' && console.warn) {
@@ -99,7 +126,7 @@
             step2 = upgradeBaseToMatchPageHttps(step1);
         }
 
-        if (window.CI_APP_DEBUG) {
+        if (hubVerbose()) {
             dbg(
                 '[base 해석]',
                 'RAW_DRAW_TIMER_HUB_BASE=',
@@ -124,7 +151,9 @@
 
     var base = resolveAjaxBaseForPage(typeof window.DRAW_TIMER_HUB_BASE === 'string' ? window.DRAW_TIMER_HUB_BASE : '');
     if (!base || base === '/') {
-        dbgWarn('중단: POST URL 을 결정할 수 없음 (DRAW_TIMER_HUB_BASE=', window.DRAW_TIMER_HUB_BASE, ')');
+        if (typeof console !== 'undefined' && console.warn) {
+            console.warn('[drawTimerHub] 중단: POST URL 을 결정할 수 없음 (DRAW_TIMER_HUB_BASE=', window.DRAW_TIMER_HUB_BASE, ')');
+        }
         return;
     }
 
@@ -254,11 +283,21 @@
         document.addEventListener('visibilitychange', function () {
             if (!document.hidden) {
                 dbg('visibilitychange → 재동기화');
+                try {
+                    if (typeof window.pageFocusDebugNotify === 'function') {
+                        window.pageFocusDebugNotify('drawTimerHub:visibility→fetchFromServer', '탭 복귀 시 서버 시계 재동기화');
+                    }
+                } catch (e) {}
                 fetchFromServer();
             }
         });
         window.addEventListener('focus', function () {
             dbg('focus → 재동기화');
+            try {
+                if (typeof window.pageFocusDebugNotify === 'function') {
+                    window.pageFocusDebugNotify('drawTimerHub:window.focus→fetchFromServer', '창 포커스 시 서버 시계 재동기화');
+                }
+            } catch (e2) {}
             fetchFromServer();
         });
     }

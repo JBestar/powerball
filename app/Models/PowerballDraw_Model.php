@@ -10,6 +10,7 @@ use CodeIgniter\Model;
  * - CSPRNG(random_int) + Fisher-Yates 셔플로 추측 불가능하게 구현
  *
  * 컬럼 의미:
+ * - ball1~ball5   : 일반볼 5개를 draw_results에 넣을 때 **추첨(셔플)에서 나온 순서 그대로** 저장. 오름차순 정렬하지 않음.
  * - drawn_at     : 추첨 시각. 해당 회차가 “몇 시 몇 분”에 진행된 추첨인지 나타내는 공식 시각.
  *                  반드시 5분 단위(XX:00, XX:05, XX:10, … XX:55)만 저장.
  * - daily_round  : KST 게임일 기준 일회차(1~288). drawn_at 시각으로만 결정(00:00=288, 00:05=1, … 23:55=287). 게임일 = D 00:05 ~ (D+1) 00:00.
@@ -186,6 +187,7 @@ class PowerballDraw_Model extends Model
      * 일반볼 5개 + 파워볼 1개 추첨 (고급 알고리즘)
      * - 1~28 풀을 Fisher-Yates로 셔플 후 앞 5개 사용 (중복 불가)
      * - 셔플을 3회 반복해 예측 불가능성 강화 (Triple Mix)
+     * - ball1~ball5는 셔플에서 뽑힌 순서 그대로 저장(정렬하지 않음) — 화면에 낮은 번호부터 나열되는 착시 방지
      * - 파워볼은 0~9에서 random_int로 1개
      */
     public function performDraw(): array
@@ -197,7 +199,6 @@ class PowerballDraw_Model extends Model
         }
 
         $selected = array_slice($balls, 0, self::BALL_COUNT);
-        sort($selected, SORT_NUMERIC);
 
         $powerball = random_int(self::POWERBALL_MIN, self::POWERBALL_MAX);
         $ballSum   = array_sum($selected);
@@ -332,6 +333,7 @@ class PowerballDraw_Model extends Model
             $draw       = $this->performDraw();
 
             try {
+                // draw_results: ball1~ball5는 performDraw()가 반환한 추첨 순서 그대로(정렬 없음)
                 $this->insert([
                     'round'       => $nextRound,
                     'daily_round' => $dailyRound,
