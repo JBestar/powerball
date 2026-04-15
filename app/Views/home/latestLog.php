@@ -588,7 +588,7 @@
 			<col width="12%"/><col width="5%"/><col width="9%"/><col width="9%"/><col width="7%"/><col width="7%"/>
 		</colgroup>
 		<tr>
-			<th height="30" colspan="12" class="title" style="position:relative;">회차별 분석 데이터 (최근 30회)<span style="position:absolute;top:6px;right:10px;color:#969696;" class="siteLink">copyright <a href="/?referer=dayLogBtn" target="_blank" class="titleCopy">powerballgame.co.kr</a></span></th>
+			<th height="30" colspan="12" class="title" style="position:relative;">회차별 분석 데이터<span style="position:absolute;top:6px;right:10px;color:#969696;" class="siteLink">copyright <a href="/?referer=dayLogBtn" target="_blank" class="titleCopy">powerballgame.co.kr</a></span></th>
 		</tr>
 		<tr class="subTitle">
 			<th height="60" rowspan="2">회차</th>
