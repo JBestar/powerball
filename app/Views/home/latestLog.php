@@ -51,6 +51,9 @@
 
 	// ladderTimer (서버에서 다음 추첨까지 남은 초·다음 회차로 초기화)
 	var remainTime = <?= (int)($remain_seconds ?? 300) ?>;
+	var latestRefreshProcess = false;
+	var _prevLatestTimerRemain = null;
+	var _prevLatestHubRemain = null;
 	function ladderTimer(divId)
 	{
 		if(remainTime == 0)
@@ -70,6 +73,78 @@
 
 		$('#'+divId).find('.minute').text(remain_i);
 		$('#'+divId).find('.second').text(remain_s);
+	}
+
+	function latestDataRefresh()
+	{
+		if (latestRefreshProcess) return;
+
+		// 패턴/육매 선택 상태가 있으면 같이 최신값으로 재요청
+		if (typeof beforeType !== 'undefined' && beforeType && typeof beforeDivision !== 'undefined' && beforeDivision) {
+			ajaxPattern(beforeType, curDate, beforeDivision, true);
+		}
+		if (typeof sixBeforeCnt !== 'undefined' && sixBeforeCnt && typeof sixBeforeType !== 'undefined' && sixBeforeType && typeof sixBeforeDivision !== 'undefined' && sixBeforeDivision) {
+			ajaxSixPattern(sixBeforeCnt, sixBeforeType, curDate, sixBeforeDivision, true);
+		}
+
+		latestRefreshProcess = true;
+		var round = $('#pageDiv').attr('round');
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: actionBaseUrl,
+			data: {
+				view: 'action',
+				action: 'ajaxPowerballLog',
+				actionType: 'refreshLog',
+				date: curDate,
+				round: round
+			},
+			success: function(data){
+				latestRefreshProcess = false;
+				if (!data || data.state !== 'success') return;
+
+				refreshAnalyse();
+				if (data && $('#pageDiv').attr('round') != data.round) {
+					$('#pageDiv').attr('round', data.round);
+					$('#powerballLogBox tbody.content').prepend($('#tmpl_dayLog').tmpl(data));
+					var $content = $('#powerballLogBox tbody.content');
+					if ($content.find('tr').length > roundCnt) {
+						$content.find('tr').slice(roundCnt).remove();
+					}
+					heightResize();
+				}
+			},
+			error: function(){
+				latestRefreshProcess = false;
+			}
+		});
+	}
+
+	function syncLatestDrawTimerFromServer()
+	{
+		$.ajax({
+			type: 'POST',
+			url: actionBaseUrl,
+			dataType: 'json',
+			data: { view: 'action', action: 'ajaxChatTimer' }
+		}).done(function (resp) {
+			if (!resp || resp.state !== 'success') return;
+			var sec = parseInt(resp.remain_seconds, 10);
+			if (isNaN(sec)) sec = 0;
+			remainTime = sec;
+			var ri = Math.floor(remainTime / 60);
+			var rs = remainTime % 60;
+			$('#dayLogTimer .minute').text(ri);
+			$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
+			if (typeof resp.time_round !== 'undefined') {
+				$('#timeRound').text(resp.time_round);
+			}
+			if (_prevLatestTimerRemain !== null && _prevLatestTimerRemain > 0 && sec === 0) {
+				latestDataRefresh();
+			}
+			_prevLatestTimerRemain = sec;
+		});
 	}
 
 	var DAYLOG_MIN_HEIGHT = 500;
@@ -216,6 +291,31 @@
 		setTimeout(function(){ moreClick(); }, 50);
 		refreshAnalyse();
 		setInterval(function(){ ladderTimer('dayLogTimer'); },1000);
+		setTimeout(function(){ syncLatestDrawTimerFromServer(); }, 300);
+		setInterval(function(){
+			if (!document.hidden) syncLatestDrawTimerFromServer();
+		}, 5000);
+		setInterval(function(){
+			if (!document.hidden) latestDataRefresh();
+		}, 10000);
+
+		if (window.parent && window.parent !== window) {
+			window.addEventListener('message', function(ev) {
+				var d = ev.data;
+				if (!d || d.type !== 'drawTimerHub') return;
+				var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
+				remainTime = sec;
+				if (typeof d.timeRound !== 'undefined') $('#timeRound').text(d.timeRound);
+				var ri = Math.floor(sec / 60);
+				var rs = sec % 60;
+				$('#dayLogTimer .minute').text(ri);
+				$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
+				if (_prevLatestHubRemain !== null && _prevLatestHubRemain > 0 && sec === 0) {
+					latestDataRefresh();
+				}
+				_prevLatestHubRemain = sec;
+			});
+		}
 
 		// 육매 버튼 동작은 dayLog와 동일
 		var sixPatternCnt = 6;
