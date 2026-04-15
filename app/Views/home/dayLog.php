@@ -232,13 +232,15 @@
 			}
 		});
 
-		/* 허브만 쓰는 iframe에서 drawTimerHub 메시지를 놓치면 remainTime·추첨 0초 갱신이 안 됨 → ajaxChatTimer는 항상 보조 */
+		/* 비허브: ajaxChatTimer로 5초마다 서버 시계 보정. 허브 모드에서는 부모가 1초마다 브로드캐스트하므로 동시에 ajax를 돌리면 초가 되튀거나 2씩 줄어 보일 수 있음 → 허브일 땐 주기 ajax 생략(초기 1회·탭 복귀 시만) */
 		setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
-		setInterval(function() {
-			try {
-				if (!document.hidden) syncDayLogDrawTimerFromServer();
-			} catch(e) {}
-		}, 5000);
+		if (!dayLogUsesParentHub) {
+			setInterval(function() {
+				try {
+					if (!document.hidden) syncDayLogDrawTimerFromServer();
+				} catch(e) {}
+			}, 5000);
+		}
 
 /*
 		$('.defaultTable .menu').mouseover(function(){

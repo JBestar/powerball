@@ -17,6 +17,24 @@
 	<script type="text/javascript" src="<?= $local ?>/js/jquery.tmpl.min.js"></script>
 	<style>
 		#roundCnt { display: none; } /* selectmenu 위젯 사용 */
+		/* 일자별 분석(dayLog) 본문 인라인 스타일과 동일 — 회차별 셀 내 링크가 .numberText만으로는 링크색이 달라지는 것 방지 */
+		.powerballBox a { color: #5F6164; }
+		/* 신규 회차 행: tr 한 덩어리 outline만 맥동 (td마다 box-shadow 주면 컬럼별로 따로 깜빡임) */
+		@keyframes powerballLogNewRowRing {
+			0%, 100% {
+				outline: 2px solid rgba(18, 101, 205, 0);
+				outline-offset: -2px;
+			}
+			50% {
+				outline: 2px solid rgba(18, 101, 205, 0.92);
+				outline-offset: -2px;
+			}
+		}
+		#powerballLogBox tbody.content tr.powerballLogNewFlash {
+			position: relative;
+			z-index: 2;
+			animation: powerballLogNewRowRing 0.32s ease-in-out 0s 5 alternate;
+		}
 	</style>
 	<script type="text/javascript">
 	//<![CDATA[
@@ -48,6 +66,18 @@
 	window.LATEST_ROUND_CNT = roundCnt;
 	var today = '<?= date('Y-m-d') ?>';
 	var curDate = today;
+
+	/** dayLog와 동일: 같은 origin 부모일 때만 허브 타이머(로컬 ladder·주기 ajax와 이중 감소 방지) */
+	var latestLogUsesParentHub = false;
+	try {
+		if (window.parent && window.parent !== window) {
+			var _llChO = window.location.origin || (window.location.protocol + '//' + window.location.host);
+			var _llPrO = window.parent.location.origin;
+			latestLogUsesParentHub = (String(_llChO) === String(_llPrO));
+		}
+	} catch (e) {
+		latestLogUsesParentHub = false;
+	}
 
 	// ladderTimer (서버에서 다음 추첨까지 남은 초·다음 회차로 초기화)
 	var remainTime = <?= (int)($remain_seconds ?? 300) ?>;
@@ -108,10 +138,35 @@
 				if (data && $('#pageDiv').attr('round') != data.round) {
 					$('#pageDiv').attr('round', data.round);
 					$('#powerballLogBox tbody.content').prepend($('#tmpl_dayLog').tmpl(data));
+					var nNew = (data.content && data.content.length) ? data.content.length : 1;
+					var $newRows = $('#powerballLogBox tbody.content tr').slice(0, nNew);
+					$newRows.addClass('powerballLogNewFlash');
+					setTimeout(function () { $newRows.removeClass('powerballLogNewFlash'); }, 2800);
+
 					var $content = $('#powerballLogBox tbody.content');
 					if ($content.find('tr').length > roundCnt) {
 						$content.find('tr').slice(roundCnt).remove();
 					}
+
+					// 일자별 분석 dataRefresh와 동일: resultBox 바 테두리 펄스
+					if (data.powerballOddEven) {
+						if (data.powerballOddEven == 'odd') {
+							$('#resultBox').show();
+							$('#resultBox .bar').addClass('odd').fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+							$('#resultBox .bar').removeClass('even');
+							$('#resultBox .bar .oddIcon').show().fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+							$('#resultBox .bar .evenIcon').hide();
+							setTimeout(function () { $('#resultBox').hide(); }, 3000);
+						} else if (data.powerballOddEven == 'even') {
+							$('#resultBox').show();
+							$('#resultBox .bar').addClass('even').fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+							$('#resultBox .bar').removeClass('odd');
+							$('#resultBox .bar .oddIcon').hide();
+							$('#resultBox .bar .evenIcon').show().fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+							setTimeout(function () { $('#resultBox').hide(); }, 3000);
+						}
+					}
+
 					heightResize();
 				}
 			},
@@ -290,19 +345,36 @@
 	$(document).ready(function(){
 		setTimeout(function(){ moreClick(); }, 50);
 		refreshAnalyse();
-		setInterval(function(){ ladderTimer('dayLogTimer'); },1000);
+		if (!latestLogUsesParentHub) {
+			setInterval(function(){ ladderTimer('dayLogTimer'); }, 1000);
+		}
 		setTimeout(function(){ syncLatestDrawTimerFromServer(); }, 300);
-		setInterval(function(){
-			if (!document.hidden) syncLatestDrawTimerFromServer();
-		}, 5000);
+		if (!latestLogUsesParentHub) {
+			setInterval(function(){
+				if (!document.hidden) syncLatestDrawTimerFromServer();
+			}, 5000);
+		}
 		setInterval(function(){
 			if (!document.hidden) latestDataRefresh();
 		}, 10000);
 
-		if (window.parent && window.parent !== window) {
+		$(document).on('visibilitychange', function() {
+			if (!document.hidden && latestLogUsesParentHub) {
+				try {
+					window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, '*');
+				} catch (e0) {}
+			} else if (!document.hidden) {
+				try { syncLatestDrawTimerFromServer(); } catch (e1) {}
+			}
+		});
+
+		if (latestLogUsesParentHub) {
 			window.addEventListener('message', function(ev) {
 				var d = ev.data;
 				if (!d || d.type !== 'drawTimerHub') return;
+				try {
+					if (ev.source !== window.parent) return;
+				} catch (e) { return; }
 				var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
 				remainTime = sec;
 				if (typeof d.timeRound !== 'undefined') $('#timeRound').text(d.timeRound);
@@ -314,6 +386,7 @@
 					latestDataRefresh();
 				}
 				_prevLatestHubRemain = sec;
+				_prevLatestTimerRemain = sec;
 			});
 		}
 

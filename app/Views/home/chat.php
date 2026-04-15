@@ -304,10 +304,17 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
             if (round) $("#timeRound").text(String(round));
         }
 
+        /** dayLog/latestLog와 동일: 부모가 있어도 교차 출처이면 postMessage 없음 → ajax 1초 동기화 필요 */
         var chatTimerFromParentHub = false;
         try {
-            chatTimerFromParentHub = window.parent && window.parent !== window;
-        } catch (e) {}
+            if (window.parent && window.parent !== window) {
+                var _chO = window.location.origin || (window.location.protocol + "//" + window.location.host);
+                var _prO = window.parent.location.origin;
+                chatTimerFromParentHub = (String(_chO) === String(_prO));
+            }
+        } catch (e) {
+            chatTimerFromParentHub = false;
+        }
 
         function syncTimer() {
             $.post(baseUrl, { view: "action", action: "ajaxChatTimer" }, function(resp) {
