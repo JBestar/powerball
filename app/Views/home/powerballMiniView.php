@@ -201,8 +201,6 @@ $mvdbg = isset($_GET['mvdbg']) && (string) $_GET['mvdbg'] === '1';
 $openMiniEmbed = isset($_GET['openMini']) && (string) $_GET['openMini'] === '1';
 $miniViewJsPath = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'powerballMiniView.js';
 $miniViewJsVer = @filemtime($miniViewJsPath) ?: time();
-$timerDbgJsPathMv = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'timerDbg.js';
-$timerDbgJsVerMv = @filemtime($timerDbgJsPathMv) ?: time();
 ?>
 <?php /* 타이머/허브 진단: ?mvdbg=1 또는 localStorage MINIVIEW_DEBUG=1. 콘솔 필터 [miniview-debug] */ ?>
 <script>
@@ -223,7 +221,6 @@ function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;
 <script src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
 <script src="<?php echo $local; ?>/js/jquery-ui.js"></script>
 <script>window.jQuery && !$.fn.number && ($.number = function(n){ return n == null ? '0' : String(n); });</script>
-<script src="<?php echo $local; ?>/js/timerDbg.js?v=<?= (int) $timerDbgJsVerMv ?>"></script>
 <script src="<?php echo $local; ?>/js/TweenMax.min.js"></script>
 <script src="<?php echo $local; ?>/js/powerballMiniView.js?v=<?= (int) $miniViewJsVer ?>"></script>
 <script>

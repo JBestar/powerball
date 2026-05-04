@@ -11,8 +11,6 @@
 	<link rel="stylesheet" href="<?= $local ?>/css/sprites.css?v=<?= time() ?>" type="text/css"/>
 	<link rel="shortcut icon" href="favicon.ico"/>
 	<script type="text/javascript" src="<?= $local ?>/js/jquery-1.11.2.min.js"></script>
-	<?php $_timerDbgPath = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'timerDbg.js'; ?>
-	<script type="text/javascript" src="<?= $local ?>/js/timerDbg.js?v=<?= (int) (@filemtime($_timerDbgPath) ?: time()) ?>"></script>
 	<script type="text/javascript" src="<?= $local ?>/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="<?= $local ?>/js/jquery.qtip.min.js"></script>
 	<script type="text/javascript" src="<?= $local ?>/js/default.js?v=<?= time() ?>"></script>
@@ -94,30 +92,9 @@
 		{
 			remainTime = 300;
 
-			var roundTxtBefore = $('#timeRound').text();
 			var roundNum = parseInt($('#timeRound').text())+1;
-			var wrapped289 = (roundNum == 289);
 			if(roundNum == 289) roundNum = 1;
 			$('#timeRound').text(roundNum);
-			try {
-				if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-					window.timerDbgLog('latestLog:ladder rollover', {
-						divId: divId,
-						domRoundBefore: roundTxtBefore,
-						computedNext: parseInt(roundTxtBefore, 10) + 1,
-						afterDOM: roundNum,
-						wrapped289to1: wrapped289
-					});
-					var pb = parseInt(roundTxtBefore, 10);
-					if (!isNaN(pb) && pb > 10 && roundNum === 1) {
-						window.timerDbgWarn('latestLog: #timeRound became 1 after high parse', {
-							domRoundBefore: roundTxtBefore,
-							after: roundNum,
-							wrapped289to1: wrapped289
-						});
-					}
-				}
-			} catch (eTd) {}
 		}
 
 		remainTime--;
@@ -218,25 +195,7 @@
 			$('#dayLogTimer .minute').text(ri);
 			$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
 			if (typeof resp.time_round !== 'undefined') {
-				var _trDomBeforeLl = $('#timeRound').text();
 				$('#timeRound').text(resp.time_round);
-				try {
-					if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-						var _trNewLl = parseInt(resp.time_round, 10);
-						var _trOldLl = parseInt(_trDomBeforeLl, 10);
-						window.timerDbgLog('latestLog:ajaxChatTimer → #timeRound', {
-							domBefore: _trDomBeforeLl,
-							rawServer: resp.time_round,
-							remain: sec
-						});
-						if (!isNaN(_trOldLl) && _trOldLl > 10 && _trNewLl === 1) {
-							window.timerDbgWarn('latestLog: server ajax set round to 1 from high prev', {
-								domBefore: _trDomBeforeLl,
-								rawServer: resp.time_round
-							});
-						}
-					}
-				} catch (eTrL) {}
 			}
 			if (_prevLatestTimerRemain !== null && _prevLatestTimerRemain > 0 && sec === 0) {
 				latestDataRefresh();
@@ -420,27 +379,7 @@
 				} catch (e) { return; }
 				var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
 				remainTime = sec;
-				if (typeof d.timeRound !== 'undefined') {
-					var _hubTrBeforeLl = $('#timeRound').text();
-					$('#timeRound').text(d.timeRound);
-					try {
-						if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-							var _hubNewLl = parseInt(d.timeRound, 10);
-							var _hubOldLl = parseInt(_hubTrBeforeLl, 10);
-							window.timerDbgLog('latestLog:drawTimerHub → #timeRound', {
-								domBefore: _hubTrBeforeLl,
-								hubTimeRound: d.timeRound,
-								remain: sec
-							});
-							if (!isNaN(_hubOldLl) && _hubOldLl > 10 && _hubNewLl === 1) {
-								window.timerDbgWarn('latestLog: hub set #timeRound to 1 from high prev', {
-									domBefore: _hubTrBeforeLl,
-									hubTimeRound: d.timeRound
-								});
-							}
-						}
-					} catch (eHubLl) {}
-				}
+				if (typeof d.timeRound !== 'undefined') $('#timeRound').text(d.timeRound);
 				var ri = Math.floor(sec / 60);
 				var rs = sec % 60;
 				$('#dayLogTimer .minute').text(ri);

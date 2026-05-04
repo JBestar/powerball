@@ -254,10 +254,7 @@ $is_humor_admin = $is_humor_admin ?? false;
 <!-- inner-right (선배님 구조: 파란색으로 선택된 핵심 영역 = 이 주석 아래 중첩 div.inner-right) -->
 <div class="inner-right">
     <!-- 메인프레임만. powerballMiniViewDiv 제거 → 메인헤더 중복 원인 제거 -->
-    <?php
-    $__timerDbgIframe = (! empty($_GET['timerdbg']) && (string) $_GET['timerdbg'] === '1') ? '&timerdbg=1' : '';
-    ?>
-    <iframe name="mainFrame" id="mainFrame" src="<?php echo site_furl('frame/dayLog'); ?>?t=<?php echo time(); ?><?php echo $__timerDbgIframe; ?>" frameborder="0" scrolling="no" style="width:830px; height: 1844px;"></iframe>
+    <iframe name="mainFrame" id="mainFrame" src="<?php echo site_furl('frame/dayLog'); ?>?t=<?php echo time(); ?>" frameborder="0" scrolling="no" style="width:830px; height: 1844px;"></iframe>
 </div>
 <!-- //inner-right -->
 <!-- tmpl -->

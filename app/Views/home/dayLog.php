@@ -22,8 +22,6 @@
 			<link rel="stylesheet" href="<?php echo $local; ?>/css/jquery-ui.css?v=<?= @filemtime(FCPATH.'css/jquery-ui.css') ?: time() ?>" type="text/css"/>
 			<link rel="shortcut icon" href="favicon.ico"/>
 			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
-			<?php $_timerDbgPath = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'timerDbg.js'; ?>
-			<script type="text/javascript" src="<?php echo $local; ?>/js/timerDbg.js?v=<?= (int) (@filemtime($_timerDbgPath) ?: time()) ?>"></script>
 			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery-ui.js"></script>
 			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery.qtip.min.js"></script>
 			<script type="text/javascript" src="<?php echo $local; ?>/js/default.js?v=<?php echo time(); ?>"></script>
@@ -278,31 +276,10 @@
 		{
 			remainTime = 300;
 
-			var roundTxtBefore = $('#timeRound').text();
 			var roundNum = parseInt($('#timeRound').text())+1;
-			var wrapped289 = (roundNum == 289);
 			if(roundNum == 289) roundNum = 1;
 			
 			$('#timeRound').text(roundNum);
-			try {
-				if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-					window.timerDbgLog('dayLog:ladder rollover', {
-						divId: divId,
-						domRoundBefore: roundTxtBefore,
-						computedNext: parseInt(roundTxtBefore, 10) + 1,
-						afterDOM: roundNum,
-						wrapped289to1: wrapped289
-					});
-					var pb = parseInt(roundTxtBefore, 10);
-					if (!isNaN(pb) && pb > 10 && roundNum === 1) {
-						window.timerDbgWarn('dayLog: #timeRound became 1 after high local parse (289-wrap or NaN ladder)', {
-							domRoundBefore: roundTxtBefore,
-							after: roundNum,
-							wrapped289to1: wrapped289
-						});
-					}
-				}
-			} catch (eTd) {}
 
 			if(curDate == today)
 			{
@@ -654,25 +631,7 @@
 			$('#dayLogTimer .minute').text(ri);
 			$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
 			if (typeof resp.time_round !== 'undefined') {
-				var _trDomBefore = $('#timeRound').text();
 				$('#timeRound').text(resp.time_round);
-				try {
-					if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-						var _trNew = parseInt(resp.time_round, 10);
-						var _trOld = parseInt(_trDomBefore, 10);
-						window.timerDbgLog('dayLog:ajaxChatTimer → #timeRound', {
-							domBefore: _trDomBefore,
-							rawServer: resp.time_round,
-							remain: sec
-						});
-						if (!isNaN(_trOld) && _trOld > 10 && _trNew === 1) {
-							window.timerDbgWarn('dayLog: server ajax set next round display to 1 from high prev', {
-								domBefore: _trDomBefore,
-								rawServer: resp.time_round
-							});
-						}
-					}
-				} catch (eTr) {}
 			}
 			try {
 				if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate == today) {
@@ -699,30 +658,10 @@
 			} catch (e) { return; }
 			var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
 			var tr = d.timeRound;
-			var _hubTrBefore = $('#timeRound').text();
 			try {
 				if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate == today) {
 					remainTime = sec;
-					if (typeof tr !== 'undefined') {
-						$('#timeRound').text(tr);
-						try {
-							if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
-								var _hubNew = parseInt(tr, 10);
-								var _hubOld = parseInt(_hubTrBefore, 10);
-								window.timerDbgLog('dayLog:drawTimerHub → #timeRound', {
-									domBefore: _hubTrBefore,
-									hubTimeRound: tr,
-									remain: sec
-								});
-								if (!isNaN(_hubOld) && _hubOld > 10 && _hubNew === 1) {
-									window.timerDbgWarn('dayLog: hub pushed #timeRound to 1 from high prev UI', {
-										domBefore: _hubTrBefore,
-										hubTimeRound: tr
-									});
-								}
-							}
-						} catch (eHub) {}
-					}
+					if (typeof tr !== 'undefined') $('#timeRound').text(tr);
 					var ri = Math.floor(sec / 60);
 					var rs = sec % 60;
 					$('#dayLogTimer .minute').text(ri);
