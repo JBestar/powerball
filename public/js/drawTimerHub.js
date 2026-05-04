@@ -6,6 +6,8 @@
  * [drawTimerHub] 상세 로그는 기본 OFF — 분석 시 콘솔 스팸 방지.
  * 켜기: URL ?hubdbg=1 또는 ?a=1&hubdbg=1 | localStorage/sessionStorage DRAW_TIMER_HUB_DEBUG=1 | window.DRAW_TIMER_HUB_VERBOSE=true
  * 주의: 두 번째 파라미터는 반드시 & 로 구분 (?focusdbg=1&hubdbg=1). ?focusdbg=1?hubdbg=1 처럼 ? 두 개면 hubdbg 로 인정하지 않음.
+ *
+ * #timeRound 원인 분석: public/js/timerDbg.js — ?timerdbg=1 또는 session/local TIMER_DBG=1 (콘솔 필터 [timerdbg])
  */
 (function () {
     'use strict';
@@ -232,8 +234,36 @@
                 }
                 var sec = parseInt(resp.remain_seconds, 10);
                 remainSeconds = isNaN(sec) ? 0 : sec;
-                var tr = parseInt(resp.time_round, 10);
-                timeRound = isNaN(tr) ? 1 : tr;
+                var prevRound = timeRound;
+                var rawRound = resp.time_round;
+                var tr = parseInt(rawRound, 10);
+                var trNaN = isNaN(tr);
+                timeRound = trNaN ? 1 : tr;
+                if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
+                    window.timerDbgLog(
+                        'drawTimerHub:ajaxChatTimer',
+                        'raw time_round=',
+                        rawRound,
+                        'parsed=',
+                        tr,
+                        'NaN_fallbackTo1=',
+                        trNaN,
+                        'prevRound=',
+                        prevRound,
+                        'now=',
+                        timeRound,
+                        'remainSeconds=',
+                        remainSeconds
+                    );
+                    if (trNaN) {
+                        window.timerDbgWarn('time_round unparsable → hub keeps fallback 1', { raw: rawRound });
+                    } else if (timeRound === 1 && prevRound > 10) {
+                        window.timerDbgWarn('time_round jumped to 1 after high prev (server or rollover race)', {
+                            prev: prevRound,
+                            raw: rawRound
+                        });
+                    }
+                }
                 var cu = parseInt(resp.connectUserCnt, 10);
                 connectUserCnt = isNaN(cu) ? 0 : cu;
                 hubReady = true;

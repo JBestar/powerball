@@ -40,6 +40,8 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
     <?php endif; ?>
     <link rel="shortcut icon" href="<?= esc($local) ?>/favicon.ico">
     <script src="https://static.powerballgame.co.kr/chat/js/jquery-1.11.2.min.js"></script>
+    <?php $_timerDbgPathChat = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'timerDbg.js'; ?>
+    <script src="<?= esc($local) ?>/js/timerDbg.js?v=<?= (int) (@filemtime($_timerDbgPathChat) ?: time()) ?>"></script>
     <script src="<?= esc($local) ?>/js/jquery.simpleTicker.js"></script>
     <style>
         #msgBox li { line-height: 23px; min-height: 23px; }
@@ -301,7 +303,27 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
             var s = remainSec % 60;
             $("#chatTimer .minute").text((m < 10 ? "0" : "") + m);
             $("#chatTimer .second").text((s < 10 ? "0" : "") + s);
-            if (round) $("#timeRound").text(String(round));
+            if (round) {
+                var prevRoundTxt = $("#timeRound").text();
+                $("#timeRound").text(String(round));
+                try {
+                    if (typeof window.timerDbgEnabled === "function" && window.timerDbgEnabled()) {
+                        window.timerDbgLog("chat:renderTimer", {
+                            prev: prevRoundTxt,
+                            next: String(round),
+                            remainSec: remainSec
+                        });
+                        var po = parseInt(prevRoundTxt, 10);
+                        var pn = parseInt(round, 10);
+                        if (!isNaN(po) && po > 10 && pn === 1) {
+                            window.timerDbgWarn("chat: #timeRound set to 1 from high prev", {
+                                prev: prevRoundTxt,
+                                round: round
+                            });
+                        }
+                    }
+                } catch (eRt) {}
+            }
         }
 
         /** dayLog/latestLog와 동일: 부모가 있어도 교차 출처이면 postMessage 없음 → ajax 1초 동기화 필요 */

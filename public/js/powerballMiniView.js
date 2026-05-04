@@ -127,9 +127,25 @@ function ladderResultTimer(divId)
 	if(remainTime == 0)
 	{
 		remainTime = 300;
+		var roundTxtBeforeMv = $('#timeRound').text();
 		var roundNum = parseInt($('#timeRound').text(), 10) + 1;
 		$('#timeRound').text(roundNum);
 		$('.nextRound').text(roundNum);
+		try {
+			if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
+				window.timerDbgLog('miniview:ladder remain0 → #timeRound', {
+					before: roundTxtBeforeMv,
+					after: roundNum
+				});
+				var pb = parseInt(roundTxtBeforeMv, 10);
+				if (!isNaN(pb) && pb > 10 && roundNum === 1) {
+					window.timerDbgWarn('miniview: ladder +1 produced 1 from high #timeRound (check hub/ajax race)', {
+						before: roundTxtBeforeMv,
+						after: roundNum
+					});
+				}
+			}
+		} catch (eLm) {}
 		miniViewFetchDrawResultForResult('ladder:remain0', updateResult);
 	}
 
@@ -413,8 +429,26 @@ function syncMiniViewDrawTimerFromServer() {
 			}
 			remainTime = sec;
 			if (typeof resp.time_round !== 'undefined') {
+				var _mvTrBefore = $('#timeRound').text();
 				$('#timeRound').text(resp.time_round);
 				$('.nextRound').text(resp.time_round);
+				try {
+					if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
+						window.timerDbgLog('miniview:ajaxChatTimer → #timeRound', {
+							domBefore: _mvTrBefore,
+							raw: resp.time_round,
+							remain: sec
+						});
+						var on = parseInt(_mvTrBefore, 10);
+						var nn = parseInt(resp.time_round, 10);
+						if (!isNaN(on) && on > 10 && nn === 1) {
+							window.timerDbgWarn('miniview: ajax set #timeRound to 1 after high prev', {
+								domBefore: _mvTrBefore,
+								raw: resp.time_round
+							});
+						}
+					}
+				} catch (eMv) {}
 			}
 			var remain_i = Math.floor(remainTime / 60);
 			var remain_s = remainTime % 60;
@@ -541,8 +575,26 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 	sec = Math.max(0, parseInt(sec, 10) || 0);
 	remainTime = sec;
 	if (typeof tr !== 'undefined') {
+		var _hubTrMvBefore = $('#timeRound').text();
 		$('#timeRound').text(tr);
 		$('.nextRound').text(tr);
+		try {
+			if (typeof window.timerDbgEnabled === 'function' && window.timerDbgEnabled()) {
+				window.timerDbgLog('miniview:drawTimerHub → #timeRound', {
+					domBefore: _hubTrMvBefore,
+					hubTimeRound: tr,
+					remainSeconds: sec
+				});
+				var ho = parseInt(_hubTrMvBefore, 10);
+				var hn = parseInt(tr, 10);
+				if (!isNaN(ho) && ho > 10 && hn === 1) {
+					window.timerDbgWarn('miniview: hub set #timeRound to 1 from high prev', {
+						domBefore: _hubTrMvBefore,
+						hubTimeRound: tr
+					});
+				}
+			}
+		} catch (eHmv) {}
 	}
 	var remain_i = Math.floor(sec / 60);
 	var remain_s = sec % 60;

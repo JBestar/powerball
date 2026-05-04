@@ -413,6 +413,11 @@
         ?>
     </script>
     <script type="text/javascript" src="<?php echo $local; ?>/js/pageFocusDebug.js?v=<?= (int) $pageFocusDbgVer ?>"></script>
+    <?php
+    $timerDbgJsFile = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'timerDbg.js';
+    $timerDbgJsVer = @filemtime($timerDbgJsFile) ?: time();
+    ?>
+    <script type="text/javascript" src="<?php echo $local; ?>/js/timerDbg.js?v=<?= (int) $timerDbgJsVer ?>"></script>
     <script type="text/javascript" src="<?php echo $local; ?>/js/drawTimerHub.js"></script>
     <script>
     (function(){
