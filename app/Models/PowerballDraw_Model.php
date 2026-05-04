@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\LionDrawAuditLogger;
 use CodeIgniter\Model;
 
 /**
@@ -262,29 +263,66 @@ class PowerballDraw_Model extends Model
     public function performDrawWithRules(?array $rules): array
     {
         if ($rules === null || $rules === []) {
+            LionDrawAuditLogger::write('perform_path', [
+                'path'  => 'unconstrained_random',
+                'rules' => null,
+            ]);
+
             return $this->performDraw();
         }
 
         $allowedPb = $this->filterPowerballsByRules($rules);
         if ($allowedPb === []) {
             log_message('warning', 'PowerballDraw_Model: impossible pb rules, fallback performDraw');
+            LionDrawAuditLogger::write('perform_path', [
+                'path'        => 'fallback_impossible_pb_rules',
+                'rules'       => $rules,
+                'allowed_pb'  => [],
+            ]);
 
             return $this->performDraw();
         }
 
         $needNb = ! empty($rules['nb_sum_parity']) || ! empty($rules['nb_sum_ou']);
         if (! $needNb) {
+            LionDrawAuditLogger::write('perform_path', [
+                'path'       => 'pb_pool_only',
+                'rules'      => $rules,
+                'allowed_pb' => $allowedPb,
+            ]);
+
             return $this->performDrawWithPowerballPool($allowedPb);
         }
 
         $maxTry = 80000;
+        LionDrawAuditLogger::write('perform_path', [
+            'path'       => 'nb_rejection_sampling',
+            'rules'      => $rules,
+            'allowed_pb' => $allowedPb,
+            'max_try'    => $maxTry,
+        ]);
         for ($t = 0; $t < $maxTry; $t++) {
             $d = $this->performDrawWithPowerballPool($allowedPb);
             if ($this->drawMatchesNbSumRules($d, $rules)) {
+                if ($t > 12000) {
+                    LionDrawAuditLogger::write('perform_path', [
+                        'path'           => 'nb_sample_many_tries',
+                        'tries'          => $t + 1,
+                        'rules'          => $rules,
+                        'matched_sample' => $d['ball_sum'] . '|pb:' . $d['powerball'],
+                    ]);
+                }
+
                 return $d;
             }
         }
         log_message('warning', 'PowerballDraw_Model: performDrawWithRules nb fallback after ' . $maxTry);
+        LionDrawAuditLogger::write('perform_path', [
+            'path'   => 'nb_fallback_after_try_cap_uncheck_nb_sum',
+            'rules'  => $rules,
+            'warn'   => 'ball_sum_constraints_may_fail',
+            'cap'    => $maxTry,
+        ]);
 
         return $this->performDrawWithPowerballPool($allowedPb);
     }
@@ -335,6 +373,59 @@ class PowerballDraw_Model extends Model
         }
 
         return true;
+    }
+
+    /**
+     * 추첨 결과가 라이온 규칙을 만족하는지 검사 (로그·사후 검증용).
+     *
+     * @param array<string, mixed>              $draw  performDraw 형태
+     * @param array<string, string>|null        $rules consume 한 규칙 (null 이면 미적용)
+     * @return array{rules_applied:bool, matched:bool, checks:array<string,array<string,mixed>>}
+     */
+    public static function evaluateLionRulesCompliance(array $draw, ?array $rules): array
+    {
+        if ($rules === null || $rules === []) {
+            return ['rules_applied' => false, 'matched' => true, 'checks' => []];
+        }
+
+        $pb  = (int) $draw['powerball'];
+        $sum = (int) $draw['ball_sum'];
+        $checks  = [];
+        $matched = true;
+
+        $pp = $rules['pb_parity'] ?? null;
+        if ($pp === 'odd' || $pp === 'even') {
+            $wantOdd = ($pp === 'odd');
+            $isOdd   = ($pb % 2 === 1);
+            $pass    = ($wantOdd === $isOdd);
+            $checks['pb_parity'] = ['requested' => $pp, 'powerball' => $pb, 'pass' => $pass];
+            $matched = $matched && $pass;
+        }
+
+        $pou = $rules['pb_ou'] ?? null;
+        if ($pou === 'under' || $pou === 'over') {
+            $pass    = ($pou === 'under') ? ($pb <= 4) : ($pb >= 5);
+            $checks['pb_ou'] = ['requested' => $pou, 'powerball' => $pb, 'pass' => $pass];
+            $matched = $matched && $pass;
+        }
+
+        $nsp = $rules['nb_sum_parity'] ?? null;
+        if ($nsp === 'odd' || $nsp === 'even') {
+            $wantOdd = ($nsp === 'odd');
+            $isOdd   = ($sum % 2 === 1);
+            $pass    = ($wantOdd === $isOdd);
+            $checks['nb_sum_parity'] = ['requested' => $nsp, 'ball_sum' => $sum, 'pass' => $pass];
+            $matched = $matched && $pass;
+        }
+
+        $nsu = $rules['nb_sum_ou'] ?? null;
+        if ($nsu === 'under' || $nsu === 'over') {
+            $pass = ($nsu === 'under') ? ($sum <= 72) : ($sum > 72);
+            $checks['nb_sum_ou'] = ['requested' => $nsu, 'ball_sum' => $sum, 'pass' => $pass];
+            $matched = $matched && $pass;
+        }
+
+        return ['rules_applied' => true, 'matched' => $matched, 'checks' => $checks];
     }
 
     /**
@@ -449,6 +540,10 @@ class PowerballDraw_Model extends Model
             $g = $this->db->query('SELECT GET_LOCK(?, 30) AS g', [$lockName])->getRow();
             $lockHeld = $g && (int) $g->g === 1;
             if (! $lockHeld) {
+                LionDrawAuditLogger::write('draw_lock_miss', [
+                    'drawn_at' => $drawnAt,
+                    'unix'     => $currentTime,
+                ]);
                 $wait = $this->getByDrawnAt($drawnAt);
                 if ($wait !== null) {
                     return $wait;
@@ -467,7 +562,16 @@ class PowerballDraw_Model extends Model
 
             $dailyRound = self::dailyRoundFromDrawnAtKst($drawnAt);
             $nextRound  = $this->getNextRound();
-            $draw       = $this->performDrawWithRules($rules);
+
+            LionDrawAuditLogger::write('draw_generate_start', [
+                'drawn_at'       => $drawnAt,
+                'unix_used'      => $currentTime,
+                'daily_round'    => $dailyRound,
+                'assigned_round' => $nextRound,
+                'queued_rules'   => $rules,
+            ]);
+
+            $draw = $this->performDrawWithRules($rules);
 
             try {
                 // draw_results: ball1~ball5는 performDraw()가 반환한 추첨 순서 그대로(정렬 없음)
@@ -488,13 +592,61 @@ class PowerballDraw_Model extends Model
                 if (stripos($msg, 'Duplicate') !== false || stripos($msg, 'uk_drawn_at') !== false) {
                     $dup = $this->getByDrawnAt($drawnAt);
                     if ($dup !== null) {
+                        LionDrawAuditLogger::write('draw_insert_race_duplicate', [
+                            'drawn_at'     => $drawnAt,
+                            'unix_used'    => $currentTime,
+                            'used_round'   => (int) ($dup->round ?? 0),
+                            'planned_round'=> $nextRound,
+                            'note'         => 'another_worker_inserted_first',
+                        ]);
+
                         return $dup;
                     }
                 }
+                LionDrawAuditLogger::write('draw_insert_exception', [
+                    'drawn_at' => $drawnAt,
+                    'message'  => substr($msg, 0, 500),
+                ]);
                 throw $e;
             }
 
             $id = $this->getInsertID();
+
+            $compliance = self::evaluateLionRulesCompliance($draw, $rules);
+            LionDrawAuditLogger::write('draw_inserted', [
+                'drawn_at'           => $drawnAt,
+                'unix_used'          => $currentTime,
+                'round'              => $nextRound,
+                'id'                 => $id,
+                'daily_round'        => $dailyRound,
+                'balls'              => [
+                    $draw['ball1'], $draw['ball2'], $draw['ball3'], $draw['ball4'], $draw['ball5'],
+                ],
+                'powerball'          => $draw['powerball'],
+                'ball_sum'           => $draw['ball_sum'],
+                'queued_rules'       => $rules,
+                'rules_applied_flag' => $compliance['rules_applied'],
+                'rules_all_pass'    => $compliance['matched'],
+                'rule_checks'       => $compliance['checks'],
+            ]);
+
+            if ($compliance['rules_applied'] && ! $compliance['matched']) {
+                $payload = json_encode([
+                    'drawn_at'     => $drawnAt,
+                    'round'        => $nextRound,
+                    'draw'         => $draw,
+                    'rules'        => $rules,
+                    'rule_checks'  => $compliance['checks'],
+                ], JSON_UNESCAPED_UNICODE);
+                log_message('critical', 'lion_draw_audit RULE_MISMATCH ' . $payload);
+                LionDrawAuditLogger::write('RULE_MISMATCH', [
+                    'drawn_at' => $drawnAt,
+                    'round'    => $nextRound,
+                    'draw'     => $draw,
+                    'rules'    => $rules,
+                    'checks'   => $compliance['checks'],
+                ]);
+            }
 
             return (object) array_merge(
                 [

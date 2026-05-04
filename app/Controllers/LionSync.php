@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\LionDrawAuditLogger;
 use App\Models\LionPendingDraw_Model;
 use App\Models\PowerballDraw_Model;
 use CodeIgniter\Controller;
@@ -147,6 +148,9 @@ class LionSync extends Controller
 
         if (! $this->syncKeyMatches($lineKey)) {
             log_message('warning', 'LionSync::queueConstraint forbidden key_hdr_len=' . strlen($this->request->getHeaderLine('X-Lion-Draw-Key')) . ' key_body_len=' . strlen($lineKey) . ' env_key_set=' . (trim((string) env('LION_DRAW_SYNC_KEY', '')) !== '' ? 'yes' : 'no'));
+            LionDrawAuditLogger::write('http_queue_forbidden', [
+                'hint' => 'key_mismatch_or_env_empty',
+            ]);
 
             return $this->response->setStatusCode(403)->setJSON(['status' => 'fail', 'msg' => 'forbidden']);
         }
@@ -154,6 +158,9 @@ class LionSync extends Controller
         $rules = $this->normalizeQueueRulesFromBody($bodyFromJson);
         if ($rules === null) {
             log_message('warning', 'LionSync::queueConstraint invalid_or_conflicting_rules body_keys=' . json_encode(array_keys($bodyFromJson), JSON_UNESCAPED_UNICODE));
+            LionDrawAuditLogger::write('http_queue_bad_rules', [
+                'body_top_keys' => array_keys($bodyFromJson),
+            ]);
 
             return $this->response->setStatusCode(400)->setJSON([
                 'status' => 'fail',
@@ -173,6 +180,7 @@ class LionSync extends Controller
 
         if (! preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/', $drawnAt)) {
             log_message('warning', 'LionSync::queueConstraint bad_drawn_at drawn_at=' . $drawnAt);
+            LionDrawAuditLogger::write('http_queue_bad_drawn_at', ['drawn_at_raw' => $drawnAt]);
 
             return $this->response->setStatusCode(400)->setJSON([
                 'status' => 'fail',
@@ -190,14 +198,29 @@ class LionSync extends Controller
             $lockHeld = $g && (int) $g->g === 1;
             if (! $lockHeld) {
                 log_message('error', 'LionSync::queueConstraint lock_timeout drawn_at=' . $drawnAt);
+                LionDrawAuditLogger::write('http_queue_lock_timeout', [
+                    'drawn_at' => $drawnAt,
+                    'rules'    => $rules,
+                ]);
 
                 return $this->response->setStatusCode(503)->setJSON(['status' => 'fail', 'msg' => 'lock_timeout']);
             }
 
             $drawModel = new PowerballDraw_Model();
             $drawModel->ensureDailyRoundColumn();
-            if ($drawModel->getByDrawnAt($drawnAt) !== null) {
+            $existingDraw = $drawModel->getByDrawnAt($drawnAt);
+            if ($existingDraw !== null) {
                 log_message('notice', 'LionSync::queueConstraint draw_already_exists drawn_at=' . $drawnAt);
+                LionDrawAuditLogger::write('http_queue_draw_already_exists', [
+                    'drawn_at'    => $drawnAt,
+                    'rules_sent'  => $rules,
+                    'existing_row'=> [
+                        'round' => (int) ($existingDraw->round ?? 0),
+                        'pb'    => (int) ($existingDraw->powerball ?? 0),
+                        'sum'   => (int) ($existingDraw->ball_sum ?? 0),
+                    ],
+                    'cause'       => 'lion_request_after_draw_or_round_clock_skew',
+                ]);
 
                 return $this->response->setStatusCode(409)->setJSON([
                     'status'   => 'fail',
@@ -210,6 +233,10 @@ class LionSync extends Controller
             $pending->upsertRules($drawnAt, $rules);
 
             log_message('info', 'LionSync::queueConstraint success drawn_at=' . $drawnAt);
+            LionDrawAuditLogger::write('http_queue_ok', [
+                'drawn_at' => $drawnAt,
+                'rules'    => $rules,
+            ]);
 
             return $this->response->setJSON([
                 'status'   => 'success',

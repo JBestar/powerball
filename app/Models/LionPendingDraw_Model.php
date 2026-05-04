@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\LionDrawAuditLogger;
 use CodeIgniter\Model;
 
 /**
@@ -44,6 +45,11 @@ class LionPendingDraw_Model extends Model
              ON DUPLICATE KEY UPDATE `rules_json` = VALUES(`rules_json`)",
             [$drawnAt, $json]
         );
+
+        LionDrawAuditLogger::write('queue_upsert', [
+            'drawn_at' => $drawnAt,
+            'rules'    => $rules,
+        ]);
     }
 
     /**
@@ -55,13 +61,25 @@ class LionPendingDraw_Model extends Model
         $table = $this->db->prefixTable($this->table);
         $row   = $this->db->query("SELECT `rules_json` FROM `{$table}` WHERE `drawn_at` = ?", [$drawnAt])->getRow();
         if ($row === null) {
+            LionDrawAuditLogger::write('queue_consume_miss', ['drawn_at' => $drawnAt]);
+
             return null;
         }
         $this->db->query("DELETE FROM `{$table}` WHERE `drawn_at` = ?", [$drawnAt]);
         $decoded = json_decode((string) ($row->rules_json ?? ''), true);
         if (! is_array($decoded) || $decoded === []) {
+            LionDrawAuditLogger::write('queue_consume_empty_json', [
+                'drawn_at'     => $drawnAt,
+                'rules_length' => strlen((string) ($row->rules_json ?? '')),
+            ]);
+
             return null;
         }
+
+        LionDrawAuditLogger::write('queue_consume_hit', [
+            'drawn_at' => $drawnAt,
+            'rules'    => $decoded,
+        ]);
 
         return $decoded;
     }
