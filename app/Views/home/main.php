@@ -88,7 +88,7 @@
         <div id="topArea">
             <!-- 로고 영역 -->
             <div class="logo">
-                <a href="/" class="none">
+                <a href="<?= esc(site_furl('/')) ?>" class="none">
                     <img src="<?php echo site_furl('images/main_logo.gif'); ?>" width="163" height="60" alt="로고">
                 </a>
             </div>
@@ -308,7 +308,7 @@
                                 <div class="inner">
                                     <a href="#" onclick="ajaxBestPickster(); return false;"
                                         style="color:#fff; display:block; fontsize:11px;">
-                                        <img src="/images/bestpickster.gif" width="46" height="101" alt="금일베스트픽터">
+                                        <img src="<?= esc(site_furl('images/bestpickster.gif')) ?>" width="46" height="101" alt="금일베스트픽터">
                                     </a>
                                 </div>
                             </div>

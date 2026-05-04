@@ -57,7 +57,14 @@
     }
 
     function site_furl($url){
-      $base = $_ENV['app.furl'] ?? '';
+      // app.furl 이 비면 site_furl('') 등이 문자열 '/' 만 되어 (AJAX URL·canonical 이) 도메인 루트 GET 만 시도하고 404 나는 경우가 있음 → BASEURL 로 보강(Constants.php SCRIPT_NAME 기반)
+      $base = isset($_ENV['app.furl']) ? trim((string) $_ENV['app.furl']) : '';
+      $base = $base !== '' ? rtrim($base, '/') : '';
+      if ($base === '') {
+        $bu = defined('BASEURL') ? trim((string) BASEURL) : '';
+        $base = $bu !== '' ? rtrim($bu, '/') : '';
+      }
+      $url = (string) $url;
       $out = (substr($url, 0, 1) == "/")
         ? $base.$url
         : $base."/".$url;
