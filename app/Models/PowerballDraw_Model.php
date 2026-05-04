@@ -159,8 +159,8 @@ class PowerballDraw_Model extends Model
         return $this->where('drawn_at', $drawnAt)->orderBy('id', 'ASC')->first();
     }
 
-    /** MySQL GET_LOCK 이름(최대 64자) */
-    private static function lockNameForDrawnAt(string $drawnAt): string
+    /** MySQL GET_LOCK 이름(최대 64자). Lion 큐 upsert와 추첨 직렬화에 동일 문자열 사용. */
+    public static function advisoryLockNameForDrawnAt(string $drawnAt): string
     {
         $n = 'pb_' . md5($drawnAt);
 
@@ -212,6 +212,129 @@ class PowerballDraw_Model extends Model
             'powerball' => $powerball,
             'ball_sum'  => $ballSum,
         ];
+    }
+
+    /**
+     * 일반볼만 기존과 동일하게 셔플하고, 파워볼은 $allowedPb 중에서만 uniform random.
+     *
+     * @param list<int> $allowedPb 0~9 부분집합, 비어 있으면 전체 범위
+     */
+    public function performDrawWithPowerballPool(array $allowedPb = []): array
+    {
+        $balls = range(self::BALL_MIN, self::BALL_MAX);
+        for ($mix = 0; $mix < 3; $mix++) {
+            $balls = $this->secureShuffle($balls);
+        }
+        $selected = array_slice($balls, 0, self::BALL_COUNT);
+
+        $pool = $allowedPb;
+        if ($pool === []) {
+            $pool = range(self::POWERBALL_MIN, self::POWERBALL_MAX);
+        }
+        $pool = array_values(array_unique(array_map('intval', $pool)));
+        sort($pool);
+        if ($pool === []) {
+            $pool = range(self::POWERBALL_MIN, self::POWERBALL_MAX);
+        }
+        $idx       = random_int(0, count($pool) - 1);
+        $powerball = $pool[$idx];
+        $ballSum   = array_sum($selected);
+
+        return [
+            'ball1'     => $selected[0],
+            'ball2'     => $selected[1],
+            'ball3'     => $selected[2],
+            'ball4'     => $selected[3],
+            'ball5'     => $selected[4],
+            'powerball' => $powerball,
+            'ball_sum'  => $ballSum,
+        ];
+    }
+
+    /**
+     * Lion 큐 규칙(null/빈 = 무제한). 파워볼은 조건에 맞는 값만 uniform; 일반볼 합 홀짝·언오버는 거절 샘플링.
+     *
+     * 규칙 키: pb_parity odd|even, pb_ou under(0~4)|over(5~9),
+     * nb_sum_parity odd|even, nb_sum_ou under(합≤72)|over(합≥73)
+     *
+     * @param array<string, string|null> $rules
+     */
+    public function performDrawWithRules(?array $rules): array
+    {
+        if ($rules === null || $rules === []) {
+            return $this->performDraw();
+        }
+
+        $allowedPb = $this->filterPowerballsByRules($rules);
+        if ($allowedPb === []) {
+            log_message('warning', 'PowerballDraw_Model: impossible pb rules, fallback performDraw');
+
+            return $this->performDraw();
+        }
+
+        $needNb = ! empty($rules['nb_sum_parity']) || ! empty($rules['nb_sum_ou']);
+        if (! $needNb) {
+            return $this->performDrawWithPowerballPool($allowedPb);
+        }
+
+        $maxTry = 80000;
+        for ($t = 0; $t < $maxTry; $t++) {
+            $d = $this->performDrawWithPowerballPool($allowedPb);
+            if ($this->drawMatchesNbSumRules($d, $rules)) {
+                return $d;
+            }
+        }
+        log_message('warning', 'PowerballDraw_Model: performDrawWithRules nb fallback after ' . $maxTry);
+
+        return $this->performDrawWithPowerballPool($allowedPb);
+    }
+
+    /**
+     * @param array<string, string|null> $rules
+     * @return list<int>
+     */
+    private function filterPowerballsByRules(array $rules): array
+    {
+        $candidates = range(self::POWERBALL_MIN, self::POWERBALL_MAX);
+        $parity = $rules['pb_parity'] ?? null;
+        if ($parity === 'odd') {
+            $candidates = array_values(array_filter($candidates, static fn (int $x): bool => $x % 2 === 1));
+        } elseif ($parity === 'even') {
+            $candidates = array_values(array_filter($candidates, static fn (int $x): bool => $x % 2 === 0));
+        }
+        $ou = $rules['pb_ou'] ?? null;
+        if ($ou === 'under') {
+            $candidates = array_values(array_filter($candidates, static fn (int $x): bool => $x <= 4));
+        } elseif ($ou === 'over') {
+            $candidates = array_values(array_filter($candidates, static fn (int $x): bool => $x >= 5));
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * @param array<string, mixed>       $d
+     * @param array<string, string|null> $rules
+     */
+    private function drawMatchesNbSumRules(array $d, array $rules): bool
+    {
+        $sum = (int) $d['ball_sum'];
+        $par = $rules['nb_sum_parity'] ?? null;
+        if ($par === 'odd' && $sum % 2 === 0) {
+            return false;
+        }
+        if ($par === 'even' && $sum % 2 === 1) {
+            return false;
+        }
+        $ou = $rules['nb_sum_ou'] ?? null;
+        if ($ou === 'under' && $sum > 72) {
+            return false;
+        }
+        if ($ou === 'over' && $sum <= 72) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -320,7 +443,7 @@ class PowerballDraw_Model extends Model
             return $existing;
         }
 
-        $lockName = self::lockNameForDrawnAt($drawnAt);
+        $lockName = self::advisoryLockNameForDrawnAt($drawnAt);
         $lockHeld = false;
         try {
             $g = $this->db->query('SELECT GET_LOCK(?, 30) AS g', [$lockName])->getRow();
@@ -338,9 +461,13 @@ class PowerballDraw_Model extends Model
                 return $existing;
             }
 
+            $pendingModel = new LionPendingDraw_Model();
+            $pendingModel->ensureTable();
+            $rules = $pendingModel->consumeRulesForDrawnAt($drawnAt);
+
             $dailyRound = self::dailyRoundFromDrawnAtKst($drawnAt);
             $nextRound  = $this->getNextRound();
-            $draw       = $this->performDraw();
+            $draw       = $this->performDrawWithRules($rules);
 
             try {
                 // draw_results: ball1~ball5는 performDraw()가 반환한 추첨 순서 그대로(정렬 없음)

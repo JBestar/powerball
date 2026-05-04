@@ -99,6 +99,10 @@ $routes->get('json/powerballAnalyse/(:segment)', 'Home::powerballAnalyse/$1');
 // 5분 정각 추첨 실행 (cron용; CRON_DRAW_KEY 쿼리 필수)
 $routes->get('cron/draw', 'Cron::draw');
 
+// 라이온(별 서버) 관리자 추첨 수동 반영 — .env LION_DRAW_SYNC_KEY + POST JSON/X-Lion-Draw-Key
+$routes->post('lion/syncDraw', 'LionSync::syncDraw');
+$routes->post('lion/queueConstraint', 'LionSync::queueConstraint');
+
 /**
  * --------------------------------------------------------------------
  * Additional Routing
