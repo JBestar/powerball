@@ -276,8 +276,14 @@
                     <!-- [guide_banner] 메인 분석판 상단 안내(채팅) 영역 -->
                     <div id="guide_banner">
                         <!-- 실제 분석판이 들어가는 iframe (선배님 소스 구조 그대로) -->
+                        <?php
+                        $_chatFrameSrc = site_furl('home/chat');
+                        if (! empty($_GET['timerdbg']) && (string) $_GET['timerdbg'] === '1') {
+                            $_chatFrameSrc .= (strpos($_chatFrameSrc, '?') !== false ? '&' : '?') . 'timerdbg=1';
+                        }
+                        ?>
                         <iframe scrolling="no" frameborder="0" width="100%" height="575" 
-                            src="<?php echo site_furl('home/chat'); ?>" id="chatFrame">
+                            src="<?php echo $_chatFrameSrc; ?>" id="chatFrame">
                         </iframe>
                         <!-- 분석판 위에 떠 있는 퀵 메뉴 버튼들 -->
                         <div class="top_banner" style="top:-280px; left:-46px;">
