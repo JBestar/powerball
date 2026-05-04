@@ -2300,18 +2300,25 @@ class Home extends BaseController
 
     /**
      * dayLog 타이머용: 다음 회차 번호, 다음 추첨까지 남은 초(0~300, 5분 단위 기준)
+     *
+     * 주의: ajaxChatTimer 등 고빈도 호출에는 getOrGenerate 를 쓰지 않음.
+     * getOrGenerate 는 슬롯 락·INSERT 를 타며 실패 시 예외 → catch 후 next_round=1 로 떨어져
+     * UI 에서 회차가 순간 1 로 보이는 현상이 발생할 수 있음(로그: drawTimerHub fetchFromServer 직후).
      */
     protected function getDrawTimerInfo(): array
     {
         $next_round = 1;
         try {
             $drawModel = new \App\Models\PowerballDraw_Model();
-            $latest = $drawModel->getOrGenerate(time());
+            $latest = $drawModel->getLatest();
             if ($latest && isset($latest->round)) {
-                $next_round = (int) $latest->round + 1;
+                $nr = (int) $latest->round + 1;
+                if ($nr > 1) {
+                    $next_round = $nr;
+                }
             }
         } catch (\Throwable $e) {
-            // draw_results 미생성 시 기본값 유지
+            log_message('warning', 'getDrawTimerInfo: ' . $e->getMessage());
         }
         $remain_seconds = $this->getRemainSecondsUntilNextDraw();
         return ['next_round' => $next_round, 'remain_seconds' => $remain_seconds];
