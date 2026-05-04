@@ -125,8 +125,8 @@ class LionSync extends Controller
     {
         $this->response->setHeader('Content-Type', 'application/json; charset=UTF-8');
 
-        if (! $this->request->is('post')) {
-            log_message('warning', 'LionSync::queueConstraint method_not_post');
+        if ($this->request->getMethod() !== 'post') {
+            log_message('warning', 'LionSync::queueConstraint method_not_post method=' . $this->request->getMethod());
 
             return $this->response->setStatusCode(405)->setJSON(['status' => 'fail', 'msg' => 'post_only']);
         }
@@ -228,7 +228,7 @@ class LionSync extends Controller
 
         $this->response->setHeader('Content-Type', 'application/json; charset=UTF-8');
 
-        if (! $this->request->is('post')) {
+        if ($this->request->getMethod() !== 'post') {
             return $this->response->setStatusCode(405)->setJSON(['status' => 'fail', 'msg' => 'post_only']);
         }
 
