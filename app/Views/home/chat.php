@@ -304,6 +304,40 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
             if (round) $("#timeRound").text(String(round));
         }
 
+        function updatePowerballPointBetGraph(recentDraws, lastDraw) {
+            var odd = 0, even = 0;
+            var list = Array.isArray(recentDraws) ? recentDraws : [];
+            for (var i = 0; i < list.length; i++) {
+                var pb = parseInt(list[i] && list[i].powerball, 10);
+                if (isNaN(pb)) continue;
+                if (pb % 2 === 1) odd++; else even++;
+            }
+            if (odd + even === 0 && lastDraw) {
+                var pb1 = parseInt(lastDraw.powerball, 10);
+                if (!isNaN(pb1)) {
+                    if (pb1 % 2 === 1) odd = 1; else even = 1;
+                }
+            }
+            if (odd + even === 0) {
+                odd = 1; even = 1;
+            }
+            var total = odd + even;
+            var oddPct = Math.round((odd / total) * 100);
+            var evenPct = 100 - oddPct;
+
+            var $oddChart = $("#powerballPointBetGraph .oddChart");
+            var $evenChart = $("#powerballPointBetGraph .evenChart");
+            var oddMax = Math.max(0, ($oddChart.width() || 0) - 20);
+            var evenMax = Math.max(0, ($evenChart.width() || 0) - 20);
+            var oddW = Math.round(oddMax * (oddPct / 100));
+            var evenW = Math.round(evenMax * (evenPct / 100));
+
+            $("#powerballPointBetGraph .oddBar").stop(true, true).animate({ width: oddW + "px" }, 220);
+            $("#powerballPointBetGraph .evenBar").stop(true, true).animate({ width: evenW + "px" }, 220);
+            $("#powerballPointBetGraph .oddPer").text(oddPct + "%").css("right", oddW + "px");
+            $("#powerballPointBetGraph .evenPer").text(evenPct + "%").css("left", evenW + "px");
+        }
+
         /** dayLog/latestLog와 동일: 부모가 있어도 교차 출처이면 postMessage 없음 → ajax 1초 동기화 필요 */
         var chatTimerFromParentHub = false;
         try {
@@ -734,6 +768,7 @@ $room_list_height = $chat_popup_mode ? '460px' : '548px';
                         lastOwnerPickRenderedRound = newestRound;
                     }
                 }
+                updatePowerballPointBetGraph(resp.recentDraws || [], resp.lastDraw || null);
             }, "json");
         }
 
