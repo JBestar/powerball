@@ -130,14 +130,15 @@ function ladderResultTimer(divId)
 		var roundNum = parseInt($('#timeRound').text(), 10) + 1;
 		$('#timeRound').text(roundNum);
 		$('.nextRound').text(roundNum);
-		miniViewFetchDrawResultForResult('ladder:remain0', updateResult);
+		miniViewResetCountdownStateIfRoundChanged();
 	}
 
 	remainTime--;
 
 	if(remainTime <= 10 && remainTime >= 0){
-		$('#lotteryBox .play').css('display', 'block').show();
-		$('#ladderReady').hide();
+		miniViewHandleCountdownPhase(remainTime, 'ladder');
+	} else if (remainTime > 10) {
+		miniViewHandleCountdownPhase(remainTime, 'ladder');
 	}
 
 	var remain_i = Math.floor(remainTime / 60);
@@ -223,7 +224,10 @@ function updateResult(data)
 	$('#lotteryBox .play').show();
 	$('#ladderReady').hide();
 
-	miniViewMoveCurrentResultToBefore();
+	// 10초 트리거에서 이미 이전회차 영역으로 이동한 경우, 레일 시작 시 재이동 금지
+	if (!_miniCountdownMovedToBefore) {
+		miniViewMoveCurrentResultToBefore();
+	}
 	$('#lotteryResult').empty();
 
 	var numStr = data.number;
@@ -253,32 +257,32 @@ function updateResult(data)
 	$('.lastRound').text(data.round);
 	$('#lastRoundTit').text(data.round);
 
+	var totalBalls = 6;
+	/* 10초 카운트다운 구간 안에서 끝나도록 간격/비행시간 압축 */
+	var BALL_STAGGER_MS = 1400;
+	var BALL_FLIGHT_MS = 900;
+	var END_BUFFER_MS = 300;
+	for (var idx = 0; idx < totalBalls; idx++) {
+		showNumber(ballArr[idx], idx, animGen, idx * BALL_STAGGER_MS, BALL_FLIGHT_MS);
+	}
 	setTimeout(function(){
 		if (animGen !== _updateResultAnimGen) {
 			return;
 		}
-		var totalBalls = 6;
-		for(var idx = 0; idx < totalBalls; idx++){
-			showNumber(ballArr[idx], idx, animGen);
-		}
-		setTimeout(function(){
-			if (animGen !== _updateResultAnimGen) {
-				return;
-			}
-			$('#lotteryBox .play').hide();
-			$('#ladderReady').show();
-		}, 2000 * totalBalls + 2000);
-	}, 2000);
+		$('#lotteryBox .play').hide();
+		$('#ladderReady').show();
+	}, BALL_STAGGER_MS * (totalBalls - 1) + BALL_FLIGHT_MS + END_BUFFER_MS);
 }
 
-function showNumber(num, index, animGen)
+function showNumber(num, index, animGen, delayOverrideMs, flightDurationMs)
 {
 	index = index == null ? 0 : index;
 	/** index 5 = 파워볼(0~9): 0은 "0"으로 표시(00 방지), ballColorSel도 숫자 한 자리로 맞춤 */
 	if (index === 5) {
 		num = String(parseInt(num, 10));
 	}
-	var delay = 2000 * index;
+	var delay = (typeof delayOverrideMs === 'number' && delayOverrideMs >= 0) ? delayOverrideMs : (2000 * index);
+	var tweenSec = (typeof flightDurationMs === 'number' && flightDurationMs > 0) ? (flightDurationMs / 1000) : 1;
 	setTimeout(function(){
 		if (animGen !== undefined && animGen !== _updateResultAnimGen) {
 			return;
@@ -290,7 +294,7 @@ function showNumber(num, index, animGen)
 
 		/* 슬롯별 고유 ID (번호 문자열만 쓰면 동일 숫자/표기 충돌 시 jQuery가 첫 요소만 갱신) */
 		var ballId = 'lotteryBallSlot_' + index;
-		TweenMax.to(document.getElementById('lotteryBall'), 1, {
+		TweenMax.to(document.getElementById('lotteryBall'), tweenSec, {
 			bezier: { type: 'cubic', values: [{x:175,y:-5},{x:-50,y:5},{x:-20,y:300},{x:345,y:210}], autoRotate: false },
 			ease: Power1.easeInOut,
 			onStart: function(){
@@ -473,17 +477,89 @@ var _lastDrawResultFetchAt = 0;
 /** 탭 복귀 후 timeRound만 맞고 결과 패널이 남을 때 연속 요청 완화 */
 var _lastMiniViewStaleResultFetchAt = 0;
 var _miniViewDrawResultFetchInFlight = false;
+/** 10초/5초 트리거 상태 (다음 회차 기준) */
+var _miniCountdownRound = null;
+var _miniCountdown10Triggered = false;
+var _miniCountdown5Triggered = false;
+var _miniCountdownRailStartedRound = null;
+var _lastMiniRailProbeAt = 0;
+var _miniCountdownMovedToBefore = false;
+
+function miniViewResetCountdownStateIfRoundChanged() {
+	var nr = parseInt($('#timeRound').text(), 10);
+	if (isNaN(nr)) return;
+	// 카운트다운 구간(10초~0초)에는 updateResult가 #timeRound를 변경하므로,
+	// 이를 새 회차로 오인해 상태를 리셋하면 레일 애니가 중복 시작된다.
+	if (_miniCountdown10Triggered && typeof remainTime !== 'undefined' && remainTime <= 10 && remainTime >= 0) {
+		return;
+	}
+	if (_miniCountdownRound === null || _miniCountdownRound !== nr) {
+		_miniCountdownRound = nr;
+		_miniCountdown10Triggered = false;
+		_miniCountdown5Triggered = false;
+		_miniCountdownRailStartedRound = null;
+		_miniCountdownMovedToBefore = false;
+	}
+}
+
+function miniViewTryStartRailAnimation(expectedRound, tag) {
+	if (!expectedRound || isNaN(expectedRound)) return;
+	var nowMs = Date.now();
+	if (nowMs - _lastMiniRailProbeAt < 900) return;
+	_lastMiniRailProbeAt = nowMs;
+	miniViewFetchDrawResultForResult(tag + ':rail', function(data){
+		var fetchedRound = parseInt(data && data.round, 10);
+		if (!isNaN(fetchedRound) && fetchedRound === expectedRound) {
+			_miniCountdownRailStartedRound = expectedRound;
+			updateResult(data);
+		}
+	}, { preNext: true });
+}
+
+function miniViewHandleCountdownPhase(sec, tag) {
+	miniViewResetCountdownStateIfRoundChanged();
+	var expectedRound = parseInt($('#timeRound').text(), 10);
+	if (isNaN(expectedRound)) return;
+
+	if (sec > 10) {
+		if ($('#lotteryBox .play').is(':visible')) $('#lotteryBox .play').hide();
+		if (!$('#ladderReady').is(':visible')) $('#ladderReady').show();
+		return;
+	}
+
+	if (sec <= 10 && !_miniCountdown10Triggered) {
+		_miniCountdown10Triggered = true;
+		miniViewMoveCurrentResultToBefore();
+		$('#lotteryResult').empty();
+		_miniCountdownMovedToBefore = true;
+	}
+
+	if (sec <= 10 && _miniCountdownRailStartedRound !== expectedRound) {
+		$('#lotteryBox .play').css('display', 'block').show();
+		$('#ladderReady').hide();
+	}
+
+	if (sec <= 5) {
+		_miniCountdown5Triggered = true;
+		if (_miniCountdownRailStartedRound !== expectedRound) {
+			miniViewTryStartRailAnimation(expectedRound, tag);
+		}
+	}
+}
 
 /**
  * /lottery/getDrawResult 단일 in-flight — 허브 sec0·stale·ladder 가 동시에 호출하면 응답이 두 번 와 애니·행이 중복됨.
  */
-function miniViewFetchDrawResultForResult(tag, onResult) {
+function miniViewFetchDrawResultForResult(tag, onResult, opts) {
 	if (_miniViewDrawResultFetchInFlight) {
 		miniviewDebugLog('miniViewFetchDrawResultForResult: skip (in flight)', tag);
 		return;
 	}
 	_miniViewDrawResultFetchInFlight = true;
 	var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
+	if (opts && opts.preNext === true) {
+		drawUrl += '?preNext=1';
+	}
 	miniviewDebugLog('miniViewFetchDrawResultForResult', tag);
 	$.getJSON(drawUrl).done(function(data){
 		if (data && (data.round != null || data.ball1 != null)) {
@@ -549,8 +625,9 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 	$('#ladderTimer').find('.minute').text(remain_i);
 	$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
 	if (sec <= 10 && sec >= 0) {
-		$('#lotteryBox .play').css('display', 'block').show();
-		$('#ladderReady').hide();
+		miniViewHandleCountdownPhase(sec, 'hub');
+	} else if (sec > 10) {
+		miniViewHandleCountdownPhase(sec, 'hub');
 	}
 	if (_prevHubRemainMini !== null && _prevHubRemainMini > 0 && sec === 0) {
 		var nowMs = Date.now();
@@ -560,7 +637,8 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip getDrawResult (cooldown)', { delta: nowMs - _lastDrawResultFetchAt });
 		} else {
 			_lastDrawResultFetchAt = nowMs;
-			miniViewFetchDrawResultForResult('hub:sec0', updateResult);
+			/* 0초 시점 이후 레일 애니가 시작되지 않도록 즉시 렌더로 마감 */
+			miniViewFetchDrawResultForResult('hub:sec0', miniViewRenderResultInstant);
 		}
 	}
 	_prevHubRemainMini = sec;
