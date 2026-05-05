@@ -105,6 +105,8 @@ var _mvLadderTickCount = 0;
 var _lastMiniViewAnimatedRound = null;
 /** updateResult 내부 setTimeout·showNumber 연쇄 취소용 (새 추첨 시작 시 이전 애니메이션 무시) */
 var _updateResultAnimGen = 0;
+/** 레일 애니 진행 중에는 즉시 렌더가 ladderReady를 먼저 켜지 않도록 보호 */
+var _miniRailAnimationRunning = false;
 
 function ladderResultTimer(divId)
 {
@@ -163,6 +165,7 @@ function miniViewMoveCurrentResultToBefore() {
 /** 포커스 복귀 동기화용: 같은 회차는 공 애니 없이 즉시 패널만 정합 */
 function miniViewRenderResultInstant(data) {
 	if (!data) return;
+	if (_miniRailAnimationRunning) return;
 	var numStr = data.number;
 	if (!numStr && data.ball1 != null) {
 		numStr = [data.ball1, data.ball2, data.ball3, data.ball4, data.ball5].map(function(n){
@@ -220,6 +223,7 @@ function updateResult(data)
 	}
 
 	var animGen = ++_updateResultAnimGen;
+	_miniRailAnimationRunning = true;
 
 	$('#lotteryBox .play').show();
 	$('#ladderReady').hide();
@@ -271,6 +275,7 @@ function updateResult(data)
 		}
 		$('#lotteryBox .play').hide();
 		$('#ladderReady').show();
+		_miniRailAnimationRunning = false;
 	}, BALL_STAGGER_MS * (totalBalls - 1) + BALL_FLIGHT_MS + END_BUFFER_MS);
 }
 
@@ -635,6 +640,8 @@ function miniViewApplyDrawTimerFromHub(sec, tr) {
 			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip sec0 getDrawResult (in flight)');
 		} else if (nowMs - _lastDrawResultFetchAt < 8000) {
 			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip getDrawResult (cooldown)', { delta: nowMs - _lastDrawResultFetchAt });
+		} else if (_miniRailAnimationRunning) {
+			miniviewDebugLog('miniViewApplyDrawTimerFromHub: skip sec0 instant render (rail anim running)');
 		} else {
 			_lastDrawResultFetchAt = nowMs;
 			/* 0초 시점 이후 레일 애니가 시작되지 않도록 즉시 렌더로 마감 */
