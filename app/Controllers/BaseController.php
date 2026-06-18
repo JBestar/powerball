@@ -703,7 +703,7 @@ class BaseController extends Controller
 					if($this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_EVOL_SITE, $objMember, $objMember->mb_live_money+$amount, 0-$amount);
                         $objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 						$iResult = 1;
                     }
                 } 
@@ -751,7 +751,7 @@ class BaseController extends Controller
 					if( $this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_KGON_SITE, $objMember, $objMember->mb_kgon_money+$amount, 0-$amount);
 						$objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 						$iResult = 1;
 					}
 				} 
@@ -801,7 +801,7 @@ class BaseController extends Controller
 					if($this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_PLUS_SITE, $objMember, $objMember->mb_slot_money+$amount, 0-$amount);
                         $objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
                         $iResult = 1;
                     }
                 } 
@@ -851,7 +851,7 @@ class BaseController extends Controller
 					if($this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_GSPL_SITE, $objMember, $objMember->mb_fslot_money+$amount, 0-$amount);
                         $objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
                         $iResult = 1;
                     }
                 } 
@@ -900,7 +900,7 @@ class BaseController extends Controller
                     if($this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_GOLD_SITE, $objMember, $objMember->mb_gslot_money+$amount, 0-$amount);
 						$objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 						$iResult = 1;
 					}
                 } 
@@ -933,7 +933,7 @@ class BaseController extends Controller
 				if($this->modelMember->updateAssets($objMember, $amount)){
 					$this->modelTransfer->register(TRANS_STAR_SITE, $objMember, $objMember->mb_hslot_money+$amount, 0-$amount);
 					$objMember->mb_money += $amount;   
-					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 					$iResult = 1;
 				}
 			} else {
@@ -954,7 +954,7 @@ class BaseController extends Controller
 		if($objMember->mb_hold_uid !== ""){
 			
 			$arrResult = $this->libApiHold->getUserInfo($objMember->mb_hold_uid);
-			writeLog($logHead." ".$objMember->mb_uid."-UserInfo error=".$arrResult['error']);
+			writeLog($logHead." ".$objMember->mb_uid."-UserInfo error=".$arrResult['error'], 'ops');
 			if($arrResult['status'] == 1)
 			{
 				writeLog($logHead." ".$objMember->mb_uid."-UserInfo Balance=".$arrResult['balance']." Money=".$objMember->mb_money);
@@ -964,7 +964,7 @@ class BaseController extends Controller
 					usleep(500000);
 					$amount = $arrResult['balance'];
 					$arrResp =  $this->libApiHold->subBalance($objMember->mb_hold_uid, $amount);
-					writeLog($logHead." ".$objMember->mb_uid."-Withdraw error=".$arrResp['error']);
+					writeLog($logHead." ".$objMember->mb_uid."-Withdraw error=".$arrResp['error'], 'ops');
 				} else {
 					$objMember->mb_hold_money = $arrResult['balance'];
 					$this->modelMember->updateHoldMoney($objMember);
@@ -981,7 +981,7 @@ class BaseController extends Controller
 					if($this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_HOLD_SITE, $objMember, $objMember->mb_hold_money+$amount, 0-$amount);
 						$objMember->mb_money += $amount;
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
                         $iResult = 1;
                     }
                 } 
@@ -1027,7 +1027,7 @@ class BaseController extends Controller
 					if( $this->modelMember->updateAssets($objMember, $amount)){
 						$this->modelTransfer->register(TRANS_RAVE_SITE, $objMember, $objMember->mb_rave_money+$amount, 0-$amount);
 						$objMember->mb_money += $amount;   
-						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+						writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 						$iResult = 1;
 					}
 				} 
@@ -1062,7 +1062,7 @@ class BaseController extends Controller
 				if( $this->modelMember->updateAssets($objMember, $amount)){
 					$this->modelTransfer->register(TRANS_TREEM_SITE, $objMember, $objMember->mb_treem_money+$amount, 0-$amount);
 					$objMember->mb_money += $amount;   
-					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 					$iResult = 1;
 				}
 			} else if(array_key_exists('balance', $arrResp)) {
@@ -1097,7 +1097,7 @@ class BaseController extends Controller
 				if( $this->modelMember->updateAssets($objMember, $amount)){
 					$this->modelTransfer->register(TRANS_SIGMA_SITE, $objMember, $objMember->mb_sigma_money+$amount, 0-$amount);
 					$objMember->mb_money += $amount;   
-					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money);
+					writeLog($logHead.$objMember->mb_uid."-Withdraw Money=".$objMember->mb_money, 'ops');
 					$iResult = 1;
 				}
 			} else if(array_key_exists('balance', $arrResp)) {
@@ -1266,7 +1266,7 @@ class BaseController extends Controller
 			
 			if($arrResult['status'] == 1)
 			{
-				writeLog($logHead.$objMember->mb_uid."-Deposit Amount=".$arrResult['amount']);
+				writeLog($logHead.$objMember->mb_uid."-Deposit Amount=".$arrResult['amount'], 'ops');
 				if($this->modelMember->updateAssets($objMember, 0-$arrResult['amount'])){
 					$objMember->mb_hslot_money += $arrResult['amount'];
 					$amount = $arrResult['amount'];
@@ -1293,7 +1293,7 @@ class BaseController extends Controller
 			
 			if($arrResult['status'] == 1)
 			{
-				writeLog($logHead.$objMember->mb_uid."-Deposit Amount=".$arrResult['amount']);
+				writeLog($logHead.$objMember->mb_uid."-Deposit Amount=".$arrResult['amount'], 'ops');
 				if($this->modelMember->updateAssets($objMember, 0-$arrResult['amount'])){
 					$objMember->mb_hold_money += $arrResult['amount'];
 					$amount = $arrResult['amount'];

@@ -2,10 +2,9 @@
 
   	function is_login($checkCookie = false){
       $hasSession = isset($_SESSION['logged_in']);
-      $sessionVal = $hasSession ? json_encode($_SESSION['logged_in']) : 'not set';
       $hasCookie = isset($_COOKIE['logged']);
       $cookieVal = $hasCookie ? $_COOKIE['logged'] : 'not set';
-      writeLog("[is_login] checkCookie=" . ($checkCookie ? '1' : '0') . " session(logged_in)=" . $sessionVal . " cookie(logged)=" . $cookieVal);
+      // writeLog("[is_login] ..."); // 디버그용 — 호출마다 기록되어 폴링 시 로그 폭주
 
       if(!$hasSession)
         return false;
@@ -1060,7 +1059,7 @@
 
       if ($handle = opendir($dir))
       {
-        writeLog("captchaSrc=".$dir);
+        // writeLog("captchaSrc=".$dir);
 
           while ($obj = readdir($handle))
           {

@@ -1168,7 +1168,7 @@ class Home extends BaseController
             $objMember = null;
             // 메인/box-login은 세션만으로 판단 (쿠키 미설정 시에도 로그인 UI 표시)
             $loggedIn = is_login(false);
-            writeLog("[index] main dashboard is_login(false)=" . ($loggedIn ? '1' : '0'));
+            // writeLog("[index] main dashboard is_login(false)=" . ($loggedIn ? '1' : '0'));
             if ($loggedIn) {
                 $user_id = $this->session->user_id;
                 $objMember = $this->modelMember->getByUid($user_id);
@@ -3578,7 +3578,7 @@ class Home extends BaseController
 	public function logout(){
 
 		$sess_id = $this->session->session_id;
-		writeLog("[home] logout (".$sess_id.")");
+		writeLog("[home] logout (".$sess_id.")", 'ops');
         
 		$this->sess_destroy();
 		$this->response->redirect(site_furl('/'));
@@ -3612,17 +3612,17 @@ class Home extends BaseController
 		if (empty($returnUrl) || !preg_match('#^https?://|^/#', $returnUrl)) {
 			$returnUrl = site_furl('/');
 		}
-		writeLog("[doLogin] start id=" . $id . " returnUrl=" . $returnUrl);
+		// writeLog("[doLogin] start id=" . $id . " returnUrl=" . $returnUrl);
 
 		if ($id === '' || $pw === '') {
-			writeLog("[doLogin] empty id or pw");
+			writeLog("[doLogin] empty id or pw", 'ops');
 			$this->session->setFlashdata('login_error', '아이디와 비밀번호를 입력해 주세요.');
 			return $this->response->redirect(site_furl('/login?url=' . rawurlencode($returnUrl)));
 		}
 
 		$member = $this->modelMember->login($id, $pw);
 		if (!$member) {
-			writeLog("[doLogin] login fail no member");
+			writeLog("[doLogin] login fail no member id=" . $id, 'ops');
 			$this->session->setFlashdata('login_error', '아이디 또는 비밀번호가 올바르지 않습니다.');
 			return $this->response->redirect(site_furl('/login?url=' . rawurlencode($returnUrl)));
 		}
@@ -3631,7 +3631,7 @@ class Home extends BaseController
 		$this->session->set('user_id', $member->mb_uid);
 		$this->session->set('lang', $this->session->get('lang') ?? 'ko');
 		$sessId = $this->session->session_id ?? 'n/a';
-		writeLog("[doLogin] session set logged_in=1 user_id=" . ($member->mb_uid ?? '') . " session_id=" . $sessId);
+		writeLog("[doLogin] session set logged_in=1 user_id=" . ($member->mb_uid ?? '') . " session_id=" . $sessId, 'ops');
 
 		// 접속자 수(sess 테이블) 집계용 — 기존에는 add 미호출로 connectUserCnt 가 항상 0
 		try {
@@ -3641,7 +3641,7 @@ class Home extends BaseController
 			}
 			$this->modelSess->add($member, (string) ($this->session->session_id ?? ''));
 		} catch (\Throwable $e) {
-			writeLog('[doLogin] sess add: ' . $e->getMessage());
+			writeLog('[doLogin] sess add: ' . $e->getMessage(), 'ops');
 		}
 
 		// is_login(true) 는 세션 + 쿠키(logged=yes) 둘 다 필요하므로
@@ -3652,7 +3652,7 @@ class Home extends BaseController
 			'path'     => '/',
 			'httponly' => false,
 		]);
-		writeLog("[doLogin] redirect to " . $returnUrl . " with cookie logged=yes");
+		// writeLog("[doLogin] redirect to " . $returnUrl . " with cookie logged=yes");
 		return $response;
 	}
 

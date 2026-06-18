@@ -158,10 +158,15 @@ function getCurlRequestWithProxy($url, $headers = null, $post = null, $customReq
     return $result;
 }
 
-function writeLog($contenet){ 
+function writeLog($content, $level = 'debug'){
     
     if(!LOG_WRITE)
         return;
+
+    // debug(기본) 호출은 기록하지 않음. 운영 필수 로그만 writeLog($msg, 'ops') 로 남김.
+    if ($level !== 'ops') {
+        return;
+    }
 
     $tmNow = time() ;
     $nHour = date("G",$tmNow);
