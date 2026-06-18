@@ -32,7 +32,7 @@ class Logger extends BaseConfig
 	| your log files will fill up very fast.
 	|
 	*/
-	public $threshold = 3;
+	public $threshold = 4;
 
 	/*
 	|--------------------------------------------------------------------------
@@ -91,14 +91,10 @@ class Logger extends BaseConfig
 			 * The log levels that this handler will handle.
 			 */
 			'handles'         => [
-				'critical',
-				'alert',
 				'emergency',
-				'debug',
+				'alert',
+				'critical',
 				'error',
-				'info',
-				'notice',
-				'warning',
 			],
 
 			/*

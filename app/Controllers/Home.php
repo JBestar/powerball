@@ -1512,17 +1512,17 @@ class Home extends BaseController
             $exposeDetail = (defined('ENVIRONMENT') && ENVIRONMENT === 'development')
                 || ($this->request->getPost('daylog_sync_debug') === '1');
 
-            $logDir = WRITEPATH . 'logs';
-            if (! is_dir($logDir)) {
-                @mkdir($logDir, 0755, true);
-            }
-            $logBody = date('c')
-                . ' actionType=' . var_export($this->request->getPost('actionType'), true)
-                . ' daylog_sync_debug=' . var_export($this->request->getPost('daylog_sync_debug'), true)
-                . "\n" . $e->getMessage()
-                . ' @ ' . $e->getFile() . ':' . $e->getLine()
-                . "\n" . $e->getTraceAsString() . "\n\n";
-            @file_put_contents($logDir . '/ajax_powerball_log_errors.log', $logBody, FILE_APPEND | LOCK_EX);
+            // $logDir = WRITEPATH . 'logs';
+            // if (! is_dir($logDir)) {
+            //     @mkdir($logDir, 0755, true);
+            // }
+            // $logBody = date('c')
+            //     . ' actionType=' . var_export($this->request->getPost('actionType'), true)
+            //     . ' daylog_sync_debug=' . var_export($this->request->getPost('daylog_sync_debug'), true)
+            //     . "\n" . $e->getMessage()
+            //     . ' @ ' . $e->getFile() . ':' . $e->getLine()
+            //     . "\n" . $e->getTraceAsString() . "\n\n";
+            // @file_put_contents($logDir . '/ajax_powerball_log_errors.log', $logBody, FILE_APPEND | LOCK_EX);
 
             log_message('critical', 'ajaxPowerballLog: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
 
@@ -1614,23 +1614,23 @@ class Home extends BaseController
                 ->orderBy('round', 'ASC')
                 ->first();
 
-            if ($daylogSyncDebug) {
-                $logDir = WRITEPATH . 'logs';
-                if (! is_dir($logDir)) {
-                    @mkdir($logDir, 0755, true);
-                }
-                $logLine = sprintf(
-                    "[%s] daylog refreshLog date=%s window=[%s..%s] client_afterRound=%d latest_db_in_window=%d new_row=%s\n",
-                    date('c'),
-                    $date,
-                    $dateFrom,
-                    $dateTo,
-                    $afterRound,
-                    $latestRoundInWindow,
-                    $draw ? 'Y round=' . (int) $draw->round : 'N'
-                );
-                @file_put_contents($logDir . '/daylog_sync_debug.log', $logLine, FILE_APPEND | LOCK_EX);
-            }
+            // if ($daylogSyncDebug) {
+            //     $logDir = WRITEPATH . 'logs';
+            //     if (! is_dir($logDir)) {
+            //         @mkdir($logDir, 0755, true);
+            //     }
+            //     $logLine = sprintf(
+            //         "[%s] daylog refreshLog date=%s window=[%s..%s] client_afterRound=%d latest_db_in_window=%d new_row=%s\n",
+            //         date('c'),
+            //         $date,
+            //         $dateFrom,
+            //         $dateTo,
+            //         $afterRound,
+            //         $latestRoundInWindow,
+            //         $draw ? 'Y round=' . (int) $draw->round : 'N'
+            //     );
+            //     @file_put_contents($logDir . '/daylog_sync_debug.log', $logLine, FILE_APPEND | LOCK_EX);
+            // }
 
             if (!$draw) {
                 return $this->response->setJSON(['state' => 'success', 'round' => $afterRound, 'content' => []]);

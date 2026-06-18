@@ -17,13 +17,13 @@ class LionDrawAuditLogger
             'event' => $event,
         ], $data);
 
-        $dir = WRITEPATH . 'logs';
-        if (! is_dir($dir)) {
-            @mkdir($dir, 0755, true);
-        }
+        // $dir = WRITEPATH . 'logs';
+        // if (! is_dir($dir)) {
+        //     @mkdir($dir, 0755, true);
+        // }
 
-        $path = $dir . DIRECTORY_SEPARATOR . 'lion_draw_audit_' . date('Y-m-d') . '.log';
-        $line = json_encode($row, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n";
-        @file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
+        // $path = $dir . DIRECTORY_SEPARATOR . 'lion_draw_audit_' . date('Y-m-d') . '.log';
+        // $line = json_encode($row, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n";
+        // @file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
     }
 }
