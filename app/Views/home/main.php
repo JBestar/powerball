@@ -140,7 +140,7 @@
             <div class="gnb">
                 <ul>
                     <!-- 1. 파워볼게임 (활성화 상태 'on'; 픽/마켓 선택 시에도 시각적 활성 유지용 id) -->
-                    <li><a id="gnbPowerball" href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame" class="on">파워볼2게임(PBG2)</a></li>
+                    <li><a id="gnbPowerball" href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame" class="on"><?= esc($site_name ?? '파워볼게임') ?></a></li>
                     
                     <!-- 2. 픽 — 클릭 시 파워볼2게임(PBG2)과 동일: mainFrame 에 frame/dayLog -->
                     <li>
