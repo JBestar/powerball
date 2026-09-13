@@ -176,7 +176,7 @@ function writeLog($content, $level = 'debug'){
     $sDate = date( 'Y-m-d', $tmNow);
     $fLog = fopen(LOG_FILE.$sDate, "a") ;
 
-    $tContent = "[".$nHour.":".$nMin.":".$nSec."] ".$contenet."\r\n";
+    $tContent = "[".$nHour.":".$nMin.":".$nSec."] ".$content."\r\n";
 
     fputs($fLog, $tContent);
     fclose($fLog);
